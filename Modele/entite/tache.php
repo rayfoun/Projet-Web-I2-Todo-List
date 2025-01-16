@@ -10,7 +10,8 @@ class Tache {
     public $heure_echeance;
     public $statut_tache;
     public $priorite_tache;
-    public $id_categorie;
+    public $id_user;
+    public $categorie;
 
     public function __construct(
         $id_tache,
@@ -22,7 +23,8 @@ class Tache {
         $heure_echeance,
         $statut_tache,
         $priorite_tache,
-        $id_categorie
+        $categorie,
+        $id_user
     ) {
         $this->id_tache = $id_tache;
         $this->libelle_tache = $libelle_tache;
@@ -33,8 +35,9 @@ class Tache {
         $this->heure_echeance = $heure_echeance;
         $this->statut_tache = $statut_tache;
         $this->priorite_tache = $priorite_tache;
-        $this->id_categorie = $id_categorie;
+        $this->categorie= $categorie;
+        $this->id_user = $id_user;
     }
 }
-
+// creer une instance de la table user
 ?>

@@ -12,9 +12,9 @@ class TacheDAO {
     }
 
     // Méthode pour créer une tâche
-    public function creerTache($libelle, $descriptif, $dateCreation, $dateEcheance, $heureCreation, $heureEcheance, $statut, $priorite, $idCategorie) {
-        $query = "INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, id_categorie) 
-                  VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :idCategorie)";
+    public function creerTache($libelle, $descriptif, $dateCreation, $dateEcheance, $heureCreation, $heureEcheance,$categorie, $statut, $priorite, $iduser) {
+        $query = "INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, categorie, statut_tache, priorite_tache, id_user) 
+                  VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance,:categorie, :statut, :priorite, :iduser)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
             ':libelle' => $libelle,
@@ -25,7 +25,7 @@ class TacheDAO {
             ':heureEcheance' => $heureEcheance,
             ':statut' => $statut,
             ':priorite' => $priorite,
-            ':idCategorie' => $idCategorie
+            ':id_user' => $iduser
         ]);
     }
 

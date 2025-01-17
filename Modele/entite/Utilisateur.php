@@ -1,27 +1,35 @@
 <?php
-
 class Utilisateur {
-    public $id_utilisateur;
-    public $nom_utilisateur;
-    public $prenom_utilisateur;
-    public $password_utilisateur;
-    public $email_utilisateur;
-    public $token_utilisateur;
-    public $login_utilisateur;
-    public $type;
-    public $photo_utilisateur;
-    public $verification_email_utilisateur;
+    private $id;
+    private $nom;
+    private $prenom;
+    private $email;
+    private $password;
+    private $token;
+    private $type;
+    private $photo;
+    private $emailVerifie;
 
-    public function __construct($id_utilisateur, $nom_utilisateur, $prenom_utilisateur, $password_utilisateur, $email_utilisateur, $token_utilisateur, $login_utilisateur, $type, $photo_utilisateur, $verification_email_utilisateur) {
-        $this->id_utilisateur = $id_utilisateur;
-        $this->nom_utilisateur = $nom_utilisateur;
-        $this->prenom_utilisateur = $prenom_utilisateur;
-        $this->password_utilisateur = $password_utilisateur;
-        $this->email_utilisateur = $email_utilisateur;
-        $this->token_utilisateur = $token_utilisateur;
-        $this->login_utilisateur = $login_utilisateur;
+    // Constructor
+    public function __construct($id, $nom, $prenom, $email, $password, $token, $type, $photo, $emailVerifie) {
+        $this->id = $id;
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->email = $email;
+        $this->password = $password;
+        $this->token = $token;
         $this->type = $type;
-        $this->photo_utilisateur = $photo_utilisateur;
-        $this->verification_email_utilisateur = $verification_email_utilisateur;
+        $this->photo = $photo;
+        $this->emailVerifie = $emailVerifie;
     }
+
+    // Getters and setters
+    public function getId() { return $this->id; }
+    public function getNom() { return $this->nom; }
+    public function getPrenom() { return $this->prenom; }
+    public function getEmail() { return $this->email; }
+    public function getType() { return $this->type; }
+    public function setNom($nom) { $this->nom = $nom; }
+    public function setPrenom($prenom) { $this->prenom = $prenom; }
+    // Add remaining getters and setters...
 }

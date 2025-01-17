@@ -1,122 +1,64 @@
 <?php
 require_once 'Config/bdd.php'; // Inclut la connexion à la base de données
 require_once 'entite/Utilisateur.php'; // Inclut la classe Utilisateur
+require_once 'entite/tache.php'; // Inclut la classe tache
 
+<?php
+class UtilisateurDao {
+    private $db;
 
-class UtilisateurDAO {
-    private $conn;
-
-    public function __construct(){
-        $database= new Database();
-        $this->conn=$database->getConnection();
+    public function __construct($db) {::::::::::::::::::::::::
+        $this->db = $db;
     }
 
-    // Méthode pour ajouter un utilisateur
-    public function creerCompteUtilisateur($nom, $prenom, $password, $email, $login, $type, $photo, $verificationEmail) {
-        // Vérification des paramètres obligatoires
-        if (empty($nom) || empty($prenom) || empty($password) || empty($email) || empty($login) || empty($type)) {
-            throw new Exception('Tous les champs obligatoires doivent être remplis');
-        }
-    
-        // Validation du format de l'email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Adresse email invalide');
-        }
-    
-        // Vérification si l'email existe déjà dans la base de données
-        $query = "SELECT COUNT(*) FROM utilisateur WHERE email_utilisateur = :email";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([':email' => $email]);
-        if ($stmt->fetchColumn() > 0) {
-            throw new Exception('Cet email est déjà utilisé');
-        }
-    
-        // Génération d'un token unique
-        $token = bin2hex(random_bytes(16)); // 16 bytes = 32 caractères hexadécimaux
-    
-        // Préparation de la requête d'insertion
-        $query = "INSERT INTO utilisateur 
-                    (nom_utilisateur, prenom_utilisateur, password_utilisateur, email_utilisateur, token_utilisateur, 
-                     login_utilisateur, type, photo_utilisateur, verification_email_utilisateur) 
-                    VALUES (:nom, :prenom, :password, :email, :token, :login, :type, :photo, :verificationEmail)";
-        $stmt = $this->conn->prepare($query);
-    
-        // Exécution de la requête avec les paramètres
-        try {
-            $stmt->execute([
-                ':nom' => $nom,
-                ':prenom' => $prenom,
-                ':password' => password_hash($password, PASSWORD_BCRYPT),
-                ':email' => $email,
-                ':token' => $token,
-                ':login' => $login,
-                ':type' => $type,
-                ':photo' => $photo,
-                ':verificationEmail' => $verificationEmail
-            ]);
-        } catch (PDOException $e) {
-            // Gestion des erreurs de la requête
-            throw new Exception('Erreur lors de la création du compte utilisateur: ' . $e->getMessage());
-        }
-    
-        return $token; // Retourne le token généré, si nécessaire (par exemple, pour la vérification de l'email)
-    }
-    
-    // Méthode pour récupérer un utilisateur par ID
-    public function getUtilisateurParId($id) {
-        $query = "SELECT * FROM utilisateur WHERE id_utilisateur = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Méthode pour récupérer un utilisateur par email
-    public function getUtilisateurParEmail($email) {
-        $query = "SELECT * FROM utilisateur WHERE email_utilisateur = :email";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([':email' => $email]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Méthode pour mettre à jour un utilisateur
-    public function mettreAJourUtilisateur($id, $nom, $prenom, $email, $login, $photo, $verificationEmail) {
-        $query = "UPDATE utilisateur 
-                SET nom_utilisateur = :nom, prenom_utilisateur = :prenom, email_utilisateur = :email, 
-                    login_utilisateur = :login, photo_utilisateur = :photo, 
-                    verification_email_utilisateur = :verificationEmail 
-                WHERE id_utilisateur = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([
-            ':id' => $id,
-            ':nom' => $nom,
-            ':prenom' => $prenom,
-            ':email' => $email,
-            ':login' => $login,
-            ':photo' => $photo,
-            ':verificationEmail' => $verificationEmail
+    // 1. Ajouter un utilisateur
+    public function addUser($utilisateur) {
+        $query = $this->db->prepare("
+            INSERT INTO users (nom_user, prenom_user, password_utser, email_user, type)
+            VALUES (:nom, :prenom, :password, :email, :type)
+        ");
+        $query->execute([
+            ':nom' => $utilisateur->getNom(),
+            ':prenom' => $utilisateur->getPrenom(),
+            ':password' => password_hash($utilisateur->getPassword(), PASSWORD_BCRYPT),
+            ':email' => $utilisateur->getEmail(),
+            ':type' => $utilisateur->getType()
         ]);
     }
 
-    // Méthode pour supprimer un utilisateur
-    public function supprimerUtilisateur($id) {
-        $query = "DELETE FROM utilisateur WHERE id_utilisateur = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([':id' => $id]);
+    // 2. Modifier un utilisateur
+    public function updateUser($utilisateur) {
+        $query = $this->db->prepare("
+            UPDATE users
+            SET nom_user = :nom, prenom_user = :prenom, email_user = :email, type = :type
+            WHERE id_user = :id
+        ");
+        $query->execute([
+            ':nom' => $utilisateur->getNom(),
+            ':prenom' => $utilisateur->getPrenom(),
+            ':email' => $utilisateur->getEmail(),
+            ':type' => $utilisateur->getType(),
+            ':id' => $utilisateur->getId()
+        ]);
     }
 
-    // Méthode pour vérifier les informations de connexion d'un utilisateur
-    public function verifierConnexion($email, $password) {
-        $query = "SELECT * FROM utilisateur WHERE email_utilisateur = :email";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([':email' => $email]);
-        $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
+    // 3. Supprimer un utilisateur
+    public function deleteUser($id) {
+        $query = $this->db->prepare("DELETE FROM users WHERE id_user = :id");
+        $query->execute([':id' => $id]);
+    }
 
-        if ($utilisateur && password_verify($password, $utilisateur['password_utilisateur'])) {
-            return $utilisateur;
-        } else {
-            return false;
-        }
+    // 4. Afficher tous les utilisateurs
+    public function getAllUsers() {
+        $query = $this->db->prepare("SELECT * FROM users");
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // 5. Afficher les administrateurs
+    public function getAdmins() {
+        $query = $this->db->prepare("SELECT * FROM users WHERE type = 'Administrateur'");
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
-?>

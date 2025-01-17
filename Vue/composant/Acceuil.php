@@ -1,0 +1,441 @@
+<?php
+$Acceuil="<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>Formulaire Aligné à Droite</title>
+        <style>
+            /*body*/
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #f9f9f9;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+            }
+            label {
+                font-weight: bold;
+            }
+            input, textarea, select {
+                width: 100%;
+                padding: 8px;
+                font-size: 14px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            textarea {
+                resize: vertical;
+            }
+            
+            /*la navbar*/
+            .outline {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+            }
+            .rect {
+                stroke-dashoffset: 5;
+                stroke-dasharray: 0 0 10 40 10 40;
+                transition: 0.5s;
+                stroke: #333;
+            }
+            .nav {
+                position: fixed;
+                width: 400px;
+                height: 60px;
+                top:1%;
+                left: 1%;
+            }
+            .container_nav:hover .outline .rect {
+                transition: 999999s;
+                /* Must specify these values here as something *different* just so that the transition works properly */
+                stroke-dashoffset: 1;
+                stroke-dasharray: 0;
+            }
+            .container_nav {
+                position: absolute;
+                inset: 0;
+                background: #f0f0f0;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                padding: 0.5em;
+            }
+            .btn {
+                padding: 0.5em 1.5em;
+                color: #333;
+                cursor: pointer;
+                transition: 0.1s;
+            }
+            .btn:hover {
+                background:  #e2e2e2;
+            }
+
+            /*Filtre de recherche*/
+            .container_filtre {
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Aligne tous les éléments au centre */
+                margin-top: 20px;
+                position:fixed;
+                top:20%;
+                left:3%;
+                transform: translateX(25%);  /* Pas de décalage initial */
+                opacity: 1; /* Transparent au départ */
+                transition: transform 0.4s ease; /* Transition fluide */
+            }
+            .container_filtre.active{
+                transform: translateX(0); /* Position finale */
+                opacity: 1; /* Complètement opaque */
+            }
+            .container_filtre h2 {
+                display: inline-block; /* Pour garder le titre à côté du bouton */
+                margin-right: 10px; /* Espace entre le titre et le bouton */
+            }
+            .input_filtre {
+                max-width: 190px;
+                background-color: #f5f5f5;
+                color: #242424;
+                padding: .15rem .5rem;
+                min-height: 40px;
+                border-radius: 4px;
+                outline: none;
+                border: none;
+                line-height: 1.15;
+                box-shadow: 0px 10px 20px -18px;
+            }
+            .input_filtre:focus {
+                border-bottom: 2px solid #5b5fc7;
+                border-radius: 4px 4px 2px 2px;
+            }
+            .input_filtre:hover {
+                outline: 1px solid lightgrey;
+            }
+
+            /*button ajouter*/ 
+            .button_add {
+                position: relative;
+                width: 150px;
+                height: 40px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                border: 1px solid #34974d;
+                background-color: #3aa856;
+                margin-left: 10px;
+                }
+            .button_add, .button__icon, .button__text {
+                transition: all 0.3s;
+            }
+            .button_add .button__text {
+                transform: translateX(30px);
+                color: #fff;
+                font-weight: 600;
+            }
+            .button_add .button__icon {
+                position: absolute;
+                transform: translateX(109px);
+                height: 100%;
+                width: 39px;
+                background-color: #34974d;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .button_add .svg {
+                width: 30px;
+                stroke: #fff;
+            }
+            .button_add:hover {
+                background: #34974d;
+            }
+            .button_add:hover .button__text {
+                color: transparent;
+            }
+            .button_add:hover .button__icon {
+                width: 148px;
+                transform: translateX(0);
+            }
+            .button_add:active .button__icon {
+            background-color: #2e8644;
+            }
+            .button_add:active {
+                border: 1px solid #2e8644;
+            }
+
+            /*Liste de tâche*/
+            .divListeTache{
+                position: fixed;
+                top: 45%;
+                left: 15%;
+                /*transform: translate(10%, 0%);  Déplace le div pour le centrer */
+                height:50% ;
+                bottom:3% ;
+                width: 30%; /* Le div prend 40% de la largeur de la page */
+                display: flex;
+                box-sizing: border-box;/*ajoute le padding au elements du scroll*/ 
+                justify-content: center;
+                flex-direction: column;
+                transform: translateX(55%);  /* Pas de décalage initial */
+                opacity: 1; /* Transparent au départ */
+                transition: transform 0.4s ease; /* Transition fluide */
+                overflow-y:scroll; /* Permet de faire défiler le contenu verticalement */
+                /*padding-bottom:500px;
+                padding-top: 410px;   Ajoutez un padding-top pour décaler un peu le contenu */
+            }
+            .divListeTache.active{
+                transform: translateX(0); /* Position finale */
+                opacity: 1; /* Complètement opaque */
+            }
+            .button_liste {
+                display: inline-block;
+                border-radius: 7px;
+                background-color: #3d405b;
+                border: none;
+                color: #FFFFFF;
+                text-align: center;
+                font-size: 17px;
+                padding: 16px;
+                width:95%;
+                transition: all 0.5s;
+                cursor: pointer;
+                margin: 5px;
+            }
+            .button_liste span {
+                cursor: pointer;
+                display: inline-block;
+                position: relative;
+                transition: 0.5s;
+            }
+            .button_liste span:after {
+                content: '»';
+                position: absolute;
+                opacity: 0;
+                top: 0;
+                right: -15px;
+                transition: 0.5s;
+            }
+            .button_liste:hover span {
+                padding-right: 15px;
+            }
+            .button_liste:hover span:after {
+                opacity: 1;
+                right: 0;
+            }
+
+            /*form*/
+            .information {
+                width: 30%;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                display: none; /* Masque le formulaire par défaut */
+                position: fixed;
+                left: 66%;
+                width: 30%;
+                /*right: -100%;  Position initiale hors écran à droite */
+                flex-direction: column;
+                align-items: center; /* Centre les éléments à l'intérieur */
+                transform: translateX(30%);  /* Pas de décalage initial */
+                opacity: 0; /* Transparent au départ */
+                transition: transform 0.4s ease, opacity 0.4s ease; /* Transition fluide */
+            }
+            .information.active{
+                transform: translateX(0); /* Position finale */
+                opacity: 1; /* Complètement opaque */
+            }
+            .information h1 {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .buttons_form {
+                display: flex;
+                justify-content: space-between; /* Aligne les boutons horizontalement */
+                margin-top: 20px;
+            }
+            .buttons_form button {
+                padding: 10px 20px;
+                font-size: 14px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .buttons_form .add {
+                background-color: #007BFF;
+                color: white;
+            }
+            .buttons_form .add:hover {
+                background-color: #0056b3;
+            }
+            .buttons_form .cancel {
+                background-color: #6c757d;
+                color: white;
+            }
+            .buttons_form .cancel:hover {
+                background-color: #5a6268;
+            }
+            .buttons_form .delete {
+                background-color: #dc3545;
+                color: white;
+            }
+            .buttons_form .delete:hover {
+                background-color: #c82333;
+            }
+        </style>
+    </head>
+    <body>
+        <!--La navbar-->
+        <div class='nav'>
+            <div class='container_nav'>
+            <div class='btn'>To-Do List</div>
+            <div class='btn'>Profil</div>
+            <svg class='outline' overflow='visible' width='400' height='60' viewBox='0 0 400 60' xmlns='http://www.w3.org/2000/svg'>
+                <rect class='rect' pathLength='100' x='0' y='0' width='400' height='60' fill='transparent' stroke-width='5'></rect>
+            </svg>
+            </div>
+        </div>
+
+        <!--Le filtre de recherche-->
+        <div class='container_filtre'>
+            <div style=' display: flex;align-items: center;'>
+                <h2 style='text-align: center'>Liste de tâche</h2>
+                
+                <button class='button_add' id='button_add' type='button'>
+                    <span class='button__text'>Tâche</span>
+                    <span class='button__icon'><svg class='svg' fill='none' height='24' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><line x1='12' x2='12' y1='5' y2='19'></line><line x1='5' x2='19' y1='12' y2='12'></line></svg></span>
+                </button>
+            </div>
+            <div style=' display: flex;align-items: center;'>
+                <input class='input_filtre' name='text' placeholder='Titre...' type='search'>
+                <input class='input_filtre' name='text' placeholder='statut...' type='search'>
+                <input class='input_filtre' name='text' placeholder='Priorite...' type='search'>
+                <input class='input_filtre' name='text' placeholder='Assigne...' type='search'>
+            </div>
+        </div>
+
+        <!--La liste de tâche-->
+        <div class=divListeTache>
+            $listeTache
+        </div>
+
+        <!--Le formulaire-->
+        <div class='information' id='taskForm'>
+            <h1>Information</h1>
+            <form action='../../controlleur/FormTacheController.php' method='POST'>
+                <label for='titre'>Titre :</label>
+                <input id='titre' required type='text' name='titre'>
+
+                <label for='description'>Description :</label>
+                <textarea id='description' required name='description' placeholder='Écrivez votre description ici...'></textarea>
+
+                <label for='date'>Date limite :</label>
+                <input id='date' required type='date' name='date'>
+
+                <label for='statut'>Statut :</label>
+                <select id='statut' name='statut' required>
+                    <option value='' disabled selected>-- Sélectionnez une option --</option>
+                    <option value='En Cours'>En Cours</option>
+                    <option value='En Attente'>En Attente</option>
+                    <option value='Termine'>Terminé</option>
+                </select>
+
+                <label for='priorite'>Priorité :</label>
+                <select id='priorite' name='priorite' required>
+                    <option value='' disabled selected>-- Sélectionnez une option --</option>
+                    <option value='Important'>Important</option>
+                    <option value='Moyen'>Moyen</option>
+                    <option value='Faible'>Faible</option>
+                </select>
+
+                <label >Assigné :</label>
+                <input  required type='search' name='assigne' list='assigne-list' placeholder='Entrez un nom...'>
+                <datalist id='assigne-list'>
+                    <!-- Ces options sont générées dynamiquement par le serveur -->
+                    $listeUser
+                </datalist>
+
+                <label >Categorie :</label>
+                <input  required type='search' name='categorie' list='categorie-list' placeholder='Entrez une categorie...'>
+                <datalist id='categorie-list'>
+                    <!-- Ces options sont générées dynamiquement par le serveur -->
+                    <option value='Personnel'></option>
+                    <option value='Au travail'></option>
+                </datalist>
+
+                <div class='buttons_form'>
+                    <button type='submit' class='add'>Ajouter</button>
+                    <button type='button' class='cancel' onclick='window.location.href='/home';'>Annuler</button>
+                    <button type='button' class='delete' onclick='deleteTache();'>Supprimer</button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            function deleteTache() {
+                // Exemple de requête fetch pour appeler un contrôleur
+                fetch('/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: '12345' }) // Exemple de données envoyées
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Élément supprimé avec succès !');
+                        window.location.href = '/home'; // Redirection après suppression
+                    } else {
+                        alert('Erreur lors de la suppression.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue.');
+                });
+            }
+        </script>
+        <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const buttons = document.querySelectorAll('.button_add'); // Bouton
+                const form = document.getElementById('taskForm'); // Formulaire
+                const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
+                const container_filtre=document.querySelector('.container_filtre');//div des filtre
+
+                buttons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        if (!form.classList.contains('active')) {
+                            form.style.display = 'flex'; // Rendre le formulaire visible pour la transition 
+                            setTimeout(() => {
+                                form.classList.add('active');
+                                taskListDiv.classList.add('active');
+                                container_filtre.classList.add('active');
+                            }, 10);
+                        } else {
+                            form.classList.remove('active');
+                            taskListDiv.classList.remove('active');
+                            container_filtre.classList.remove('active');
+                            setTimeout(() => {
+                                form.style.display = 'none'; // Masquer complètement après l'animation
+                            }, 400); // Délai correspondant à la durée de la transition
+                        }
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>
+";
+?>

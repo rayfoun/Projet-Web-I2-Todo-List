@@ -8,8 +8,7 @@ class ControllerAccueil extends DefaultControlller{
         $userName = "nom"; // Exemple d'utilisateur
 
         // Préparer les composants à inclure
-        $navbar = $this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
-        $filtreTache = $this->renderComponent(__DIR__."/../Vue/composant/filtreTache.php");
+        $listeUser = $this->renderComponent(__DIR__."/../Vue/composant/filtreTache.php");
         $listeTache = $this->renderComponent(__DIR__."/../Vue/composant/listeTache.php");
 
         //gerer le theme
@@ -18,8 +17,7 @@ class ControllerAccueil extends DefaultControlller{
         $this->renderView(
             __DIR__."/../Vue/template/accueil.php",
             [
-               'navbar' => $navbar,
-                'filtreTache' => $filtreTache,
+                'listeUser' => $listeUser,
                 'listeTache' => $listeTache,
                 'themeCSS' => $themeCSS,
             ]

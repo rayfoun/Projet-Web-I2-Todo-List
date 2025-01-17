@@ -1,43 +1,72 @@
 <?php
-
 class Tache {
-    public $id_tache;
-    public $libelle_tache;
-    public $descriptif_tache;
-    public $date_creation;
-    public $date_echeance;
-    public $heure_creation;
-    public $heure_echeance;
-    public $statut_tache;
-    public $priorite_tache;
-    public $id_user;
-    public $categorie;
+    private $id;
+    private $libelle;
+    private $descriptif;
+    private $dateCreation;
+    private $dateEcheance;
+    private $heureCreation;
+    private $heureEcheance;
+    private $statut;
+    private $priorite;
+    private $categorie;
+    private $utilisateur; // Objet Utilisateur
 
     public function __construct(
-        $id_tache,
-        $libelle_tache,
-        $descriptif_tache,
-        $date_creation,
-        $date_echeance,
-        $heure_creation,
-        $heure_echeance,
-        $statut_tache,
-        $priorite_tache,
+        $id,
+        $libelle,
+        $descriptif,
+        $dateCreation,
+        $dateEcheance,
+        $heureCreation,
+        $heureEcheance,
+        $statut,
+        $priorite,
         $categorie,
-        $id_user
+        $utilisateur
     ) {
-        $this->id_tache = $id_tache;
-        $this->libelle_tache = $libelle_tache;
-        $this->descriptif_tache = $descriptif_tache;
-        $this->date_creation = $date_creation;
-        $this->date_echeance = $date_echeance;
-        $this->heure_creation = $heure_creation;
-        $this->heure_echeance = $heure_echeance;
-        $this->statut_tache = $statut_tache;
-        $this->priorite_tache = $priorite_tache;
-        $this->categorie= $categorie;
-        $this->id_user = $id_user;
+        $this->id = $id;
+        $this->libelle = $libelle;
+        $this->descriptif = $descriptif;
+        $this->dateCreation = $dateCreation;
+        $this->dateEcheance = $dateEcheance;
+        $this->heureCreation = $heureCreation;
+        $this->heureEcheance = $heureEcheance;
+        $this->statut = $statut;
+        $this->priorite = $priorite;
+        $this->categorie = $categorie;
+        $this->utilisateur = $utilisateur;
     }
+
+    // Getters et setters
+    public function getUtilisateur() {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur($utilisateur) {
+        $this->utilisateur = $utilisateur;
+    }
+
+    public function getId() { 
+        return $this->id; 
+    }
+
+    public function getLibelle() { 
+        return $this->libelle; 
+    }
+    // Autres getters et setters pour les champs restants...
+    // Création d'un utilisateur.
+// L'instance $utilisateur représente un utilisateur avec le nom "Dupont" et le prénom "Jean".
+$utilisateur = new Utilisateur("Dupont", "Jean");
+
+// Création d'une tâche associée à l'utilisateur.
+// L'instance $tache représente une tâche avec le libellé "Préparer la réunion" et l'utilisateur $utilisateur.
+$tache = new Tache("Préparer la réunion", $utilisateur);
+
+// Affichage des informations de la tâche et de son utilisateur associé.
+// Affiche le libellé de la tâche.
+echo "Tâche : " . $tache->getLibelle() . "\n";
+
+// Affiche le nom complet de l'utilisateur qui a créé ou est assigné à cette tâche.
+echo "Créée par : " . $tache->getUtilisateur()->getNomComplet() . "\n";
 }
-// creer une instance de la table user
-?>

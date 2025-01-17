@@ -3,85 +3,117 @@
 require_once 'config/bdd.php'; // Inclut la connexion à la base de données
 require_once 'entite/tache.php'; // Inclut la classe Tache
 
-class TacheDAO {
-    private $conn;
+class TacheDao {
+    private $db;
+    private $utilisateurDao;
 
-    public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+    public function __construct($db, $utilisateurDao) {
+        $this->db = $db;
+        $this->utilisateurDao = $utilisateurDao;
     }
 
-    // Méthode pour créer une tâche
-    public function creerTache($libelle, $descriptif, $dateCreation, $dateEcheance, $heureCreation, $heureEcheance,$categorie, $statut, $priorite, $iduser) {
-        $query = "INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, categorie, statut_tache, priorite_tache, id_user) 
-                  VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance,:categorie, :statut, :priorite, :iduser)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([
-            ':libelle' => $libelle,
-            ':descriptif' => $descriptif,
-            ':dateCreation' => $dateCreation,
-            ':dateEcheance' => $dateEcheance,
-            ':heureCreation' => $heureCreation,
-            ':heureEcheance' => $heureEcheance,
-            ':statut' => $statut,
-            ':priorite' => $priorite,
-            ':id_user' => $iduser
+    // 1. Ajouter une tâche
+    public function addTask($tache) {
+        $query = $this->db->prepare("
+            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
+            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
+        ");
+        $query->execute([
+            ':libelle' => $tache->getLibelle(),
+            ':descriptif' => $tache->getDescriptif(),
+            ':dateCreation' => $tache->getDateCreation(),
+            ':dateEcheance' => $tache->getDateEcheance(),
+            ':heureCreation' => $tache->getHeureCreation(),
+            ':heureEcheance' => $tache->getHeureEcheance(),
+            ':statut' => $tache->getStatut(),
+            ':priorite' => $tache->getPriorite(),
+            ':categorie' => $tache->getCategorie(),
+            ':idUser' => $tache->getUtilisateur()->getId() // Utilise l'ID de l'utilisateur
         ]);
     }
 
-    // Méthode pour modifier une tâche
-    public function modifierTache($id, $libelle, $descriptif, $dateEcheance, $heureEcheance, $statut, $priorite, $idCategorie) {
-        $query = "UPDATE tache 
-                  SET libelle_tache = :libelle, descriptif_tache = :descriptif, date_echeance = :dateEcheance, 
-                      heure_echeance = :heureEcheance, statut_tache = :statut, priorite_tache = :priorite, id_categorie = :idCategorie 
-                  WHERE id_tache = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([
-            ':id' => $id,
-            ':libelle' => $libelle,
-            ':descriptif' => $descriptif,
-            ':dateEcheance' => $dateEcheance,
-            ':heureEcheance' => $heureEcheance,
-            ':statut' => $statut,
-            ':priorite' => $priorite,
-            ':idCategorie' => $idCategorie
+    // 2. Modifier une tâche
+    public function updateTask($tache) {
+        $query = $this->db->prepare("
+            UPDATE tache
+            SET libelle_tache = :libelle, descriptif_tache = :descriptif, date_echeance = :dateEcheance, 
+                heure_echeance = :heureEcheance, statut_tache = :statut, priorite_tache = :priorite, categorie = :categorie
+            WHERE id_tache = :id
+        ");
+        $query->execute([
+            ':libelle' => $tache->getLibelle(),
+            ':descriptif' => $tache->getDescriptif(),
+            ':dateEcheance' => $tache->getDateEcheance(),
+            ':heureEcheance' => $tache->getHeureEcheance(),
+            ':statut' => $tache->getStatut(),
+            ':priorite' => $tache->getPriorite(),
+            ':categorie' => $tache->getCategorie(),
+            ':id' => $tache->getId()
         ]);
     }
 
-    // Méthode pour supprimer une tâche
-    public function supprimerTache($id) {
-        $query = "DELETE FROM tache WHERE id_tache = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([':id' => $id]);
+    // 3. Supprimer une tâche
+    public function deleteTask($id) {
+        $query = $this->db->prepare("DELETE FROM tache WHERE id_tache = :id");
+        $query->execute([':id' => $id]);
     }
 
-    // Méthode pour changer le statut d'une tâche
-    public function changerStatutTache($id, $nouveauStatut) {
-        $query = "UPDATE tache SET statut_tache = :statut WHERE id_tache = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([
-            ':id' => $id,
-            ':statut' => $nouveauStatut
+    // 4. Consulter une tâche par ID
+    public function getTaskById($id) {
+        $query = $this->db->prepare("
+            SELECT t.*, u.id_user, u.nom_user, u.prenom_user, u.email_user, u.type
+            FROM tache t
+            JOIN users u ON t.id_user = u.id_user
+            WHERE t.id_tache = :id
+        ");
+        $query->execute([':id' => $id]);
+        $row = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $utilisateur = new Utilisateur(
+                $row['id_user'],
+                $row['nom_user'],
+                $row['prenom_user'],
+                $row['email_user'],
+                null,
+                null,
+                $row['type'],
+                null,
+                null
+            );
+
+            return new Tache(
+                $row['id_tache'],
+                $row['libelle_tache'],
+                $row['descriptif_tache'],
+                $row['date_creation'],
+                $row['date_echeance'],
+                $row['heure_creation'],
+                $row['heure_echeance'],
+                $row['statut_tache'],
+                $row['priorite_tache'],
+                $row['categorie'],
+                $utilisateur
+            );
+        }
+        return null;
+    }
+
+    // 5. Assigner une tâche à un utilisateur
+    public function assignTaskToUser($taskId, $userId) {
+        $query = $this->db->prepare("UPDATE tache SET id_user = :userId WHERE id_tache = :taskId");
+        $query->execute([
+            ':userId' => $userId,
+            ':taskId' => $taskId
         ]);
     }
 
-    // Méthode pour assigner une tâche à une catégorie (ou utilisateur)
-    public function assignerTache($idTache, $idCategorie) {
-        $query = "UPDATE tache SET id_categorie = :idCategorie WHERE id_tache = :idTache";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([
-            ':idTache' => $idTache,
-            ':idCategorie' => $idCategorie
+    // 6. Modifier le statut d'une tâche
+    public function updateTaskStatus($taskId, $status) {
+        $query = $this->db->prepare("UPDATE tache SET statut_tache = :status WHERE id_tache = :taskId");
+        $query->execute([
+            ':status' => $status,
+            ':taskId' => $taskId
         ]);
-    }
-
-    // Méthode pour consulter une tâche par ID
-    public function consulterTache($id) {
-        $query = "SELECT * FROM tache WHERE id_tache = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetchObject('Tache');
     }
 }
-
-?>

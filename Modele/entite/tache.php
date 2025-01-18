@@ -38,90 +38,29 @@ class Tache {
         $this->utilisateur = $utilisateur;
     }
 
-    // Getters et setters
-    public function getUtilisateur() {
-        return $this->utilisateur;
-    }
+    // Getters
+    public function getId() { return $this->id; }
+    public function getLibelle() { return $this->libelle; }
+    public function getDescriptif() { return $this->descriptif; }
+    public function getDateCreation() { return $this->dateCreation; }
+    public function getDateEcheance() { return $this->dateEcheance; }
+    public function getHeureCreation() { return $this->heureCreation; }
+    public function getHeureEcheance() { return $this->heureEcheance; }
+    public function getStatut() { return $this->statut; }
+    public function getPriorite() { return $this->priorite; }
+    public function getCategorie() { return $this->categorie; }
+    public function getUtilisateur() { return $this->utilisateur; }
 
-    public function setUtilisateur($utilisateur) {
-        $this->utilisateur = $utilisateur;
-    }
-
-    public function getId() { 
-        return $this->id; 
-    }
-
-    public function getLibelle() { 
-        return $this->libelle; 
-    }
-
-    public function setLibelle($libelle){
-        $this->libelle=$libelle;
-    }
-
-    public function getDescriptif(){
-        return $this->descriptif;
-    }
-
-    public function setDescriptif($descriptif){
-        $this->descriptif= $descriptif;
-    }
-
-    public function getDateCreation(){
-        return $this->$dateCreation;
-    }
-
-    public function setDateCreation($dateCreation){
-        $this->dateCreation=$dateCreation;
-    }
-
-    public function getDateEcheance(){
-        return $this->$dateEcheance;
-    }
-
-    public function setDateEcheance($dateEcheance){
-        $this->dateEcheance=$dateEcheance;
-    }
-
-    public function getHeureCreation(){
-        return $this->$heureCreation;
-    }
-
-    public function setHeureCreation($heureCreation){
-        $this->heureCreation=$heureCreation;
-    }
-
-    public function getHeureEcheance(){
-        return $this->$heureEcheance;
-    }
-
-    public function setHeureEcheance($heureEcheance){
-        $this->heureEcheance=$heureEcheance;
-    }                         
-
-    public function getStatut(){
-        return $this->$statut;
-    }
-
-    public function setStatut($statut){
-        $this->statut=$statut;
-    }
-
-    public function getPriorite(){
-        return $this->$priorite;
-    }
-
-    public function setPriorite($priorite){
-        $this->priorite=$priorite;
-    }
-
-    public function getCategorie(){
-        return $this->$categorie;
-    }
-
-    public function setCategorie($categorie){
-        $this->categorie=$categorie;
-    }
-
+    // Setters
+    public function setUtilisateur($utilisateur) { $this->utilisateur = $utilisateur; }
+    public function setLibelle($libelle) { $this->libelle = $libelle; }
+    public function setDescriptif($descriptif) { $this->descriptif = $descriptif; }
+    public function setDateCreation($dateCreation) { $this->dateCreation = $dateCreation; }
+    public function setDateEcheance($dateEcheance) { $this->dateEcheance = $dateEcheance; }
+    public function setHeureCreation($heureCreation) { $this->heureCreation = $heureCreation; }
+    public function setHeureEcheance($heureEcheance) { $this->heureEcheance = $heureEcheance; }
+    public function setStatut($statut) { $this->statut = $statut; }
+    public function setPriorite($priorite) { $this->priorite = $priorite; }
+    public function setCategorie($categorie) { $this->categorie = $categorie; }
 }
 ?>

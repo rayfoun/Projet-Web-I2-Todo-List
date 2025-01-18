@@ -7,7 +7,7 @@ require_once 'entite/tache.php'; // Inclut la classe tache
 class UtilisateurDao {
     private $db;
 
-    public function __construct($db) {::::::::::::::::::::::::
+    public function __construct($db) {
         $this->db = $db;
     }
 

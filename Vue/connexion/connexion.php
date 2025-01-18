@@ -2,7 +2,7 @@
     <head>
     <title>Projetweb/To-Do List/connexion</title>
     <script>
-        history.replaceState(null, '', 'Projetweb/To-Do List/connexion');
+        //history.replaceState(null, '', 'Projetweb/To-Do List/connexion');
     </script>
      <!-- Lien vers le fichier CSS -->
     <!--<link rel="stylesheet" type="text/css" href="connexionCSS.php"> -->
@@ -145,7 +145,7 @@
             <div class="form-container">
                 <p class="title"><h1>To-Do List</h1></p>
                 <p class="title">Connexion</p>
-                <form class="form" id="formlogin" action="routeur.php?action=traiterAuthentification" method="POST">
+                <form class="form" id="formlogin" action="routeur.php/?action=traiterAuthentification" method="POST">
                     <div class="input-group">
                         <label for="email">Identifiant</label>
                         <input type="text" name="email" id="email" placeholder="">

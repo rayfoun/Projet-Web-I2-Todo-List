@@ -1,7 +1,11 @@
 <?php
+    session_start();
     require_once __DIR__.'/DefaultController.php';
+    require_once '/Config/bdd.php';
 
     class ControllerConnexion extends DefaultController{
+
+        private $db;
         
         function affichePageConnexion(){
             #$cssfile = $this->renderComponent(__DIR__."/../Vue/connexion/connexionCSS.php");
@@ -16,7 +20,7 @@
             $email = $_POST["email"];
             $password = $_POST["password"];
     
-            $textR = "SELECT password, type";
+            $textR = "select password, type";
             $textR.= "from users";
             $textR.= "where email_user=:email";
             $req = $pdo->prepare($textR);

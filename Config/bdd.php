@@ -2,11 +2,14 @@
 class Database {
     private $conn; // Instance de connexion PDO
 
-    // Méthode pour établir une connexion à la base de données
-    public function getConnection() {
-        try {
-            // Création de la connexion avec PDO
-            $this->conn = new PDO('mysql:host=localhost;dbname=to-dolist', 'root', '');
+
+
+        // Méthode pour établir une connexion à la base de données
+        public function getConnection() {
+            try {
+                // Création de la connexion avec PDO
+                $this->conn = new PDO('mysql:host=localhost;dbname=to-do list', 'root', '');
+
 
             // Configuration des options PDO
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

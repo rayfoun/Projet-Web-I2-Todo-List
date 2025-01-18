@@ -1,7 +1,7 @@
 <?php
     // Exemple d'appel dans index.php
-    require_once '../controlleur/AfficheAccueil.php';
+    require_once '../controlleur/ModifTache.php';
 
-    $controller = new ControllerAccueil();
-    $controller->afficheAccueil();
+    $controller = new ControllerModifTache();
+    $controller->afficheForm();
 ?>

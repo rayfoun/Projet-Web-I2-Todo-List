@@ -56,10 +56,75 @@ class Tache {
     public function getLibelle() { 
         return $this->libelle; 
     }
-    
-    public function setLibelle($lib){
-        $this->libelle=$lib;
+
+    public function setLibelle($libelle){
+        $this->libelle=$libelle;
     }
+
+    public function getDescriptif(){
+        return $this->descriptif;
+    }
+
+    public function setDescriptif($descriptif){
+        $this->descriptif= $descriptif;
+    }
+
+    public function getDateCreation(){
+        return $this->$dateCreation;
+    }
+
+    public function setDateCreation($dateCreation){
+        $this->dateCreation=$dateCreation;
+    }
+
+    public function getDateEcheance(){
+        return $this->$dateEcheance;
+    }
+
+    public function setDateEcheance($dateEcheance){
+        $this->dateEcheance=$dateEcheance;
+    }
+
+    public function getHeureCreation(){
+        return $this->$heureCreation;
+    }
+
+    public function setHeureCreation($heureCreation){
+        $this->heureCreation=$heureCreation;
+    }
+
+    public function getHeureEcheance(){
+        return $this->$heureEcheance;
+    }
+
+    public function setHeureEcheance($heureEcheance){
+        $this->heureEcheance=$heureEcheance;
+    }                         
+
+    public function getStatut(){
+        return $this->$statut;
+    }
+
+    public function setStatut($statut){
+        $this->statut=$statut;
+    }
+
+    public function getPriorite(){
+        return $this->$priorite;
+    }
+
+    public function setPriorite($priorite){
+        $this->priorite=$priorite;
+    }
+
+    public function getCategorie(){
+        return $this->$categorie;
+    }
+
+    public function setCategorie($categorie){
+        $this->categorie=$categorie;
+    }
+
     // Autres getters et setters pour les champs restants...
     // Création d'un utilisateur.
 // L'instance $utilisateur représente un utilisateur avec le nom "Dupont" et le prénom "Jean".

@@ -38,35 +38,29 @@ class Tache {
         $this->utilisateur = $utilisateur;
     }
 
-    // Getters et setters
-    public function getUtilisateur() {
-        return $this->utilisateur;
-    }
+    // Getters
+    public function getId() { return $this->id; }
+    public function getLibelle() { return $this->libelle; }
+    public function getDescriptif() { return $this->descriptif; }
+    public function getDateCreation() { return $this->dateCreation; }
+    public function getDateEcheance() { return $this->dateEcheance; }
+    public function getHeureCreation() { return $this->heureCreation; }
+    public function getHeureEcheance() { return $this->heureEcheance; }
+    public function getStatut() { return $this->statut; }
+    public function getPriorite() { return $this->priorite; }
+    public function getCategorie() { return $this->categorie; }
+    public function getUtilisateur() { return $this->utilisateur; }
 
-    public function setUtilisateur($utilisateur) {
-        $this->utilisateur = $utilisateur;
-    }
-
-    public function getId() { 
-        return $this->id; 
-    }
-
-    public function getLibelle() { 
-        return $this->libelle; 
-    }
-    // Autres getters et setters pour les champs restants...
-    // Création d'un utilisateur.
-// L'instance $utilisateur représente un utilisateur avec le nom "Dupont" et le prénom "Jean".
-$utilisateur = new Utilisateur("Dupont", "Jean");
-
-// Création d'une tâche associée à l'utilisateur.
-// L'instance $tache représente une tâche avec le libellé "Préparer la réunion" et l'utilisateur $utilisateur.
-$tache = new Tache("Préparer la réunion", $utilisateur);
-
-// Affichage des informations de la tâche et de son utilisateur associé.
-// Affiche le libellé de la tâche.
-echo "Tâche : " . $tache->getLibelle() . "\n";
-
-// Affiche le nom complet de l'utilisateur qui a créé ou est assigné à cette tâche.
-echo "Créée par : " . $tache->getUtilisateur()->getNomComplet() . "\n";
+    // Setters
+    public function setLibelle($libelle) { $this->libelle = $libelle; }
+    public function setDescriptif($descriptif) { $this->descriptif = $descriptif; }
+    public function setDateCreation($dateCreation) { $this->dateCreation = $dateCreation; }
+    public function setDateEcheance($dateEcheance) { $this->dateEcheance = $dateEcheance; }
+    public function setHeureCreation($heureCreation) { $this->heureCreation = $heureCreation; }
+    public function setHeureEcheance($heureEcheance) { $this->heureEcheance = $heureEcheance; }
+    public function setStatut($statut) { $this->statut = $statut; }
+    public function setPriorite($priorite) { $this->priorite = $priorite; }
+    public function setCategorie($categorie) { $this->categorie = $categorie; }
+    public function setUtilisateur($utilisateur) { $this->utilisateur = $utilisateur; }
 }
+?>

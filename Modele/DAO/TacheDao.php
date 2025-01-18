@@ -1,7 +1,7 @@
 <?php
-
-require_once 'config/bdd.php'; // Inclut la connexion à la base de données
-require_once 'entite/tache.php'; // Inclut la classe Tache
+require_once __DIR__ . '/../../Config/bdd.php';
+require_once __DIR__ . '/../entite/Utilisateur.php';
+require_once __DIR__ . '/../entite/tache.php'; // Inclut la classe tache
 
 class TacheDao {
     private $db;
@@ -18,6 +18,9 @@ class TacheDao {
             INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
             VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
         ");
+
+        $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
+
         $query->execute([
             ':libelle' => $tache->getLibelle(),
             ':descriptif' => $tache->getDescriptif(),
@@ -28,7 +31,8 @@ class TacheDao {
             ':statut' => $tache->getStatut(),
             ':priorite' => $tache->getPriorite(),
             ':categorie' => $tache->getCategorie(),
-            ':idUser' => $tache->getUtilisateur()->getId() // Utilise l'ID de l'utilisateur
+
+            ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
         ]);
     }
 
@@ -116,4 +120,47 @@ class TacheDao {
             ':taskId' => $taskId
         ]);
     }
+
+
+
+    public function getTasksByUserId($userId) {
+    $query = $this->db->prepare("
+        SELECT t.*
+        FROM tache t
+        WHERE t.id_user = :userId
+    ");
+    
+    $query->execute([':userId' => $userId]);
+    $rows = $query->fetchAll(PDO::FETCH_ASSOC); // Récupère toutes les tâches
+
+    if (!$rows) {
+        return []; // Aucune tâche trouvée
+    }
+
+    // Tableau pour stocker les tâches
+    $taches = [];
+
+    // Parcours chaque ligne et transforme en un tableau associatif
+    foreach ($rows as $row) {
+        $taches[] = [
+            'id_tache' => $row['id_tache'],
+            'libelle_tache' => $row['libelle_tache'],
+            'descriptif_tache' => $row['descriptif_tache'],
+            'date_creation' => $row['date_creation'],
+            'date_echeance' => $row['date_echeance'],
+            'heure_creation' => $row['heure_creation'],
+            'heure_echeance' => $row['heure_echeance'],
+            'statut_tache' => $row['statut_tache'],
+            'priorite_tache' => $row['priorite_tache'],
+            'categorie' => $row['categorie'],
+            'id_user' => $row['id_user'],
+        ];
+    }
+
+    return $taches;
+}
+
+    
+    
+    
 }

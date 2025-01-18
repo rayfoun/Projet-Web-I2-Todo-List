@@ -31,5 +31,9 @@ class Utilisateur {
     public function getType() { return $this->type; }
     public function setNom($nom) { $this->nom = $nom; }
     public function setPrenom($prenom) { $this->prenom = $prenom; }
+    public function getPassword() {
+        return $this->password;
+    }
+    
     // Add remaining getters and setters...
 }

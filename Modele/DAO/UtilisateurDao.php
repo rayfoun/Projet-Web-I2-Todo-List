@@ -1,13 +1,13 @@
 <?php
-require_once 'Config/bdd.php'; // Inclut la connexion à la base de données
-require_once 'entite/Utilisateur.php'; // Inclut la classe Utilisateur
-require_once 'entite/tache.php'; // Inclut la classe tache
+require_once __DIR__ . '/../../Config/bdd.php';
+require_once __DIR__ . '/../entite/Utilisateur.php';
+require_once __DIR__ . '/../entite/tache.php'; // Inclut la classe tache
 
-<?php
+//<?php
 class UtilisateurDao {
     private $db;
 
-    public function __construct($db) {::::::::::::::::::::::::
+    public function __construct($db) {
         $this->db = $db;
     }
 

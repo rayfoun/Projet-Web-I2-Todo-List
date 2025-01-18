@@ -123,19 +123,4 @@ class Tache {
         $this->categorie=$categorie;
     }
 
-    // Autres getters et setters pour les champs restants...
-    // Création d'un utilisateur.
-// L'instance $utilisateur représente un utilisateur avec le nom "Dupont" et le prénom "Jean".
-$utilisateur = new Utilisateur("Dupont", "Jean");
-
-// Création d'une tâche associée à l'utilisateur.
-// L'instance $tache représente une tâche avec le libellé "Préparer la réunion" et l'utilisateur $utilisateur.
-$tache = new Tache("Préparer la réunion", $utilisateur);
-
-// Affichage des informations de la tâche et de son utilisateur associé.
-// Affiche le libellé de la tâche.
-echo "Tâche : " . $tache->getLibelle() . "\n";
-
-// Affiche le nom complet de l'utilisateur qui a créé ou est assigné à cette tâche.
-echo "Créée par : " . $tache->getUtilisateur()->getNomComplet() . "\n";
 }

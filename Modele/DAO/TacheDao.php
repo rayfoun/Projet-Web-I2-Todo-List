@@ -116,4 +116,23 @@ class TacheDao {
             ':taskId' => $taskId
         ]);
     }
+
+    // Rayan
+    // Récupération de la liste des tâches d'un utilisateur
+    public function getAllTasks() {
+        $query = $this->db->prepare("SELECT * FROM tache");
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        $tasks = [];
+
+        foreach ($results as $row){
+            $tasks[] = new Task(
+                $row['id'],
+                $row['libelle'],
+                $row['descriptif'],
+                $row['dateCreation']
+        }
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

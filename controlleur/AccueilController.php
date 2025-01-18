@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__.'/DefaultController.php';
 
-class ControllerAccueil extends DefaultControlller{
+class ControllerAccueil extends DefaultController{
     
     function afficheAccueil(){
         // Récupérer le nom

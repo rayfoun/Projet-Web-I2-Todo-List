@@ -1,5 +1,5 @@
 <?php
-Class DefaultControlller{
+Class DefaultController{
 
     protected function renderComponent($file) {
         ob_start(); // Démarrer la capture de sortie

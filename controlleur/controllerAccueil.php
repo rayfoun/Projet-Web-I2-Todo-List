@@ -27,15 +27,24 @@ class ControllerAccueil extends DefaultController {
         $listeTaches = $tacheDAO->getAllTask();
         //transformer la liste en liste de titre
         // Créer une nouvelle liste contenant uniquement les titres
-        $listeTitre = array_map(function($tache) {
-            return $tache->getLibelle(); 
+         //cocher ou pas cocher
+         function check($tache) {
+            return ($tache->getStatut() == "Terminee") ? "checked=''" : "";
+        }
+        $listeTachesCheck = array_map(function($tache) {
+            return [
+                'libelle' => $tache->getLibelle(),
+                'check' => check($tache)
+            ];
         }, $listeTaches);
+
         //formater pour affiche
         $listeTache="";
         $id=1;
-        foreach($listeTitre as $tache){
+       
+        foreach($listeTachesCheck as $tache){
              $listeTache.="<div class='checkbox-wrapper'>
-                                <input checked='' type='checkbox' class='check' id='check$id-61'>
+                                <input {$tache['check']} type='checkbox' class='check' id='check$id-61'>
                                 <label for='check$id-61' class='label'>
                                     <svg width='45' height='45' viewBox='0 0 95 95'>
                                         <rect x='30' y='20' width='50' height='50' stroke='black' fill='none'></rect>
@@ -44,7 +53,7 @@ class ControllerAccueil extends DefaultController {
                                         </g>
                                     </svg>
                                 </label>
-                                <button class='button_liste'><span>$tache</span></button>
+                                <button class='button_liste'><span>{$tache['libelle']}</span></button>
                             </div>";
             $id=$id+1;
         }

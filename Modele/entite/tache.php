@@ -42,7 +42,6 @@ class Tache {
     public function getUtilisateur() {
         return $this->utilisateur;
     }
-
     public function setUtilisateur($utilisateur) {
         $this->utilisateur = $utilisateur;
     }
@@ -50,9 +49,16 @@ class Tache {
     public function getId() { 
         return $this->id; 
     }
+    public function setId($id){
+        $this->id=$id;
+    }
 
     public function getLibelle() { 
         return $this->libelle; 
+    }
+    
+    public function setLibelle($lib){
+        $this->libelle=$lib;
     }
     // Autres getters et setters pour les champs restants...
     // Création d'un utilisateur.

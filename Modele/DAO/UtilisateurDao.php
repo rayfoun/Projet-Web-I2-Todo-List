@@ -99,14 +99,14 @@ class UtilisateurDao {
     }
 
     //
-    public function getUserIdByName($name){
-        $query=$this->db->prepare("SELECT id_user from users where nom_user=:nom");
+    public function getUserByName($name){
+        $query=$this->db->prepare("SELECT from users where nom_user=:nom");
         $query->execute([':nom'=>$name]);
         // Récupérer le résultat
         $result = $query->fetch(PDO::FETCH_ASSOC);
 
         // Vérifier si un résultat existe
-        return $result ? $result['id_user'] : null;
+        return $result ? $result: null;
     }
 }
 ?>

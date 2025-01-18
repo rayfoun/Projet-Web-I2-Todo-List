@@ -6,18 +6,20 @@
         public function getConnection() {
             try {
                 // Création de la connexion avec PDO
-                $this->conn = new PDO('mysql:host=localhost;dbname=to-dolist', 'root', '');
+                $this->conn = new PDO('mysql:host=localhost;dbname=to-do list', 'root', '');
 
                 // Configuration des options PDO
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
                 // Retourne la connexion si elle réussit
-                echo "Connexion réussie à la base de données.<br>";
+                $message ="Connexion réussie à la base de données";
+                echo "<script type='text/javascript'>alert('$message');</script>";
                 return $this->conn;
             } catch (PDOException $e) {
                 // Gestion des erreurs de connexion
-                echo "Erreur de connexion : " . $e->getMessage() . "<br>";
+                $message="Erreur de connexion : " . $e->getMessage() ;
+                echo "<script type='text/javascript'>alert('$message');</script>";
                 return null;
             }
         }

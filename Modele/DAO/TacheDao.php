@@ -1,35 +1,42 @@
 <?php
 
-require_once 'config/bdd.php'; // Inclut la connexion à la base de données
-require_once 'entite/tache.php'; // Inclut la classe Tache
+require_once __DIR__ .'/../../Config/bdd.php'; // Inclut la connexion à la base de données
+require_once __DIR__ .'/../entite/tache.php'; // Inclut la classe Tache
+require_once __DIR__ .'/../DAO/UtilisateurDao.php';
 
 class TacheDao {
     private $db;
     private $utilisateurDao;
 
-    public function __construct($db, $utilisateurDao) {
-        $this->db = $db;
-        $this->utilisateurDao = $utilisateurDao;
+    public function __construct() {
+        $database= new Database();
+        $this->db = $database->getConnection();
+        $this->utilisateurDao = new UtilisateurDao();
     }
 
     // 1. Ajouter une tâche
     public function addTask($tache) {
-        $query = $this->db->prepare("
-            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
-            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
-        ");
-        $query->execute([
-            ':libelle' => $tache->getLibelle(),
-            ':descriptif' => $tache->getDescriptif(),
-            ':dateCreation' => $tache->getDateCreation(),
-            ':dateEcheance' => $tache->getDateEcheance(),
-            ':heureCreation' => $tache->getHeureCreation(),
-            ':heureEcheance' => $tache->getHeureEcheance(),
-            ':statut' => $tache->getStatut(),
-            ':priorite' => $tache->getPriorite(),
-            ':categorie' => $tache->getCategorie(),
-            ':idUser' => $tache->getUtilisateur()->getId() // Utilise l'ID de l'utilisateur
-        ]);
+        try{
+
+            $query = $this->db->prepare("
+                INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
+                VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
+            ");
+            $query->execute([
+                ':libelle' => $tache->getLibelle(),
+                ':descriptif' => $tache->getDescriptif(),
+                ':dateCreation' => $tache->getDateCreation(),
+                ':dateEcheance' => $tache->getDateEcheance(),
+                ':heureCreation' => $tache->getHeureCreation(),
+                ':heureEcheance' => $tache->getHeureEcheance(),
+                ':statut' => $tache->getStatut(),
+                ':priorite' => $tache->getPriorite(),
+                ':categorie' => $tache->getCategorie(),
+                ':idUser' => $tache->getUtilisateur()->getId() // Utilise l'ID de l'utilisateur
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'ajout de la tâche : " . $e->getMessage());
+        }
     }
 
     // 2. Modifier une tâche
@@ -115,5 +122,35 @@ class TacheDao {
             ':status' => $status,
             ':taskId' => $taskId
         ]);
+    }
+
+    // recuperer toutes les tâches
+    public function getAllTask(){
+        $query = $this->db->prepare("SELECT * From tache");
+        $query->execute();
+
+        $result = $query->fetchAll(PDO::FETCH_ASSOC); // Récupération des données sous forme de tableau associatif
+        $tasks = [];
+        foreach ($result as $row) {
+            // Remplacez ci-dessous par la logique correcte pour initialiser un utilisateur (hypothèse : vous avez une méthode `getUtilisateurById` dans une autre classe)
+            $utilisateur = $this->utilisateurDao->getUserById($row['id_user']); 
+    
+            // Création de l'objet Tache
+            $tasks[] = new Tache(
+                $row['id_tache'],
+                $row['libelle_tache'],
+                $row['descriptif_tache'],
+                $row['date_creation'],
+                $row['date_echeance'],
+                $row['heure_creation'],
+                $row['heure_echeance'],
+                $row['statut_tache'],
+                $row['priorite_tache'],
+                $row['categorie'],
+                $utilisateur
+            );
+        }
+    
+        return $tasks; // Retourne un tableau d'objets Tache
     }
 }

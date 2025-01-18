@@ -1,14 +1,15 @@
 <?php
-require_once 'Config/bdd.php'; // Inclut la connexion à la base de données
-require_once 'entite/Utilisateur.php'; // Inclut la classe Utilisateur
-require_once 'entite/tache.php'; // Inclut la classe tache
+require_once  __DIR__ .'/../../Config/bdd.php'; // Inclut la connexion à la base de données
+require_once  __DIR__ .'/../entite/Utilisateur.php'; // Inclut la classe Utilisateur
+require_once  __DIR__ .'/../entite/tache.php'; // Inclut la classe tache
 
-<?php
+
 class UtilisateurDao {
     private $db;
 
-    public function __construct($db) {::::::::::::::::::::::::
-        $this->db = $db;
+    public function __construct() {
+        $database= new Database();
+        $this->db = $database->getConnection();
     }
 
     // 1. Ajouter un utilisateur
@@ -46,13 +47,31 @@ class UtilisateurDao {
     public function deleteUser($id) {
         $query = $this->db->prepare("DELETE FROM users WHERE id_user = :id");
         $query->execute([':id' => $id]);
+        
     }
 
     // 4. Afficher tous les utilisateurs
     public function getAllUsers() {
         $query = $this->db->prepare("SELECT * FROM users");
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        $result = $query->fetchAll(PDO::FETCH_ASSOC); 
+
+        $users = [];
+        foreach ($result as $row) {
+            // Crée un objet Utilisateur pour chaque ligne du résultat
+            $users[] = new Utilisateur(
+                $row['id_user'],
+                $row['nom_user'],
+                $row['prenom_user'],
+                $row['email_user'],
+                null, // Vous pouvez ajouter des valeurs supplémentaires si nécessaire
+                null, // Pareil ici
+                $row['type'],
+                null, // Idem
+                null // Idem
+            );
+        }
+        return $users;
     }
 
     // 5. Afficher les administrateurs
@@ -61,4 +80,33 @@ class UtilisateurDao {
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    //trouver un user
+    public function getUserById($id){
+        $query=$this->db->prepare("SELECT* from users where id_user=:id");
+        $query->execute([':id'=>$id]);
+        return new Utilisateur (
+            ['id_user'],
+            ['nom_user'],
+            ['prenom_user'],
+            ['email_user'],
+            null,
+            null,
+            ['type'],
+            null,
+            null
+        );
+    }
+
+    //
+    public function getUserIdByName($name){
+        $query=$this->db->prepare("SELECT id_user from users where nom_user=:nom");
+        $query->execute([':nom'=>$name]);
+        // Récupérer le résultat
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        // Vérifier si un résultat existe
+        return $result ? $result['id_user'] : null;
+    }
 }
+?>

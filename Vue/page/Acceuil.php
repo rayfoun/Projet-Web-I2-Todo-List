@@ -80,8 +80,8 @@
                 background:  #e2e2e2;
             }
 
-            /*Filtre de recherche*/
-            .container_filtre {
+             /*Filtre de recherche*/
+             .container_filtre {
                 display: flex;
                 flex-direction: column;
                 align-items: center; /* Aligne tous les éléments au centre */
@@ -121,8 +121,8 @@
                 outline: 1px solid lightgrey;
             }
 
-            /*button ajouter*/ 
-            .button_add {
+             /*button ajouter*/ 
+             .button_add {
                 position: relative;
                 width: 150px;
                 height: 40px;
@@ -180,15 +180,19 @@
                 /*transform: translate(10%, 0%);  Déplace le div pour le centrer */
                 height:50% ;
                 bottom:3% ;
-                width: 30%; /* Le div prend 40% de la largeur de la page */
-                display: flex;
+                width: 450px;
+                display: block;
                 box-sizing: border-box;/*ajoute le padding au elements du scroll*/ 
                 justify-content: center;
                 flex-direction: column;
-                transform: translateX(55%);  /* Pas de décalage initial */
+                transform: translateX(48%);  /* Pas de décalage initial */
                 opacity: 1; /* Transparent au départ */
                 transition: transform 0.4s ease; /* Transition fluide */
-                overflow-y:scroll; /* Permet de faire défiler le contenu verticalement */
+                overflow-y:auto; /* Permet de faire défiler le contenu verticalement */
+                background: #f1f1f1;
+                background-image: linear-gradient(90deg,transparent 50px,#ffb4b8 50px, #ffb4b8 52px,transparent 52px),linear-gradient(#e1e1e1 0.1em, transparent 0.1em);
+                background-size: 100% 30px;
+                border-radius: 15px;
                 /*padding-bottom:500px;
                 padding-top: 410px;   Ajoutez un padding-top pour décaler un peu le contenu */
             }
@@ -199,12 +203,13 @@
             .button_liste {
                 display: inline-block;
                 border-radius: 7px;
-                background-color: #3d405b;
+                font-family: 'Freestyle Script';
+                background-color: transparent;
                 border: none;
-                color: #FFFFFF;
-                text-align: center;
+                color: black;
+                text-align: left;
                 font-size: 17px;
-                padding: 16px;
+                padding: 12px;
                 width:95%;
                 transition: all 0.5s;
                 cursor: pointer;
@@ -215,6 +220,7 @@
                 display: inline-block;
                 position: relative;
                 transition: 0.5s;
+                font-size: 30px;
             }
             .button_liste span:after {
                 content: '»';
@@ -230,6 +236,44 @@
             .button_liste:hover span:after {
                 opacity: 1;
                 right: 0;
+            }
+
+            /*checkbox*/
+            .checkbox-wrapper input[type="checkbox"] {
+                visibility: hidden;
+                display: none;
+            }
+            .checkbox-wrapper *,.checkbox-wrapper ::after,.checkbox-wrapper ::before {
+                box-sizing: border-box;
+                user-select: none;
+            }
+            .checkbox-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+            }
+            .checkbox-wrapper .label {
+                cursor: pointer;
+            }
+            .checkbox-wrapper .check {
+                width: 50px;
+                height: 50px;
+                position: absolute;
+                opacity: 0;
+            }
+            .checkbox-wrapper .label svg {
+                vertical-align: middle;
+            }
+            .checkbox-wrapper .path1 {
+                stroke-dasharray: 400;
+                stroke-dashoffset: 400;
+                transition: .5s stroke-dashoffset;
+                opacity: 0;
+            }
+            .checkbox-wrapper .check:checked + label svg g path {
+                stroke-dashoffset: 0;
+                opacity: 1;
             }
 
             /*form*/
@@ -325,13 +369,13 @@
 
         <!--La liste de tâche-->
         <div class=divListeTache>
-           <?=$listeTache?>
+            <?=$listeTache?> 
         </div>
 
         <!--Le formulaire-->
         <div class="information" id="taskForm">
             <h1>Information</h1>
-            <form action="../../controlleur/FormTacheController.php" method="POST">
+            <form action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php" method="POST">
                 <label for="titre">Titre :</label>
                 <input id="titre" required type="text" name="titre">
 
@@ -344,7 +388,7 @@
                 <label for="statut">Statut :</label>
                 <select id="statut" name="statut" required>
                     <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="En Cours">En Cours</option>
+                    <option value="En cours">En cours</option>
                     <option value="En Attente">En Attente</option>
                     <option value="Termine">Terminé</option>
                 </select>
@@ -353,7 +397,7 @@
                 <select id="priorite" name="priorite" required>
                     <option value="" disabled selected>-- Sélectionnez une option --</option>
                     <option value="Important">Important</option>
-                    <option value="Moyen">Moyen</option>
+                    <option value="Moyenne">Moyenne</option>
                     <option value="Faible">Faible</option>
                 </select>
 

@@ -8,6 +8,11 @@
         /*Acceuil*/
         body{
             font-family:'Segoe UI';
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f9f9f9;
         }
         /*navbar*/
         nav{

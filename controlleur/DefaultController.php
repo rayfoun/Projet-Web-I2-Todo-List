@@ -1,6 +1,10 @@
 <?php
 Class DefaultControlller{
 
+    public function persit($entity){
+        
+    }
+
     protected function renderComponent($file) {
         ob_start(); // Démarrer la capture de sortie
         require $file; // Inclure le fichier du composant

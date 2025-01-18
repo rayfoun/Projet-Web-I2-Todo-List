@@ -93,9 +93,10 @@ class ControllerAccueil extends DefaultController {
                 $heureCreation = date('H:i:s'); // Heure actuelle
                 //recuper l'id user
                 $parts = explode(' ', $assigne); // Divise la chaîne par les espaces
-                $nom = end($parts); 
+                $nom = end($parts);              // Récupère le dernier élément du tableau (nom)
+                $prenom = reset($parts);         // Récupère le premier élément du tableau (prénom)
                 $user=new UtilisateurDao();
-                $id_user=$user->getUserIdByName($nom);
+                $id_user=$user->getUserByName($nom,$prenom);
 
                 //creér la tache a ajouter
                 $newTache=new tache(null,

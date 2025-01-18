@@ -99,14 +99,29 @@ class UtilisateurDao {
     }
 
     //
-    public function getUserByName($name){
-        $query=$this->db->prepare("SELECT from users where nom_user=:nom");
-        $query->execute([':nom'=>$name]);
-        // Récupérer le résultat
-        $result = $query->fetch(PDO::FETCH_ASSOC);
+    public function getUserByName($name,$firstName){
 
-        // Vérifier si un résultat existe
-        return $result ? $result: null;
+        // Préparation de la requête SQL pour compter le nombre d'utilisateurs correspondants
+        $query = $this->db->prepare("SELECT COUNT(*) FROM users WHERE nom_user = :nom AND prenom_user = :prenom");
+        $query->execute([':nom' => $name, ':prenom' => $firstName]);
+
+        // Récupération du nombre d'utilisateurs correspondants
+        $count = $query->fetchColumn();
+
+        // Vérification du nombre d'utilisateurs trouvés
+        if ($count === 1) {
+            // Si un seul utilisateur est trouvé, récupération de ses informations
+            $query = $this->db->prepare("SELECT * FROM users WHERE nom_user = :nom AND prenom_user = :prenom");
+            $query->execute([':nom' => $name, ':prenom' => $firstName]);
+            return $query->fetch(PDO::FETCH_ASSOC);
+        } elseif ($count > 1) {
+            // Si plusieurs utilisateurs sont trouvés, levée d'une exception
+            throw new Exception("Erreur : Plusieurs utilisateurs trouvés avec le nom '$firstName' '$name'.");
+        }
+
+        // Si aucun utilisateur n'est trouvé, retour de null
+        throw new Exception("Erreur: Aucun utilisateur trouvé avec le nom $firstName $name");
+
     }
 }
 ?>

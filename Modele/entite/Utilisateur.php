@@ -35,6 +35,7 @@ class Utilisateur {
     public function getEmailVerifie() { return $this-> emailVerifie; }
     public function setNom($nom) { $this->nom = $nom; }
     public function setPrenom($prenom) { $this->prenom = $prenom; }
+
     public function setEmail($email) { $this->email=$email;}
     public function setPassword($password) { $this ->password=$password; }
     public function setToken($token) { $this->token=$token; }
@@ -42,4 +43,5 @@ class Utilisateur {
     public function setPhoto($photo) { $this->photo= $photo;}
     public function getEmailVerifie($emailVerifie) { $this->emailVerifie=$emailVerifie;}
    
+
 }

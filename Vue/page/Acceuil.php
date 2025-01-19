@@ -375,7 +375,7 @@
         <!--Le formulaire-->
         <div class="information" id="taskForm">
             <h1>Information</h1>
-            <form id="Form"action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache" method="POST">
+            <form id="Form"  method="POST">
                 <label for="titre">Titre :</label>
                 <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre ?? '') ?>">
 
@@ -403,18 +403,19 @@
                 </select>
 
                 <label >Assigné :</label>
-                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." value="<?= htmlspecialchars($assigne ?? '') ?>">
+                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." autocomplete="off" value="<?= htmlspecialchars($assigne ?? '') ?>  ">
                 <datalist id="assigne-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
                     <?=$listeUser?>
                 </datalist>
 
                 <label >Categorie :</label>
-                <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
+                <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie..." autocomplete="off" value="<?= htmlspecialchars($categorie ?? '') ?>" >
                 <datalist id="categorie-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
-                    <option value="personnel" <?= $categorie == 'personnel' ? 'selected' : '' ?>></option>
-                    <option value="Au travail" <?= $categorie == 'Au travail' ? 'selected' : '' ?>></option>
+                    <option value="personnel" >personnel</option>
+                    <option value="Au travail" >Au travail</option>
+                    <option value="Autre" >Autre</option>
                 </datalist>
 
                 <div class="buttons_form" id="buttons_form">
@@ -456,6 +457,7 @@
                 const form = document.getElementById('Form'); // div Formulaire
                 const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
                 const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
+                const checks = document.querySelectorAll('.check');//les checkbox des boutons de liste tache
                 
                 let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
 
@@ -482,19 +484,60 @@
 
                                     // Ajouter l'écouteur d'événements au bouton ajouter
                                     const buttonAdd = document.getElementById('add');
-                                    buttonAdd.addEventListener('click', function (event) {
-                                        if (isFormValid()) {
-                                            AnimationArriere()
-                                            // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
-                                            setTimeout(function () {
-                                                    form.submit();  // Si le formulaire existe, soumettre
-                                                updateListTask();
-                                            }, 500);
-                                        }else{
-                                            form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
-                                        }
-                                    });
+                                    if(buttonAdd){
+                                        buttonAdd.addEventListener('click', function (event) {
+                                            if (isFormValid()) {
+                                                AnimationArriere()
+                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                                                setTimeout(function () {
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache';
+                                                        form.submit();  // Si le formulaire existe, soumettre
+                                                    updateListTask();
+                                                }, 500);
+                                            }else{
+                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                                            }
+                                        });
 
+                                    }
+
+                                    // Ajouter l'ecouteur du button modifier
+                                    const buttonUpd = document.getElementById('update');
+                                    if(buttonUpd){
+                                        buttonUpd.addEventListener('click', function (event) {
+                                            if (isFormValid()) {
+                                                AnimationArriere()
+                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                                                setTimeout(function () {
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateTache';
+                                                        form.submit();  // Si le formulaire existe, soumettre
+                                                    updateListTask();
+                                                }, 500);
+                                            }else{
+                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                                            }
+                                        });
+
+                                    }
+
+                                    // Ajouter l'ecouteur du button supprimer
+                                    const buttonDet = document.getElementById('delete');
+                                    if(buttonDet){
+                                        buttonDet.addEventListener('click', function (event) {
+                                            if (isFormValid()) {
+                                                AnimationArriere()
+                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                                                setTimeout(function () {
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=deleteTache';
+                                                        form.submit();  // Si le formulaire existe, soumettre
+                                                    updateListTask();
+                                                }, 500);
+                                            }else{
+                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                                            }
+                                        });
+
+                                    }
                                 } else {
                                     console.error('Erreur : ' + response.message);
                                 }
@@ -588,6 +631,7 @@
                         }, 10);
                     } 
                 }
+
                 function AnimationArriere() {
                     if(divForm.classList.contains('active')){
                         divForm.classList.remove('active');
@@ -621,8 +665,20 @@
                     });
                 });
 
-                // Gestion des clics sur le bouton Ajouter
+                //gestion des checkbox
+                checks.forEach(box=>{
+                    if (box.disabled) {
+                        // Si elle n'est pas désactivée, on la coche et on la désactive
+                        setTimeout(function () {
+                            box.checked = true;
+                            }, 500);
+                    }else{
+                        box.disabled = true;
+                    }
+                });
+                // Gestion des clics sur le bouton Ajouter vert
                 button.addEventListener('click', function () {
+
                     if (lastClickedButton !== 'add') {
                         lastClickedButton = 'add'; // Met à jour le dernier bouton cliqué
                         if (divForm.classList.contains('active')) {
@@ -647,7 +703,7 @@
                         }
                     }
                 });
-                
+
             });
         </script>
 

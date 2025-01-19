@@ -65,8 +65,8 @@ class ControllerAccueil extends DefaultController {
                     exit; // Assurez-vous qu'aucune autre sortie n'est envoyée après
 
                 } if ($mode === "update") {
-                    $buttonForm = "<button type='button' id='add' class='add'>Valider</button>
-                                   <button type='button' class='delete' onclick='deleteTache();'>Supprimer</button>
+                    $buttonForm = "<button type='button' id='update' class='add'>Valider</button>
+                                   <button type='button' id='delete' class='delete'>Supprimer</button>
                                    <button type='button' id='cancel' class='cancel'>Annuler</button>";
                     
                     // Créer la réponse en format JSON
@@ -92,7 +92,7 @@ class ControllerAccueil extends DefaultController {
         // Créer une nouvelle liste contenant uniquement les titres
         //cocher ou pas cocher
         function check($tache) {
-            return ($tache->getStatut() == "Terminee") ? "checked=''" : "";
+            return ($tache->getStatut() == "Terminee") ? "disabled" : "";
         }
         $listeTachesCheck = array_map(function($tache) {
             return [
@@ -143,7 +143,7 @@ class ControllerAccueil extends DefaultController {
         
         // Transformation de la liste en une liste de noms et prénoms
         $listeNom = array_map(function($user) {
-            return $user->getPrenom() . ' ' . $user->getNom();
+            return $user->getPrenom() .' '. $user->getNom();
         }, $listeUsers);
         //fromater pour l'affichage
         $listeUser="";
@@ -166,7 +166,7 @@ class ControllerAccueil extends DefaultController {
         );
     }
 
-    public function ajouterForm(){
+    public function saveForm(){
         // Vérifier si la méthode de requête est POST et les champs nécessaires sont présents
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (
@@ -223,8 +223,14 @@ class ControllerAccueil extends DefaultController {
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }
-    public function modifierForm(){
+    public function updateForm(){
+        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+        exit;
+    }
 
+    public function deleteForm(){
+        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+        exit;
     }
 }
 ?>

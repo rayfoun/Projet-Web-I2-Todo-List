@@ -375,7 +375,7 @@
         <!--Le formulaire-->
         <div class="information" id="taskForm">
             <h1>Information</h1>
-            <form action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache" method="POST">
+            <form id="Form"action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache" method="POST">
                 <label for="titre">Titre :</label>
                 <input id="titre" required type="text" name="titre">
 
@@ -449,9 +449,10 @@
         <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
         <script>
            document.addEventListener('DOMContentLoaded', function () {
-                const button = document.getElementById('button_add'); // Bouton existant
+                const button = document.getElementById('button_add'); // Bouton Add
                 const buttonTaches = document.querySelectorAll('.button_liste');//les boutons de liste tache
-                const form = document.getElementById('taskForm'); // Formulaire
+                const divForm = document.getElementById('taskForm'); // div Formulaire
+                const form = document.getElementById('Form'); // div Formulaire
                 const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
                 const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
                 
@@ -485,7 +486,7 @@
                                             AnimationArriere()
                                             // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
                                             setTimeout(function () {
-                                                form.submit();
+                                                    form.submit();  // Si le formulaire existe, soumettre
                                                 updateListTask();
                                             }, 500);
                                         }else{
@@ -541,21 +542,21 @@
                 }
                 
                 function AnimationAvant() {
-                    if (!form.classList.contains('active')) {
-                        form.style.display = 'flex'; // Rendre le formulaire visible pour la transition
+                    if (!divForm.classList.contains('active')) {
+                        divForm.style.display = 'flex'; // Rendre le formulaire visible pour la transition
                         setTimeout(() => {
-                            form.classList.add('active');
+                            divForm.classList.add('active');
                             taskListDiv.classList.add('active');
                             container_filtre.classList.add('active');
                         }, 10);
                     } 
                 }function AnimationArriere() {
-                    if(form.classList.contains('active')){
-                        form.classList.remove('active');
+                    if(divForm.classList.contains('active')){
+                        divForm.classList.remove('active');
                         taskListDiv.classList.remove('active');
                         container_filtre.classList.remove('active');
                         setTimeout(() => {
-                            form.style.display = 'none'; // Masquer complètement après l'animation
+                            divForm.style.display = 'none'; // Masquer complètement après l'animation
                         }, 400); // Délai correspondant à la durée de la transition
                     }
 
@@ -567,7 +568,7 @@
                         if (lastClickedButton !== 'tache') {
                             lastClickedButton = 'tache'; // Met à jour le dernier bouton cliqué
                         }
-                        if (form.classList.contains('active')) {
+                        if (divForm.classList.contains('active')) {
                             AnimationArriere();
                             setTimeout(function () {
                                 updateButtonForm('update');
@@ -584,7 +585,7 @@
                 button.addEventListener('click', function () {
                     if (lastClickedButton !== 'add') {
                         lastClickedButton = 'add'; // Met à jour le dernier bouton cliqué
-                        if (form.classList.contains('active')) {
+                        if (divForm.classList.contains('active')) {
                                 AnimationArriere();
                                 setTimeout(function () {
                                     updateButtonForm('add');
@@ -596,7 +597,7 @@
                             }
                     }else{
                         updateButtonForm('add');
-                        if (form.classList.contains('active')) {
+                        if (divForm.classList.contains('active')) {
                             AnimationArriere();
                         } else {
                             AnimationAvant();

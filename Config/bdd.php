@@ -16,6 +16,7 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
             // Retourne la connexion si elle réussit
+            echo"connexion reussie";
             return $this->conn;
         } catch (PDOException $e) {
             // Gestion des erreurs de connexion
@@ -23,4 +24,6 @@ class Database {
         }
     }
 }
+$database= new Database();
+$database-> getConnection();
 ?>

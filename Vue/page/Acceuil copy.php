@@ -368,58 +368,58 @@
         </div>
 
         <!--La liste de tâche-->
-        <div class=divListeTache id="divListeTache">
+        <div class=divListeTache>
             <?=$listeTache?> 
         </div>
 
         <!--Le formulaire-->
         <div class="information" id="taskForm">
             <h1>Information</h1>
-            <form id="Form"  method="POST">
+            <form action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=ajouterTache" method="POST">
                 <label for="titre">Titre :</label>
-                <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre ?? '') ?>">
+                <input id="titre" required type="text" name="titre">
 
                 <label for="description">Description :</label>
-                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."><?= htmlspecialchars($description ??'') ?></textarea>
+                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."></textarea>
 
                 <label for="date">Date limite :</label>
-                <input id="date" required type="date" name="date" value="<?= htmlspecialchars($date ?? '') ?>">
+                <input id="date" required type="date" name="date">
 
                 <label for="statut">Statut :</label>
                 <select id="statut" name="statut" required>
-                    <option value="" <?=($statut ?? '') == 'En cours' || 'En attente' || 'Terminee' ? 'disabled' : 'disabled selected' ?>>-- Sélectionnez une option --</option>
-                    <option value="En cours" <?= ($statut ?? '') == 'En cours' ? 'selected' : '' ?>>En cours</option>
-                    <option value="En attente" <?= ($statut ?? '')  == 'En attente' ? 'selected' : '' ?>>En attente</option>
-                    <option value="Terminee" <?= ($statut ?? '') == 'Terminee' ? 'selected' : '' ?>>Terminée</option>
+                    <option value="" disabled selected>-- Sélectionnez une option --</option>
+                    <option value="En cours">En cours</option>
+                    <option value="En Attente">En Attente</option>
+                    <option value="Termine">Terminé</option>
                 </select>
 
                 <label for="priorite">Priorité :</label>
                 <select id="priorite" name="priorite" required>
-                    <option value="" <?=($priorite ?? '') == 'Haute' || 'Moyenne' || 'Basse' ? 'disabled' : 'disabled selected' ?>>-- Sélectionnez une option --</option>
-                    <option value="Haute" <?= ($priorite ?? '') == 'Haute' ? 'selected' : '' ?>>Haute</option>
-                    <option value="Moyenne" <?= ($priorite ?? '') == 'Moyenne' ? 'selected' : '' ?>>Moyenne</option>
-                    <option value="Basse" <?= ($priorite ?? '') == 'Basse' ? 'selected' : '' ?>>Basse</option>
-                </select>
+                    <option value="" disabled selected>-- Sélectionnez une option --</option>
+                    <option value="Important">Important</option>
+                    <option value="Moyenne">Moyenne</option>
+                    <option value="Faible">Faible</option>
                 </select>
 
                 <label >Assigné :</label>
-                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." autocomplete="off" value="<?= htmlspecialchars($assigne ?? '') ?>  ">
+                <input  required type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom...">
                 <datalist id="assigne-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
                     <?=$listeUser?>
                 </datalist>
 
                 <label >Categorie :</label>
-                <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie..." autocomplete="off" value="<?= htmlspecialchars($categorie ?? '') ?>" >
+                <input  required type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
                 <datalist id="categorie-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
-                    <option value="personnel" >personnel</option>
-                    <option value="Au travail" >Au travail</option>
-                    <option value="Autre" >Autre</option>
+                    <option value="personnel"></option>
+                    <option value="Au travail"></option>
                 </datalist>
 
-                <div class="buttons_form" id="buttons_form">
-                    <?=$buttonForm?>
+                <div class="buttons_form">
+                    <button type="button" id="add" class="add">Ajouter</button>
+                    <button type="button" id="cancel" class="cancel">Annuler</button>
+                    <button type="button" id="delete" class="delete" onclick="deleteTache();">Supprimer</button>
                 </div>
             </form>
         </div>
@@ -451,259 +451,57 @@
         <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
         <script>
            document.addEventListener('DOMContentLoaded', function () {
-                const button = document.getElementById('button_add'); // Bouton Add
+                const button = document.getElementById('button_add'); // Bouton existant
                 const buttonTaches = document.querySelectorAll('.button_liste');//les boutons de liste tache
-                const divForm = document.getElementById('taskForm'); // div Formulaire
-                const form = document.getElementById('Form'); // div Formulaire
+                const buttonAdd = document.getElementById('add');
+                const button_cancel = document.getElementById('cancel');
+                const button_delete = document.getElementById('delete'); // Bouton
+                const form = document.getElementById('taskForm'); // Formulaire
                 const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
                 const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
-                const checks = document.querySelectorAll('.check');//les checkbox des boutons de liste tache
-                
-                let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
-
-                // Fonction pour envoyer une requête AJAX pour mettre à jour les boutons de formulaire
-                function updateButtonForm(mode) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateButtonForm&mode=' + mode, true);
-
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            try {
-                                let response = JSON.parse(xhr.responseText);
-                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
-
-                                if (response.status === 'success') {
-                                    // Mettre à jour la section des boutons avec le nouveau bouton
-                                    document.getElementById('buttons_form').innerHTML = response.buttonForm;
-
-                                     // Réaffecter l'événement au bouton "cancel"
-                                    const buttonCancel = document.getElementById('cancel');
-                                    if (buttonCancel) {
-                                        buttonCancel.addEventListener('click', AnimationArriere);
-                                    }
-
-                                    // Ajouter l'écouteur d'événements au bouton ajouter
-                                    const buttonAdd = document.getElementById('add');
-                                    if(buttonAdd){
-                                        buttonAdd.addEventListener('click', function (event) {
-                                            if (isFormValid()) {
-                                                AnimationArriere()
-                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
-                                                setTimeout(function () {
-                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache';
-                                                        form.submit();  // Si le formulaire existe, soumettre
-                                                    updateListTask();
-                                                }, 500);
-                                            }else{
-                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
-                                            }
-                                        });
-
-                                    }
-
-                                    // Ajouter l'ecouteur du button modifier
-                                    const buttonUpd = document.getElementById('update');
-                                    if(buttonUpd){
-                                        buttonUpd.addEventListener('click', function (event) {
-                                            if (isFormValid()) {
-                                                AnimationArriere()
-                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
-                                                setTimeout(function () {
-                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateTache';
-                                                        form.submit();  // Si le formulaire existe, soumettre
-                                                    updateListTask();
-                                                }, 500);
-                                            }else{
-                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
-                                            }
-                                        });
-
-                                    }
-
-                                    // Ajouter l'ecouteur du button supprimer
-                                    const buttonDet = document.getElementById('delete');
-                                    if(buttonDet){
-                                        buttonDet.addEventListener('click', function (event) {
-                                            if (isFormValid()) {
-                                                AnimationArriere()
-                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
-                                                setTimeout(function () {
-                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=deleteTache';
-                                                        form.submit();  // Si le formulaire existe, soumettre
-                                                    updateListTask();
-                                                }, 500);
-                                            }else{
-                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
-                                            }
-                                        });
-
-                                    }
-                                } else {
-                                    console.error('Erreur : ' + response.message);
-                                }
-                            } catch (e) {
-                                console.error('Erreur de parsing JSON :', e);
-                            }
-                        } else {
-                            console.error('Erreur de serveur :', xhr.status);
-                        }
-                    };
-
-                    xhr.send(); // Envoi de la requête
-                }
-
-                function updateListTask() {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask', true);
-
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            try {
-                                let response = JSON.parse(xhr.responseText);
-                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
-
-                                if (response.status === 'success') {
-                                    // Mettre à jour la section de la liste de tache
-                                    document.getElementById('divListeTache').innerHTML = response.listeTache;
-                                } else {
-                                    console.error('Erreur : ' + response.message);
-                                }
-                            } catch (e) {
-                                console.error('Erreur de parsing JSON :', e);
-                            }
-                        } else {
-                            console.error('Erreur de serveur :', xhr.status);
-                        }
-                    };
-
-                    xhr.send(); // Envoi de la requête
-                }
-
-                function updateFromTask(id) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateFromTask&id=' + id, true);
-
-                    xhr.onload = function () {
-                        if (xhr.status === 200) {
-                            try {
-                                let response = JSON.parse(xhr.responseText);
-                                console.log('Réponse JSON parsée:', response);
-
-                                if (response.status === 'success') {
-                                    // Mettre à jour les champs du formulaire
-                                    document.getElementById('titre').value = response.titre || '';
-                                    document.getElementById('description').value = response.description || '';
-                                    document.getElementById('date').value = response.date || '';
-                                    document.getElementById('statut').value = response.statut || '';
-                                    document.getElementById('priorite').value = response.priorite || '';
-                                    document.getElementById('assigne').value = response.assigne || '';
-                                    document.getElementById('categorie').value = response.categorie || '';
-                                } else {
-                                    console.error('Erreur :', response.message);
-                                }
-                            } catch (e) {
-                                console.error('Erreur de parsing JSON :', e);
-                            }
-                        } else {
-                            console.error('Erreur du serveur :', xhr.status);
-                        }
-                    };
-
-                    xhr.onerror = function () {
-                        console.error('Erreur de requête AJAX');
-                    };
-
-                    xhr.send();
-                }
 
                 function isFormValid() {
                     const requiredFields = form.querySelectorAll('[required]');
                     return Array.from(requiredFields).every(field => field.value.trim() !== '');
                 }
-                
-                function AnimationAvant() {
-                    if (!divForm.classList.contains('active')) {
-                        divForm.style.display = 'flex'; // Rendre le formulaire visible pour la transition
+
+                function toggleAddForm() {
+                    if (!form.classList.contains('active')) {
+                        form.style.display = 'flex'; // Rendre le formulaire visible pour la transition
                         setTimeout(() => {
-                            divForm.classList.add('active');
+                            form.classList.add('active');
                             taskListDiv.classList.add('active');
                             container_filtre.classList.add('active');
+                            button_delete.style.display = 'none';
                         }, 10);
-                    } 
-                }
-
-                function AnimationArriere() {
-                    if(divForm.classList.contains('active')){
-                        divForm.classList.remove('active');
+                    } else {
+                        form.classList.remove('active');
                         taskListDiv.classList.remove('active');
                         container_filtre.classList.remove('active');
                         setTimeout(() => {
-                            divForm.style.display = 'none'; // Masquer complètement après l'animation
+                            form.style.display = 'none'; // Masquer complètement après l'animation
                         }, 400); // Délai correspondant à la durée de la transition
                     }
-
                 }
 
-                // Gestion des clics sur les boutons de tâches
-                buttonTaches.forEach(tache => {
-                    tache.addEventListener('click', function () {
-                        if (lastClickedButton !== 'tache') {
-                            lastClickedButton = 'tache'; // Met à jour le dernier bouton cliqué
-                        }
-                        if (divForm.classList.contains('active')) {
-                            AnimationArriere();
-                            setTimeout(function () {
-                                updateButtonForm('update');
-                                updateFromTask(tache.getAttribute('id'));
-                                AnimationAvant();
-                            }, 500);
-                        } else {
-                            updateButtonForm('update');
-                            updateFromTask(tache.getAttribute('id'));
-                            AnimationAvant();
-                        }
-                    });
-                });
-
-                //gestion des checkbox
-                checks.forEach(box=>{
-                    if (box.disabled) {
-                        // Si elle n'est pas désactivée, on la coche et on la désactive
+                // Ajouter l'écouteur d'événements aux deux boutons
+                buttonAdd.addEventListener('click', function (event) {
+                    if (isFormValid()) {
+                        toggleAddForm(); // Active l'animation uniquement si le formulaire est valide
+                        // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
                         setTimeout(function () {
-                            box.checked = true;
-                            }, 500);
+                            form.submit();
+                        }, 500);
                     }else{
-                        box.disabled = true;
-                    }
-                });
-                // Gestion des clics sur le bouton Ajouter vert
-                button.addEventListener('click', function () {
-
-                    if (lastClickedButton !== 'add') {
-                        lastClickedButton = 'add'; // Met à jour le dernier bouton cliqué
-                        if (divForm.classList.contains('active')) {
-                                AnimationArriere();
-                                setTimeout(function () {
-                                    updateButtonForm('add');
-                                    updateFromTask(null);
-                                    AnimationAvant();
-                                }, 500);
-                            } else {
-                                updateButtonForm('add');
-                                updateFromTask(null);
-                                AnimationAvant();
-                            }
-                    }else{
-                        updateButtonForm('add');
-                        updateFromTask(null);
-                        if (divForm.classList.contains('active')) {
-                            AnimationArriere();
-                        } else {
-                            AnimationAvant();
-                        }
+                        form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
                     }
                 });
 
+                buttonTaches.forEach(tache => {
+                    tache.addEventListener('click', toggleAddForm);
+                });
+                button.addEventListener('click', toggleAddForm);
+                button_cancel.addEventListener('click', toggleAddForm);
             });
         </script>
 

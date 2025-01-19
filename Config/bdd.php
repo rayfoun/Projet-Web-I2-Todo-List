@@ -15,15 +15,18 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-            // Retourne la connexion si elle réussit
-            echo"connexion reussie";
-            return $this->conn;
-        } catch (PDOException $e) {
-            // Gestion des erreurs de connexion
-            die("Erreur de connexion : " . $e->getMessage());
+                // Retourne la connexion si elle réussit
+                $message ="Connexion réussie à la base de données";
+                //echo "<script type='text/javascript'>alert('$message');</script>";
+                return $this->conn;
+            } catch (PDOException $e) {
+                // Gestion des erreurs de connexion
+                $message="Erreur de connexion : " . $e->getMessage() ;
+                //echo "<script type='text/javascript'>alert('$message');</script>";
+                return null;
+            }
         }
     }
-}
-$database= new Database();
-$database-> getConnection();
+ $database= new Database();
+ $database-> getConnection();
 ?>

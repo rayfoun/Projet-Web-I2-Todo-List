@@ -1,4 +1,5 @@
 
+<style>
             /*body*/
             body {
                 font-family: Arial, sans-serif;
@@ -329,3 +330,4 @@
             .buttons_form .delete:hover {
                 background-color: #c82333;
             }
+</style>

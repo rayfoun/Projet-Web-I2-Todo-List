@@ -113,14 +113,18 @@ class UtilisateurDao {
             // Si un seul utilisateur est trouvé, récupération de ses informations
             $query = $this->db->prepare("SELECT * FROM users WHERE nom_user = :nom AND prenom_user = :prenom");
             $query->execute([':nom' => $name, ':prenom' => $firstName]);
-            return $query->fetch(PDO::FETCH_ASSOC);
+            $result=$query->fetch(PDO::FETCH_ASSOC);
+
+            return new Utilisateur($result['id_user'], $result['nom_user'], $result['prenom_user'], $result['email_user'],null,null,$result['type'],null,null);
         } elseif ($count > 1) {
             // Si plusieurs utilisateurs sont trouvés, levée d'une exception
-            throw new Exception("Erreur : Plusieurs utilisateurs trouvés avec le nom '$firstName' '$name'.");
+            //throw new Exception("Erreur : Plusieurs utilisateurs trouvés avec le nom '$firstName' '$name'.");
+            return null;
         }
 
         // Si aucun utilisateur n'est trouvé, retour de null
-        throw new Exception("Erreur: Aucun utilisateur trouvé avec le nom $firstName $name");
+       // throw new Exception("Erreur: Aucun utilisateur trouvé avec le nom $firstName $name");
+        return null;
 
     }
 }

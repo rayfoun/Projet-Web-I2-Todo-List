@@ -368,14 +368,14 @@
         </div>
 
         <!--La liste de tâche-->
-        <div class=divListeTache id="divListeTache">
+        <div class=divListeTache>
             <?=$listeTache?> 
         </div>
 
         <!--Le formulaire-->
         <div class="information" id="taskForm">
             <h1>Information</h1>
-            <form action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache" method="POST">
+            <form action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=ajouterTache" method="POST">
                 <label for="titre">Titre :</label>
                 <input id="titre" required type="text" name="titre">
 
@@ -416,8 +416,10 @@
                     <option value="Au travail"></option>
                 </datalist>
 
-                <div class="buttons_form" id="buttons_form">
-                    <?=$buttonForm?>
+                <div class="buttons_form">
+                    <button type="button" id="add" class="add">Ajouter</button>
+                    <button type="button" id="cancel" class="cancel">Annuler</button>
+                    <button type="button" id="delete" class="delete" onclick="deleteTache();">Supprimer</button>
                 </div>
             </form>
         </div>
@@ -451,106 +453,28 @@
            document.addEventListener('DOMContentLoaded', function () {
                 const button = document.getElementById('button_add'); // Bouton existant
                 const buttonTaches = document.querySelectorAll('.button_liste');//les boutons de liste tache
+                const buttonAdd = document.getElementById('add');
+                const button_cancel = document.getElementById('cancel');
+                const button_delete = document.getElementById('delete'); // Bouton
                 const form = document.getElementById('taskForm'); // Formulaire
                 const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
                 const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
-                
-                let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
-
-                // Fonction pour envoyer une requête AJAX pour mettre à jour les boutons de formulaire
-                function updateButtonForm(mode) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateButtonForm&mode=' + mode, true);
-
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            try {
-                                let response = JSON.parse(xhr.responseText);
-                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
-
-                                if (response.status === 'success') {
-                                    // Mettre à jour la section des boutons avec le nouveau bouton
-                                    document.getElementById('buttons_form').innerHTML = response.buttonForm;
-
-                                     // Réaffecter l'événement au bouton "cancel"
-                                    const buttonCancel = document.getElementById('cancel');
-                                    if (buttonCancel) {
-                                        buttonCancel.addEventListener('click', AnimationArriere);
-                                    }
-
-                                    // Ajouter l'écouteur d'événements au bouton ajouter
-                                    const buttonAdd = document.getElementById('add');
-                                    buttonAdd.addEventListener('click', function (event) {
-                                        if (isFormValid()) {
-                                            AnimationArriere()
-                                            // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
-                                            setTimeout(function () {
-                                                form.submit();
-                                                updateListTask();
-                                            }, 500);
-                                        }else{
-                                            form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
-                                        }
-                                    });
-
-                                } else {
-                                    console.error('Erreur : ' + response.message);
-                                }
-                            } catch (e) {
-                                console.error('Erreur de parsing JSON :', e);
-                            }
-                        } else {
-                            console.error('Erreur de serveur :', xhr.status);
-                        }
-                    };
-
-                    xhr.send(); // Envoi de la requête
-                }
-
-                function updateListTask() {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask', true);
-
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            try {
-                                let response = JSON.parse(xhr.responseText);
-                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
-
-                                if (response.status === 'success') {
-                                    // Mettre à jour la section de la liste de tache
-                                    document.getElementById('divListeTache').innerHTML = response.listeTache;
-                                } else {
-                                    console.error('Erreur : ' + response.message);
-                                }
-                            } catch (e) {
-                                console.error('Erreur de parsing JSON :', e);
-                            }
-                        } else {
-                            console.error('Erreur de serveur :', xhr.status);
-                        }
-                    };
-
-                    xhr.send(); // Envoi de la requête
-                }
-
 
                 function isFormValid() {
                     const requiredFields = form.querySelectorAll('[required]');
                     return Array.from(requiredFields).every(field => field.value.trim() !== '');
                 }
-                
-                function AnimationAvant() {
+
+                function toggleAddForm() {
                     if (!form.classList.contains('active')) {
                         form.style.display = 'flex'; // Rendre le formulaire visible pour la transition
                         setTimeout(() => {
                             form.classList.add('active');
                             taskListDiv.classList.add('active');
                             container_filtre.classList.add('active');
+                            button_delete.style.display = 'none';
                         }, 10);
-                    } 
-                }function AnimationArriere() {
-                    if(form.classList.contains('active')){
+                    } else {
                         form.classList.remove('active');
                         taskListDiv.classList.remove('active');
                         container_filtre.classList.remove('active');
@@ -558,52 +482,26 @@
                             form.style.display = 'none'; // Masquer complètement après l'animation
                         }, 400); // Délai correspondant à la durée de la transition
                     }
-
                 }
 
-                // Gestion des clics sur les boutons de tâches
-                buttonTaches.forEach(tache => {
-                    tache.addEventListener('click', function () {
-                        if (lastClickedButton !== 'tache') {
-                            lastClickedButton = 'tache'; // Met à jour le dernier bouton cliqué
-                        }
-                        if (form.classList.contains('active')) {
-                            AnimationArriere();
-                            setTimeout(function () {
-                                updateButtonForm('update');
-                                AnimationAvant();
-                            }, 500);
-                        } else {
-                            updateButtonForm('update');
-                            AnimationAvant();
-                        }
-                    });
-                });
-
-                // Gestion des clics sur le bouton Ajouter
-                button.addEventListener('click', function () {
-                    if (lastClickedButton !== 'add') {
-                        lastClickedButton = 'add'; // Met à jour le dernier bouton cliqué
-                        if (form.classList.contains('active')) {
-                                AnimationArriere();
-                                setTimeout(function () {
-                                    updateButtonForm('add');
-                                    AnimationAvant();
-                                }, 500);
-                            } else {
-                                updateButtonForm('add');
-                                AnimationAvant();
-                            }
+                // Ajouter l'écouteur d'événements aux deux boutons
+                buttonAdd.addEventListener('click', function (event) {
+                    if (isFormValid()) {
+                        toggleAddForm(); // Active l'animation uniquement si le formulaire est valide
+                        // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                        setTimeout(function () {
+                            form.submit();
+                        }, 500);
                     }else{
-                        updateButtonForm('add');
-                        if (form.classList.contains('active')) {
-                            AnimationArriere();
-                        } else {
-                            AnimationAvant();
-                        }
+                        form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
                     }
                 });
-                
+
+                buttonTaches.forEach(tache => {
+                    tache.addEventListener('click', toggleAddForm);
+                });
+                button.addEventListener('click', toggleAddForm);
+                button_cancel.addEventListener('click', toggleAddForm);
             });
         </script>
 

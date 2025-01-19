@@ -14,12 +14,12 @@
 
                 // Retourne la connexion si elle réussit
                 $message ="Connexion réussie à la base de données";
-                echo "<script type='text/javascript'>alert('$message');</script>";
+                //echo "<script type='text/javascript'>alert('$message');</script>";
                 return $this->conn;
             } catch (PDOException $e) {
                 // Gestion des erreurs de connexion
                 $message="Erreur de connexion : " . $e->getMessage() ;
-                echo "<script type='text/javascript'>alert('$message');</script>";
+                //echo "<script type='text/javascript'>alert('$message');</script>";
                 return null;
             }
         }

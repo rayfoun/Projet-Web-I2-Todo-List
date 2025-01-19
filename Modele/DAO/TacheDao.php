@@ -160,6 +160,34 @@ class TacheDao {
     return $taches;
 }
 
+public function getTasksByCriteria($libelle = null, $statut = null, $priorite = null, $idUser = null) {
+    $queryStr = "SELECT * FROM tache WHERE 1=1";
+    $params = [];
+
+    if ($libelle !== null) {
+        $queryStr .= " AND libelle_tache LIKE :libelle";
+        $params[':libelle'] = "%$libelle%";
+    }
+    if ($statut !== null) {
+        $queryStr .= " AND statut_tache = :statut";
+        $params[':statut'] = $statut;
+    }
+    if ($priorite !== null) {
+        $queryStr .= " AND priorite_tache = :priorite";
+        $params[':priorite'] = $priorite;
+    }
+    if ($idUser !== null) {
+        $queryStr .= " AND id_user = :idUser";
+        $params[':idUser'] = $idUser;
+    }
+
+    $query = $this->db->prepare($queryStr);
+    $query->execute($params);
+
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
     
     
     

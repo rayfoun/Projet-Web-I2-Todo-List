@@ -7,6 +7,68 @@ require_once __DIR__ .'/../Modele/entite/Utilisateur.php';
 
 class ControllerAccueil extends DefaultController { 
     
+    public function updateFromTask($id){
+        $tacheDAO = new TacheDao(); 
+        $tache = $tacheDAO->getTaskById($id);
+
+        // Si la tâche est trouvée, on renvoie les données en format JSON
+        if ($tache&$tache!=null) {
+            // Assurez-vous que $tache contient les propriétés correctes
+            // Vérification de la structure avant d'envoyer
+                $titre=$tache->getLibelle();
+                $description= $tache->getDescriptif();
+                $date= $tache->getDateEcheance();
+                $statut=$tache->getStatut();
+                $priorite=$tache->getPriorite();
+                $assigne=$tache->getUtilisateur()->getPrenom().' '.$tache->getUtilisateur()->getNom();
+                $categorie= $tache->getCategorie();
+        
+                echo json_encode([
+                    'status' => 'success',
+                    [
+                        'titre' =>$titre,
+                        'description' =>$description,
+                        'date' => $date,
+                        'statut' => $statut,
+                        'priorite' => $priorite,
+                        'assigne' => $assigne,
+                        'categorie' =>$categorie
+                    ]
+                ]);
+            
+        } else {
+            if($tache==null){
+                $titre=null;
+                $description=null;
+                $date=null;
+                $statut="";
+                $priorite="";
+                $assigne="";
+                $categorie="";
+        
+                echo json_encode([
+                    'status' => 'success',
+                    $data = [
+                        'titre' =>$titre,
+                        'description' =>$description,
+                        'date' => $date,
+                        'statut' => $statut,
+                        'priorite' => $priorite,
+                        'assigne' => $assigne,
+                        'categorie' =>$categorie
+                    ]
+                ]);
+            }else{
+                // Si la tâche n'est pas trouvée
+                echo json_encode([
+                'status' => 'error',
+                'message' => 'Tâche non trouvée'
+            ]);
+            }
+        }
+        exit();  // Terminer le script après avoir renvoyé la réponse
+    }
+
     public function updateButtonForm($mode){
         if (isset($_GET["action"]) && $_GET["action"] === "updateButtonForm") {
             if (isset($_GET["mode"])) {
@@ -60,6 +122,7 @@ class ControllerAccueil extends DefaultController {
         }
         $listeTachesCheck = array_map(function($tache) {
             return [
+                'id'=>$tache->getId(),
                 'libelle' => $tache->getLibelle(),
                 'check' => check($tache)
             ];
@@ -67,11 +130,10 @@ class ControllerAccueil extends DefaultController {
 
         //formater pour affiche
         $listeTache="";
-        $id=1;
         foreach($listeTachesCheck as $tache){
             $listeTache.="<div class='checkbox-wrapper'>
-                                <input {$tache['check']} type='checkbox' class='check' id='check$id-61'>
-                                <label for='check$id-61' class='label'>
+                                <input {$tache['check']} type='checkbox' class='check' id='{$tache['id']}'>
+                                <label for='{$tache['id']}' class='label'>
                                     <svg width='45' height='45' viewBox='0 0 95 95'>
                                         <rect x='30' y='20' width='50' height='50' stroke='black' fill='none'></rect>
                                         <g transform='translate(0,-952.36222)'>
@@ -79,9 +141,8 @@ class ControllerAccueil extends DefaultController {
                                         </g>
                                     </svg>
                                 </label>
-                                <button class='button_liste'><span>{$tache['libelle']}</span></button>
+                                <button class='button_liste' id='{$tache['id']}' ><span>{$tache['libelle']}</span></button>
                             </div>";
-            $id=$id+1;
         }
         return $listeTache; 
     }

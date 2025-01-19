@@ -377,32 +377,33 @@
             <h1>Information</h1>
             <form id="Form"action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache" method="POST">
                 <label for="titre">Titre :</label>
-                <input id="titre" required type="text" name="titre">
+                <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre) ?>">
 
                 <label for="description">Description :</label>
-                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."></textarea>
+                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."><?= htmlspecialchars($description) ?></textarea>
 
                 <label for="date">Date limite :</label>
-                <input id="date" required type="date" name="date">
+                <input id="date" required type="date" name="date" value="<?= htmlspecialchars($date) ?>">
 
                 <label for="statut">Statut :</label>
                 <select id="statut" name="statut" required>
                     <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="En cours">En cours</option>
-                    <option value="En Attente">En Attente</option>
-                    <option value="Termine">Terminé</option>
+                    <option value="En cours" <?= $statut == 'En cours' ? 'selected' : null ?>>En cours</option>
+                    <option value="En Attente" <?= $statut == 'En Attente' ? 'selected' : null ?>>En Attente</option>
+                    <option value="Termine" <?= $statut == 'Termine' ? 'selected' : null ?>>Terminé</option>
                 </select>
 
                 <label for="priorite">Priorité :</label>
                 <select id="priorite" name="priorite" required>
                     <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="Important">Important</option>
-                    <option value="Moyenne">Moyenne</option>
-                    <option value="Faible">Faible</option>
+                    <option value="Important" <?= $priorite == 'Important' ? 'selected' : '' ?>>Important</option>
+                    <option value="Moyenne" <?= $priorite == 'Moyenne' ? 'selected' : '' ?>>Moyenne</option>
+                    <option value="Faible" <?= $priorite == 'Faible' ? 'selected' : '' ?>>Faible</option>
+                </select>
                 </select>
 
                 <label >Assigné :</label>
-                <input  required type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom...">
+                <input  required type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." value="<?= htmlspecialchars($assigne) ?>">
                 <datalist id="assigne-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
                     <?=$listeUser?>
@@ -412,8 +413,8 @@
                 <input  required type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
                 <datalist id="categorie-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
-                    <option value="personnel"></option>
-                    <option value="Au travail"></option>
+                    <option value="personnel" <?= $categorie == 'personnel' ? 'selected' : '' ?>></option>
+                    <option value="Au travail" <?= $categorie == 'Au travail' ? 'selected' : '' ?>></option>
                 </datalist>
 
                 <div class="buttons_form" id="buttons_form">
@@ -535,6 +536,38 @@
                     xhr.send(); // Envoi de la requête
                 }
 
+                function updateFromTask(id) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateFromTask&id='+id, true);
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            console.log('Réponse brute du serveur:', xhr.responseText); // Affiche la réponse brute avant le parsing
+
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse JSON parsée:', response);
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour le formulaire avec les données de la tâche
+                                    divForm.innerHTML = response.form;
+                                } else {
+                                    console.error('Erreur : ' + response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
+                        } else {
+                            console.error('Erreur du serveur :', xhr.status);
+                        }
+                    };
+
+                    xhr.onerror = function() {
+                        console.error('Erreur de requête AJAX');
+                    };
+
+                    xhr.send();  // Envoi de la requête
+                }
 
                 function isFormValid() {
                     const requiredFields = form.querySelectorAll('[required]');
@@ -572,10 +605,12 @@
                             AnimationArriere();
                             setTimeout(function () {
                                 updateButtonForm('update');
+                                updateFromTask(tache.getAttribute('id'));
                                 AnimationAvant();
                             }, 500);
                         } else {
                             updateButtonForm('update');
+                            updateFromTask(tache.getAttribute('id'));
                             AnimationAvant();
                         }
                     });
@@ -589,14 +624,17 @@
                                 AnimationArriere();
                                 setTimeout(function () {
                                     updateButtonForm('add');
+                                    updateFromTask(null);
                                     AnimationAvant();
                                 }, 500);
                             } else {
                                 updateButtonForm('add');
+                                updateFromTask(null);
                                 AnimationAvant();
                             }
                     }else{
                         updateButtonForm('add');
+                        updateFromTask(null);
                         if (divForm.classList.contains('active')) {
                             AnimationArriere();
                         } else {

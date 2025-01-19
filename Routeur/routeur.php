@@ -24,6 +24,17 @@
             $controller->ajouterForm();
         }if ( $_GET["action"] === "updateListTask") {
             $controller->updateListTask();
+        }if ( $_GET["action"] === "updateFromTask") {
+            if (isset($_GET["id"])) {
+                $controller->updateFromTask($_GET["id"]);
+            } else {
+                // Si 'mid' n'est pas défini dans la requête GET, renvoyer une erreur JSON
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Le paramètre mode est manquant.'
+                ]);
+                exit;
+            }  
         }
         // Si 'action' n'est pas définie dans la requête GET, renvoyer une erreur JSON
         echo json_encode([

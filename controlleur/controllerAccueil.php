@@ -12,61 +12,35 @@ class ControllerAccueil extends DefaultController {
         $tache = $tacheDAO->getTaskById($id);
 
         // Si la tâche est trouvée, on renvoie les données en format JSON
-        if ($tache&$tache!=null) {
-            // Assurez-vous que $tache contient les propriétés correctes
-            // Vérification de la structure avant d'envoyer
-                $titre=$tache->getLibelle();
-                $description= $tache->getDescriptif();
-                $date= $tache->getDateEcheance();
-                $statut=$tache->getStatut();
-                $priorite=$tache->getPriorite();
-                $assigne=$tache->getUtilisateur()->getPrenom().' '.$tache->getUtilisateur()->getNom();
-                $categorie= $tache->getCategorie();
-        
-                echo json_encode([
-                    'status' => 'success',
-                    [
-                        'titre' =>$titre,
-                        'description' =>$description,
-                        'date' => $date,
-                        'statut' => $statut,
-                        'priorite' => $priorite,
-                        'assigne' => $assigne,
-                        'categorie' =>$categorie
-                    ]
-                ]);
-            
+        if ($tache) {
+            // Assurez-vous que les propriétés sont correctement définies
+            $response = [
+                'status' => 'success',
+                'titre' => $tache->getLibelle(),
+                'description' => $tache->getDescriptif()?: 'Description non fournie',
+                'date' => $tache->getDateEcheance(),
+                'statut' => $tache->getStatut(),
+                'priorite' => $tache->getPriorite(),
+                'assigne' => $tache->getUtilisateur()->getPrenom() . ' ' . $tache->getUtilisateur()->getNom(),
+                'categorie' => $tache->getCategorie()
+            ];
         } else {
-            if($tache==null){
-                $titre=null;
-                $description=null;
-                $date=null;
-                $statut="";
-                $priorite="";
-                $assigne="";
-                $categorie="";
-        
-                echo json_encode([
-                    'status' => 'success',
-                    $data = [
-                        'titre' =>$titre,
-                        'description' =>$description,
-                        'date' => $date,
-                        'statut' => $statut,
-                        'priorite' => $priorite,
-                        'assigne' => $assigne,
-                        'categorie' =>$categorie
-                    ]
-                ]);
-            }else{
-                // Si la tâche n'est pas trouvée
-                echo json_encode([
-                'status' => 'error',
-                'message' => 'Tâche non trouvée'
-            ]);
-            }
+            $response = [
+                'status' => 'success',
+                'titre' => null,
+                'description' => null,
+                'date' => null,
+                'statut' => "",
+                'priorite' => "",
+                'assigne' => "",
+                'categorie' => ""
+            ];
         }
-        exit();  // Terminer le script après avoir renvoyé la réponse
+        
+        // Renvoi de la réponse JSON
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();
     }
 
     public function updateButtonForm($mode){

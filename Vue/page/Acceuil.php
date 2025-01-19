@@ -377,40 +377,40 @@
             <h1>Information</h1>
             <form id="Form"action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache" method="POST">
                 <label for="titre">Titre :</label>
-                <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre) ?>">
+                <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre ?? '') ?>">
 
                 <label for="description">Description :</label>
-                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."><?= htmlspecialchars($description) ?></textarea>
+                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."><?= htmlspecialchars($description ??'') ?></textarea>
 
                 <label for="date">Date limite :</label>
-                <input id="date" required type="date" name="date" value="<?= htmlspecialchars($date) ?>">
+                <input id="date" required type="date" name="date" value="<?= htmlspecialchars($date ?? '') ?>">
 
                 <label for="statut">Statut :</label>
                 <select id="statut" name="statut" required>
-                    <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="En cours" <?= $statut == 'En cours' ? 'selected' : null ?>>En cours</option>
-                    <option value="En Attente" <?= $statut == 'En Attente' ? 'selected' : null ?>>En Attente</option>
-                    <option value="Termine" <?= $statut == 'Termine' ? 'selected' : null ?>>Terminé</option>
+                    <option value="" <?=($statut ?? '') == 'En cours' || 'En attente' || 'Terminee' ? 'disabled' : 'disabled selected' ?>>-- Sélectionnez une option --</option>
+                    <option value="En cours" <?= ($statut ?? '') == 'En cours' ? 'selected' : '' ?>>En cours</option>
+                    <option value="En attente" <?= ($statut ?? '')  == 'En attente' ? 'selected' : '' ?>>En attente</option>
+                    <option value="Terminee" <?= ($statut ?? '') == 'Terminee' ? 'selected' : '' ?>>Terminée</option>
                 </select>
 
                 <label for="priorite">Priorité :</label>
                 <select id="priorite" name="priorite" required>
-                    <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="Important" <?= $priorite == 'Important' ? 'selected' : '' ?>>Important</option>
-                    <option value="Moyenne" <?= $priorite == 'Moyenne' ? 'selected' : '' ?>>Moyenne</option>
-                    <option value="Faible" <?= $priorite == 'Faible' ? 'selected' : '' ?>>Faible</option>
+                    <option value="" <?=($priorite ?? '') == 'Haute' || 'Moyenne' || 'Basse' ? 'disabled' : 'disabled selected' ?>>-- Sélectionnez une option --</option>
+                    <option value="Haute" <?= ($priorite ?? '') == 'Haute' ? 'selected' : '' ?>>Haute</option>
+                    <option value="Moyenne" <?= ($priorite ?? '') == 'Moyenne' ? 'selected' : '' ?>>Moyenne</option>
+                    <option value="Basse" <?= ($priorite ?? '') == 'Basse' ? 'selected' : '' ?>>Basse</option>
                 </select>
                 </select>
 
                 <label >Assigné :</label>
-                <input  required type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." value="<?= htmlspecialchars($assigne) ?>">
+                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." value="<?= htmlspecialchars($assigne ?? '') ?>">
                 <datalist id="assigne-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
                     <?=$listeUser?>
                 </datalist>
 
                 <label >Categorie :</label>
-                <input  required type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
+                <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
                 <datalist id="categorie-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
                     <option value="personnel" <?= $categorie == 'personnel' ? 'selected' : '' ?>></option>
@@ -538,21 +538,25 @@
 
                 function updateFromTask(id) {
                     let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateFromTask&id='+id, true);
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateFromTask&id=' + id, true);
 
-                    xhr.onload = function() {
+                    xhr.onload = function () {
                         if (xhr.status === 200) {
-                            console.log('Réponse brute du serveur:', xhr.responseText); // Affiche la réponse brute avant le parsing
-
                             try {
                                 let response = JSON.parse(xhr.responseText);
                                 console.log('Réponse JSON parsée:', response);
 
                                 if (response.status === 'success') {
-                                    // Mettre à jour le formulaire avec les données de la tâche
-                                    divForm.innerHTML = response.form;
+                                    // Mettre à jour les champs du formulaire
+                                    document.getElementById('titre').value = response.titre || '';
+                                    document.getElementById('description').value = response.description || '';
+                                    document.getElementById('date').value = response.date || '';
+                                    document.getElementById('statut').value = response.statut || '';
+                                    document.getElementById('priorite').value = response.priorite || '';
+                                    document.getElementById('assigne').value = response.assigne || '';
+                                    document.getElementById('categorie').value = response.categorie || '';
                                 } else {
-                                    console.error('Erreur : ' + response.message);
+                                    console.error('Erreur :', response.message);
                                 }
                             } catch (e) {
                                 console.error('Erreur de parsing JSON :', e);
@@ -562,11 +566,11 @@
                         }
                     };
 
-                    xhr.onerror = function() {
+                    xhr.onerror = function () {
                         console.error('Erreur de requête AJAX');
                     };
 
-                    xhr.send();  // Envoi de la requête
+                    xhr.send();
                 }
 
                 function isFormValid() {
@@ -583,7 +587,8 @@
                             container_filtre.classList.add('active');
                         }, 10);
                     } 
-                }function AnimationArriere() {
+                }
+                function AnimationArriere() {
                     if(divForm.classList.contains('active')){
                         divForm.classList.remove('active');
                         taskListDiv.classList.remove('active');

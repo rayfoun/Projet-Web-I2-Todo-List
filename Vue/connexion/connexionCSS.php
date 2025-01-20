@@ -1,3 +1,7 @@
+
+<?php
+header("Content-Type: text/css"); // En-tête pour indiquer du CSS
+?>
 /* From Uiverse.io by Yaya12085 */ 
 .container {
     display: flex;

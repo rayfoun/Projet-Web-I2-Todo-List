@@ -6,7 +6,7 @@
         public function getConnection() {
             try {
                 // Création de la connexion avec PDO
-                $this->conn = new PDO('mysql:host=localhost;dbname=to-dolist', 'root', '');
+                $this->conn = new PDO('mysql:host=localhost;dbname=to-do list', 'root', '');
 
                 // Configuration des options PDO
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -1,7 +1,7 @@
 <?php
     session_start();
     require_once __DIR__.'/DefaultController.php';
-    require_once '/Config/bdd.php';
+    require_once '../Config/bdd.php';
 
     class ControllerConnexion extends DefaultController{
 
@@ -16,12 +16,14 @@
         
         function login(){
             global $pdo;
+            $database = new Database();
+            $pdo = $database->getConnection();
             // on devrait vérifier qu'ils sont set
             $email = $_POST["email"];
             $password = $_POST["password"];
     
-            $textR = "select password, type";
-            $textR.= "from users";
+            $textR = "select password_utser, type ";
+            $textR.= "from users ";
             $textR.= "where email_user=:email";
             $req = $pdo->prepare($textR);
             $req->bindParam(":email", $email);
@@ -30,19 +32,20 @@
     
             //Récupération du tableau des résultats
             $tabRes = $req->fetchAll(PDO::FETCH_ASSOC);
-
+            $var=count($tabRes);
+            echo $var;
             //Vérification de l'existence de l'utilisateur
             if (count($tabRes)!=1) {
                 // pas trouvé => retour au formulaire de co
                 // die("Erreur de co");
-                header("Location: /Routeur/routeur.php");
-                exit();
+               // header("Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php");
+                //exit();
             }    
             
             //Vérification du mot de passe crypté
             if (!password_verify($password, $tabRes[0]['password'])) {
                 // Mot de passe incorrect
-                header("Location: /Routeur/routeur.php");
+                //header("Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php");
                 exit();
             }
 
@@ -52,7 +55,7 @@
             $_SESSION["type"] = $tabRes[0]["type"];
             
             // Redirection vers la page d'accueil
-            header("Location: /Routeur/routeur.php?action=accueil");
+            //header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil");
         }
     }
 ?>

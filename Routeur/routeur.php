@@ -9,9 +9,17 @@
     #$controller = new ControllerConnexion();
     #$controller->affichePageConnexion();
 
-    session_start();
+    //session_start();
 
     // page de connextion : routeur sans action
+
+        echo "<pre>";
+    echo "GET : ";
+    print_r($_GET);
+    echo "POST : ";
+    print_r($_POST);
+    echo "</pre>";
+
     if (!isset($_GET["action"])){
         // => accueil;
         require '../controlleur/ConnexionController.php';
@@ -21,7 +29,9 @@
     } 
 
     if ($_GET["action"]=="traiterAuthentification"){
+        echo "hellooo nice to meet you";
         require_once '../controlleur/ConnexionController.php';
+        echo "hellooo";
         $controller = new ControllerConnexion();
         $controller->login();
         exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul

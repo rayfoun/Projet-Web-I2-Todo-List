@@ -14,6 +14,12 @@
         }if ( $_GET["action"] === "deleteTache") {
             $controller->deleteForm();
         }
+        //Recherche
+        if ( $_GET["action"] === "updateLoader") {
+            $controller->updateLoader();
+        }if ( $_GET["action"] === "searchList") {
+            $controller->searchList();
+        }
         
         // Mettre à jour les buttons du formulaire
         if ( $_GET["action"] === "updateButtonForm") {

@@ -43,6 +43,25 @@ class ControllerAccueil extends DefaultController {
         exit();
     }
 
+    public function updateLoader(){
+        
+        $loader="<button class='cta'>
+                    <span style='font-family:'Freestyle Script''>Reinitialisation</span>
+                    <svg width='15px' height='10px' viewBox='0 0 13 10'>
+                        <path d='M1,5 L11,5'></path>
+                        <polyline points='8 1 12 5 8 9'></polyline>
+                    </svg>
+                </button>";
+                $response = [
+                    'status' => 'success',
+                    'loader' => $loader
+                ];
+    
+                // Assurez-vous que les headers sont correctement définis pour envoyer du JSON
+                header('Content-Type: application/json');
+                echo json_encode($response); // Renvoi uniquement de JSON
+                exit; // Assurez-vous qu'aucune autre sortie n'est envoyée après
+    }
     public function updateButtonForm($mode){
         if (isset($_GET["action"]) && $_GET["action"] === "updateButtonForm") {
             if (isset($_GET["mode"])) {
@@ -155,12 +174,15 @@ class ControllerAccueil extends DefaultController {
         $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
         //listeTache
         $listeTache=$this->getListeTache();
+        //initialisation du loarder
+        $loader="";
         // Rendu de la vue
         $this->renderView(
             __DIR__ . '/../Vue/page/Acceuil.php', // Correction du chemin
             [
                 'listeUser' => $listeUser,
                 'listeTache'=> $listeTache,
+                'loader'=>$loader,
                 'themeProjet' => $themeProjet,
             ]
         );
@@ -229,6 +251,11 @@ class ControllerAccueil extends DefaultController {
     }
 
     public function deleteForm(){
+        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+        exit;
+    }
+
+    public function searchList(){
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }

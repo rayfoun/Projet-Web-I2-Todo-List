@@ -87,7 +87,7 @@
                 align-items: center; /* Aligne tous les éléments au centre */
                 margin-top: 20px;
                 position:fixed;
-                top:20%;
+                top:15%;
                 left:3%;
                 transform: translateX(25%);  /* Pas de décalage initial */
                 opacity: 1; /* Transparent au départ */
@@ -182,13 +182,13 @@
                 bottom:3% ;
                 width: 450px;
                 display: block;
-                box-sizing: border-box;/*ajoute le padding au elements du scroll*/ 
+               
                 justify-content: center;
                 flex-direction: column;
                 transform: translateX(48%);  /* Pas de décalage initial */
                 opacity: 1; /* Transparent au départ */
                 transition: transform 0.4s ease; /* Transition fluide */
-                overflow-y:auto; /* Permet de faire défiler le contenu verticalement */
+                overflow-y:auto;
                 background: #f1f1f1;
                 background-image: linear-gradient(90deg,transparent 50px,#ffb4b8 50px, #ffb4b8 52px,transparent 52px),linear-gradient(#e1e1e1 0.1em, transparent 0.1em);
                 background-size: 100% 30px;
@@ -335,6 +335,74 @@
             .buttons_form .delete:hover {
                 background-color: #c82333;
             }
+            /*loarder*/
+            #container_filtre1{
+                font-family:'Freestyle Script';
+                position:flex;
+                margin: 2%;
+            }
+            #container_filtre2{
+                display: block;
+                position:flex;
+                overflow-y:auto; /* Permet de faire défiler le contenu verticalement */
+            }
+            .cta {
+            position: relative;
+            margin: auto;
+            padding: 12px 18px;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            cursor: pointer;
+            }
+
+            .cta:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            border-radius: 50px;
+            background: #b1dae7;
+            width: 45px;
+            height: 45px;
+            transition: all 0.3s ease;
+            }
+
+            .cta span {
+            position: relative;
+            font-family: "Freestyle Script", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #234567;
+            }
+
+            .cta svg {
+            position: relative;
+            top: 0;
+            margin-left: 10px;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke: #234567;
+            stroke-width: 2;
+            transform: translateX(-5px);
+            transition: all 0.3s ease;
+            }
+
+            .cta:hover:before {
+            width: 100%;
+            background: #b1dae7;
+            }
+
+            .cta:hover svg {
+            transform: translateX(0);
+            }
+
+            .cta:active {
+            transform: scale(0.95);
+            }
         </style>
     </head>
     <body>
@@ -358,6 +426,7 @@
                     <span class="button__text">Tâche</span>
                     <span class="button__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
                 </button>
+
             </div>
             <div style=" display: flex;align-items: center;">
                 <input class="input_filtre" name="text" placeholder="Titre..." type="search">
@@ -369,7 +438,8 @@
 
         <!--La liste de tâche-->
         <div class=divListeTache id="divListeTache">
-            <?=$listeTache?> 
+            <div  id="container_filtre1" style=" display: flex;align-items: center;" ><?=$loader?></div>
+            <div  id="container_filtre2"><?=$listeTache?></div> 
         </div>
 
         <!--Le formulaire-->
@@ -454,10 +524,11 @@
                 const button = document.getElementById('button_add'); // Bouton Add
                 const buttonTaches = document.querySelectorAll('.button_liste');//les boutons de liste tache
                 const divForm = document.getElementById('taskForm'); // div Formulaire
-                const form = document.getElementById('Form'); // div Formulaire
+                const form = document.getElementById('Form'); // Formulaire
                 const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
                 const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
                 const checks = document.querySelectorAll('.check');//les checkbox des boutons de liste tache
+                const filtres = document.querySelectorAll('.input_filtre');//filtre de recherche
                 
                 let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
 
@@ -632,6 +703,33 @@
                     } 
                 }
 
+                function updateLoader() {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateLoader', true);
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour la section de la liste de tache
+                                    document.getElementById('container_filtre1').innerHTML = response.loader;
+                                } else {
+                                    console.error('Erreur : ' + response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
+                        } else {
+                            console.error('Erreur de serveur :', xhr.status);
+                        }
+                    };
+
+                    xhr.send(); // Envoi de la requête
+                }
+
                 function AnimationArriere() {
                     if(divForm.classList.contains('active')){
                         divForm.classList.remove('active');
@@ -676,6 +774,21 @@
                         box.disabled = true;
                     }
                 });
+                //gestion des filtres
+                filtres.forEach(filtre=>{
+                    filtre.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // Empêche le comportement par défaut du formulaire si nécessaire
+                            const inputValue = filtre.value.trim(); // Récupère la valeur entrée
+                            if (inputValue) {
+                                console.log('Texte entré :', inputValue);
+                                taskListDiv.style.removeProperty('overflow-y');
+                                updateLoader();
+                            } 
+                        }
+                    });
+                });
+
                 // Gestion des clics sur le bouton Ajouter vert
                 button.addEventListener('click', function () {
 

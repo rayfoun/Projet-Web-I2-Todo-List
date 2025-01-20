@@ -1,53 +1,55 @@
 <?php
     // Exemple d'appel dans index.php
     require_once '../controlleur/controllerAccueil.php';
+    require_once '../controlleur/ConnexionController.php';
 
-     $controller = new ControllerAccueil();
+    // Instanciation des controleurs
+     $controllerAccueil = new ControllerAccueil();
+     $controllerConnexion = new ControllerConnexion();
+
     if(!isset($_GET["action"])){
-        require '../controlleur/ConnexionController.php';
-        $controller = new ControllerConnexion();
-        $controller->affichePageConnexion();
+        $controllerConnexion->affichePageConnexion();
         exit(); 
-        //$controller->afficheAccueil();
+        //$controllerAccueil->afficheAccueil();
     }else{
 
         // Authentification
         if ($_GET["action"]=="traiterAuthentification"){
-            require_once '../controlleur/ConnexionController.php';
-            $controller = new ControllerConnexion();
-            $controller->login();
+            //require_once '../controlleur/ConnexionController.php';
+            //$controllerAccueil = new ControllerConnexion();
+            $controllerConnexion->login();
             exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
         }
 
         //Affichage de l'accueil
         if ($_GET["action"]=="accueil"){
-            require '../controlleur/AccueilController.php';
-            $controller = new ControllerAccueil();
-            $controller->afficheAccueil();
+            //require '../controlleur/controllerAccueil.php';
+            //$controllerAccueil = new ControllerAccueil();
+            $controllerAccueil->afficheAccueil();
             exit();
         }
 
          // save , delete update une tache
         if ( $_GET["action"] === "saveTache") {
-            $controller->saveForm();
+            $controllerAccueil->saveForm();
         }if ( $_GET["action"] === "updateTache") {
-            $controller->updateForm();
+            $controllerAccueil->updateForm();
         }if ( $_GET["action"] === "deleteTache") {
-            $controller->deleteForm();
+            $controllerAccueil->deleteForm();
         }
 
         //Recherche
         if ( $_GET["action"] === "updateLoader") {
-            $controller->updateLoader();
+            $controllerAccueil->updateLoader();
         }if ( $_GET["action"] === "searchList") {
-            $controller->searchList();
+            $controllerAccueil->searchList();
         }
         
         // Mettre à jour les boutons du formulaire
         if ( $_GET["action"] === "updateButtonForm") {
             // Vérifiez que le paramètre 'mode' est passé dans la requête GET
             if (isset($_GET["mode"])) {
-                $controller->updateButtonForm($_GET["mode"]);
+                $controllerAccueil->updateButtonForm($_GET["mode"]);
             } else {
                 // Si 'mode' n'est pas défini dans la requête GET, renvoyer une erreur JSON
                 echo json_encode([
@@ -57,10 +59,10 @@
                 exit;
             }  
         }if ( $_GET["action"] === "updateListTask") {
-            $controller->updateListTask();
+            $controllerAccueil->updateListTask();
         }if ( $_GET["action"] === "updateFromTask") {
             if (isset($_GET["id"])) {
-                $controller->updateFromTask($_GET["id"]);
+                $controllerAccueil->updateFromTask($_GET["id"]);
             } else {
                 // Si 'id' n'est pas défini dans la requête GET, renvoyer une erreur JSON
                 echo json_encode([
@@ -81,11 +83,11 @@
     #require_once '../controlleur/AfficheAccueil.php';
     #require_once '../controlleur/ConnexionController.php';
 
-    #$controller = new ControllerAccueil();
-    #$controller->afficheAccueil();
+    #$controllerAccueil = new ControllerAccueil();
+    #$controllerAccueil->afficheAccueil();
 
-    #$controller = new ControllerConnexion();
-    #$controller->affichePageConnexion();
+    #$controllerAccueil = new ControllerConnexion();
+    #$controllerAccueil->affichePageConnexion();
 
     //session_start();
 
@@ -101,8 +103,8 @@
     // if (!isset($_GET["action"])){
     //     // => accueil;
     //     require '../controlleur/ConnexionController.php';
-    //     $controller = new ControllerConnexion();
-    //     $controller->affichePageConnexion();
+    //     $controllerAccueil = new ControllerConnexion();
+    //     $controllerAccueil->affichePageConnexion();
     //     exit();
     // } 
 
@@ -110,15 +112,15 @@
     //     echo "hellooo nice to meet you";
     //     require_once '../controlleur/ConnexionController.php';
     //     echo "hellooo";
-    //     $controller = new ControllerConnexion();
-    //     $controller->login();
+    //     $controllerAccueil = new ControllerConnexion();
+    //     $controllerAccueil->login();
     //     exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
     // }
 
     // if ($_GET["action"]=="accueil"){
     //     require '../controlleur/AccueilController.php';
-    //     $controller = new ControllerAccueil();
-    //     $controller->afficheAccueil();
+    //     $controllerAccueil = new ControllerAccueil();
+    //     $controllerAccueil->afficheAccueil();
     //     exit();
     // }
 

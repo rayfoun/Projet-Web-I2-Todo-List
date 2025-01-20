@@ -8,9 +8,8 @@
         private $db;
         
         function affichePageConnexion(){
-            #$cssfile = $this->renderComponent(__DIR__."/../Vue/connexion/connexionCSS.php");
             $this->renderView(
-                 __DIR__."/../Vue/connexion/connexion.php"
+                 __DIR__."/../Vue/page/Connexion.php"
             );
         } 
         

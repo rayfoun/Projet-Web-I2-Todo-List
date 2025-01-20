@@ -261,6 +261,7 @@ class TacheDao {
                 $row['libelle'],
                 $row['descriptif'],
                 $row['dateCreation']
+            );
         }
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }

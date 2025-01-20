@@ -214,5 +214,35 @@ class TacheDao {
 
         return $taches;
     }
+
+    // recuperer toutes les tâches
+    public function getAllTask(){
+        $query = $this->db->prepare("SELECT * From tache");
+        $query->execute();
+
+        $result = $query->fetchAll(PDO::FETCH_ASSOC); // Récupération des données sous forme de tableau associatif
+        $tasks = [];
+        foreach ($result as $row) {
+            // Remplacez ci-dessous par la logique correcte pour initialiser un utilisateur (hypothèse : vous avez une méthode `getUtilisateurById` dans une autre classe)
+            $utilisateur = $this->utilisateurDao->getUserById($row['id_user']); 
+    
+            // Création de l'objet Tache
+            $tasks[] = new Tache(
+                $row['id_tache'],
+                $row['libelle_tache'],
+                $row['descriptif_tache'],
+                $row['date_creation'],
+                $row['date_echeance'],
+                $row['heure_creation'],
+                $row['heure_echeance'],
+                $row['statut_tache'],
+                $row['priorite_tache'],
+                $row['categorie'],
+                $utilisateur
+            );
+        }
+    
+        return $tasks; // Retourne un tableau d'objets Tache
+    }
     
 }

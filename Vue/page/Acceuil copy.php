@@ -1,4 +1,10 @@
-
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Formulaire Aligné à Droite</title>
+        <style>
             /*body*/
             body {
                 font-family: Arial, sans-serif;
@@ -233,7 +239,7 @@
             }
 
             /*checkbox*/
-            .checkbox-wrapper input[type='checkbox'] {
+            .checkbox-wrapper input[type="checkbox"] {
                 visibility: hidden;
                 display: none;
             }
@@ -329,3 +335,178 @@
             .buttons_form .delete:hover {
                 background-color: #c82333;
             }
+        </style>
+    </head>
+    <body>
+        <!--La navbar-->
+        <div class="nav">
+            <div class="container_nav">
+            <div class="btn">To-Do List</div>
+            <div class="btn">Profil</div>
+            <svg class="outline" overflow="visible" width="400" height="60" viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg">
+                <rect class="rect" pathLength="100" x="0" y="0" width="400" height="60" fill="transparent" stroke-width="5"></rect>
+            </svg>
+            </div>
+        </div>
+
+        <!--Le filtre de recherche-->
+        <div class="container_filtre">
+            <div style=" display: flex;align-items: center;">
+                <h2 style="text-align: center">Liste de tâche</h2>
+                
+                <button class="button_add" id="button_add" type="button">
+                    <span class="button__text">Tâche</span>
+                    <span class="button__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
+                </button>
+            </div>
+            <div style=" display: flex;align-items: center;">
+                <input class="input_filtre" name="text" placeholder="Titre..." type="search">
+                <input class="input_filtre" name="text" placeholder="statut..." type="search">
+                <input class="input_filtre" name="text" placeholder="Priorite..." type="search">
+                <input class="input_filtre" name="text" placeholder="Assigne..." type="search">
+            </div>
+        </div>
+
+        <!--La liste de tâche-->
+        <div class=divListeTache>
+            <?=$listeTache?> 
+        </div>
+
+        <!--Le formulaire-->
+        <div class="information" id="taskForm">
+            <h1>Information</h1>
+            <form action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=ajouterTache" method="POST">
+                <label for="titre">Titre :</label>
+                <input id="titre" required type="text" name="titre">
+
+                <label for="description">Description :</label>
+                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."></textarea>
+
+                <label for="date">Date limite :</label>
+                <input id="date" required type="date" name="date">
+
+                <label for="statut">Statut :</label>
+                <select id="statut" name="statut" required>
+                    <option value="" disabled selected>-- Sélectionnez une option --</option>
+                    <option value="En cours">En cours</option>
+                    <option value="En Attente">En Attente</option>
+                    <option value="Termine">Terminé</option>
+                </select>
+
+                <label for="priorite">Priorité :</label>
+                <select id="priorite" name="priorite" required>
+                    <option value="" disabled selected>-- Sélectionnez une option --</option>
+                    <option value="Important">Important</option>
+                    <option value="Moyenne">Moyenne</option>
+                    <option value="Faible">Faible</option>
+                </select>
+
+                <label >Assigné :</label>
+                <input  required type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom...">
+                <datalist id="assigne-list">
+                    <!-- Ces options sont générées dynamiquement par le serveur -->
+                    <?=$listeUser?>
+                </datalist>
+
+                <label >Categorie :</label>
+                <input  required type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
+                <datalist id="categorie-list">
+                    <!-- Ces options sont générées dynamiquement par le serveur -->
+                    <option value="personnel"></option>
+                    <option value="Au travail"></option>
+                </datalist>
+
+                <div class="buttons_form">
+                    <button type="button" id="add" class="add">Ajouter</button>
+                    <button type="button" id="cancel" class="cancel">Annuler</button>
+                    <button type="button" id="delete" class="delete" onclick="deleteTache();">Supprimer</button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            function deleteTache() {
+                // Exemple de requête fetch pour appeler un contrôleur
+                fetch('/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: '12345' }) // Exemple de données envoyées
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Élément supprimé avec succès !');
+                        window.location.href = '/home'; // Redirection après suppression
+                    } else {
+                        alert('Erreur lors de la suppression.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue.');
+                });
+            }
+        </script>
+        <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
+        <script>
+           document.addEventListener('DOMContentLoaded', function () {
+                const button = document.getElementById('button_add'); // Bouton existant
+                const buttonTaches = document.querySelectorAll('.button_liste');//les boutons de liste tache
+                const buttonAdd = document.getElementById('add');
+                const button_cancel = document.getElementById('cancel');
+                const button_delete = document.getElementById('delete'); // Bouton
+                const form = document.getElementById('taskForm'); // Formulaire
+                const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
+                const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
+
+                function isFormValid() {
+                    const requiredFields = form.querySelectorAll('[required]');
+                    return Array.from(requiredFields).every(field => field.value.trim() !== '');
+                }
+
+                function toggleAddForm() {
+                    if (!form.classList.contains('active')) {
+                        form.style.display = 'flex'; // Rendre le formulaire visible pour la transition
+                        setTimeout(() => {
+                            form.classList.add('active');
+                            taskListDiv.classList.add('active');
+                            container_filtre.classList.add('active');
+                            button_delete.style.display = 'none';
+                        }, 10);
+                    } else {
+                        form.classList.remove('active');
+                        taskListDiv.classList.remove('active');
+                        container_filtre.classList.remove('active');
+                        setTimeout(() => {
+                            form.style.display = 'none'; // Masquer complètement après l'animation
+                        }, 400); // Délai correspondant à la durée de la transition
+                    }
+                }
+
+                // Ajouter l'écouteur d'événements aux deux boutons
+                buttonAdd.addEventListener('click', function (event) {
+                    if (isFormValid()) {
+                        toggleAddForm(); // Active l'animation uniquement si le formulaire est valide
+                        // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                        setTimeout(function () {
+                            form.submit();
+                        }, 500);
+                    }else{
+                        form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                    }
+                });
+
+                buttonTaches.forEach(tache => {
+                    tache.addEventListener('click', toggleAddForm);
+                });
+                button.addEventListener('click', toggleAddForm);
+                button_cancel.addEventListener('click', toggleAddForm);
+            });
+        </script>
+
+    </body>
+</html>
+
+
+           

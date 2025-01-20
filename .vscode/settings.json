@@ -11,5 +11,6 @@
             "username": "postrgres",
             "password": "mot de passe"
         }
-    ]
+    ],
+    "window.zoomLevel": 0
 }

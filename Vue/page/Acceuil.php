@@ -80,14 +80,14 @@
                 background:  #e2e2e2;
             }
 
-            /*Filtre de recherche*/
-            .container_filtre {
+             /*Filtre de recherche*/
+             .container_filtre {
                 display: flex;
                 flex-direction: column;
                 align-items: center; /* Aligne tous les éléments au centre */
                 margin-top: 20px;
                 position:fixed;
-                top:20%;
+                top:15%;
                 left:3%;
                 transform: translateX(25%);  /* Pas de décalage initial */
                 opacity: 1; /* Transparent au départ */
@@ -121,8 +121,8 @@
                 outline: 1px solid lightgrey;
             }
 
-            /*button ajouter*/ 
-            .button_add {
+             /*button ajouter*/ 
+             .button_add {
                 position: relative;
                 width: 150px;
                 height: 40px;
@@ -180,15 +180,19 @@
                 /*transform: translate(10%, 0%);  Déplace le div pour le centrer */
                 height:50% ;
                 bottom:3% ;
-                width: 30%; /* Le div prend 40% de la largeur de la page */
-                display: flex;
-                box-sizing: border-box;/*ajoute le padding au elements du scroll*/ 
+                width: 450px;
+                display: block;
+               
                 justify-content: center;
                 flex-direction: column;
-                transform: translateX(55%);  /* Pas de décalage initial */
+                transform: translateX(48%);  /* Pas de décalage initial */
                 opacity: 1; /* Transparent au départ */
                 transition: transform 0.4s ease; /* Transition fluide */
-                overflow-y:scroll; /* Permet de faire défiler le contenu verticalement */
+                overflow-y:auto;
+                background: #f1f1f1;
+                background-image: linear-gradient(90deg,transparent 50px,#ffb4b8 50px, #ffb4b8 52px,transparent 52px),linear-gradient(#e1e1e1 0.1em, transparent 0.1em);
+                background-size: 100% 30px;
+                border-radius: 15px;
                 /*padding-bottom:500px;
                 padding-top: 410px;   Ajoutez un padding-top pour décaler un peu le contenu */
             }
@@ -199,12 +203,13 @@
             .button_liste {
                 display: inline-block;
                 border-radius: 7px;
-                background-color: #3d405b;
+                font-family: 'Freestyle Script';
+                background-color: transparent;
                 border: none;
-                color: #FFFFFF;
-                text-align: center;
+                color: black;
+                text-align: left;
                 font-size: 17px;
-                padding: 16px;
+                padding: 12px;
                 width:95%;
                 transition: all 0.5s;
                 cursor: pointer;
@@ -215,6 +220,7 @@
                 display: inline-block;
                 position: relative;
                 transition: 0.5s;
+                font-size: 30px;
             }
             .button_liste span:after {
                 content: '»';
@@ -230,6 +236,44 @@
             .button_liste:hover span:after {
                 opacity: 1;
                 right: 0;
+            }
+
+            /*checkbox*/
+            .checkbox-wrapper input[type="checkbox"] {
+                visibility: hidden;
+                display: none;
+            }
+            .checkbox-wrapper *,.checkbox-wrapper ::after,.checkbox-wrapper ::before {
+                box-sizing: border-box;
+                user-select: none;
+            }
+            .checkbox-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+            }
+            .checkbox-wrapper .label {
+                cursor: pointer;
+            }
+            .checkbox-wrapper .check {
+                width: 50px;
+                height: 50px;
+                position: absolute;
+                opacity: 0;
+            }
+            .checkbox-wrapper .label svg {
+                vertical-align: middle;
+            }
+            .checkbox-wrapper .path1 {
+                stroke-dasharray: 400;
+                stroke-dashoffset: 400;
+                transition: .5s stroke-dashoffset;
+                opacity: 0;
+            }
+            .checkbox-wrapper .check:checked + label svg g path {
+                stroke-dashoffset: 0;
+                opacity: 1;
             }
 
             /*form*/
@@ -291,6 +335,74 @@
             .buttons_form .delete:hover {
                 background-color: #c82333;
             }
+            /*loarder*/
+            #container_filtre1{
+                font-family:'Freestyle Script';
+                position:flex;
+                margin: 2%;
+            }
+            #container_filtre2{
+                display: block;
+                position:flex;
+                overflow-y:auto; /* Permet de faire défiler le contenu verticalement */
+            }
+            .cta {
+            position: relative;
+            margin: auto;
+            padding: 12px 18px;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            cursor: pointer;
+            }
+
+            .cta:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            border-radius: 50px;
+            background: #b1dae7;
+            width: 45px;
+            height: 45px;
+            transition: all 0.3s ease;
+            }
+
+            .cta span {
+            position: relative;
+            font-family: "Freestyle Script", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #234567;
+            }
+
+            .cta svg {
+            position: relative;
+            top: 0;
+            margin-left: 10px;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke: #234567;
+            stroke-width: 2;
+            transform: translateX(-5px);
+            transition: all 0.3s ease;
+            }
+
+            .cta:hover:before {
+            width: 100%;
+            background: #b1dae7;
+            }
+
+            .cta:hover svg {
+            transform: translateX(0);
+            }
+
+            .cta:active {
+            transform: scale(0.95);
+            }
         </style>
     </head>
     <body>
@@ -314,6 +426,7 @@
                     <span class="button__text">Tâche</span>
                     <span class="button__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
                 </button>
+
             </div>
             <div style=" display: flex;align-items: center;">
                 <input class="input_filtre" name="text" placeholder="Titre..." type="search">
@@ -324,58 +437,59 @@
         </div>
 
         <!--La liste de tâche-->
-        <div class=divListeTache>
-           <?=$listeTache?>
+        <div class=divListeTache id="divListeTache">
+            <div  id="container_filtre1" style=" display: flex;align-items: center;" ><?=$loader?></div>
+            <div  id="container_filtre2"><?=$listeTache?></div> 
         </div>
 
         <!--Le formulaire-->
         <div class="information" id="taskForm">
             <h1>Information</h1>
-            <form action="../../controlleur/FormTacheController.php" method="POST">
+            <form id="Form"  method="POST">
                 <label for="titre">Titre :</label>
-                <input id="titre" required type="text" name="titre">
+                <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre ?? '') ?>">
 
                 <label for="description">Description :</label>
-                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."></textarea>
+                <textarea id="description" required name="description" placeholder="Écrivez votre description ici..."><?= htmlspecialchars($description ??'') ?></textarea>
 
                 <label for="date">Date limite :</label>
-                <input id="date" required type="date" name="date">
+                <input id="date" required type="date" name="date" value="<?= htmlspecialchars($date ?? '') ?>">
 
                 <label for="statut">Statut :</label>
                 <select id="statut" name="statut" required>
-                    <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="En Cours">En Cours</option>
-                    <option value="En Attente">En Attente</option>
-                    <option value="Termine">Terminé</option>
+                    <option value="" <?=($statut ?? '') == 'En cours' || 'En attente' || 'Terminee' ? 'disabled' : 'disabled selected' ?>>-- Sélectionnez une option --</option>
+                    <option value="En cours" <?= ($statut ?? '') == 'En cours' ? 'selected' : '' ?>>En cours</option>
+                    <option value="En attente" <?= ($statut ?? '')  == 'En attente' ? 'selected' : '' ?>>En attente</option>
+                    <option value="Terminee" <?= ($statut ?? '') == 'Terminee' ? 'selected' : '' ?>>Terminée</option>
                 </select>
 
                 <label for="priorite">Priorité :</label>
                 <select id="priorite" name="priorite" required>
-                    <option value="" disabled selected>-- Sélectionnez une option --</option>
-                    <option value="Important">Important</option>
-                    <option value="Moyen">Moyen</option>
-                    <option value="Faible">Faible</option>
+                    <option value="" <?=($priorite ?? '') == 'Haute' || 'Moyenne' || 'Basse' ? 'disabled' : 'disabled selected' ?>>-- Sélectionnez une option --</option>
+                    <option value="Haute" <?= ($priorite ?? '') == 'Haute' ? 'selected' : '' ?>>Haute</option>
+                    <option value="Moyenne" <?= ($priorite ?? '') == 'Moyenne' ? 'selected' : '' ?>>Moyenne</option>
+                    <option value="Basse" <?= ($priorite ?? '') == 'Basse' ? 'selected' : '' ?>>Basse</option>
+                </select>
                 </select>
 
                 <label >Assigné :</label>
-                <input  required type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom...">
+                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." autocomplete="off" value="<?= htmlspecialchars($assigne ?? '') ?>  ">
                 <datalist id="assigne-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
                     <?=$listeUser?>
                 </datalist>
 
                 <label >Categorie :</label>
-                <input  required type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie...">
+                <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie..." autocomplete="off" value="<?= htmlspecialchars($categorie ?? '') ?>" >
                 <datalist id="categorie-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
-                    <option value="personnel"></option>
-                    <option value="Au travail"></option>
+                    <option value="personnel" >personnel</option>
+                    <option value="Au travail" >Au travail</option>
+                    <option value="Autre" >Autre</option>
                 </datalist>
 
-                <div class="buttons_form">
-                    <button type="submit" class="add">Ajouter</button>
-                    <button type="button" class="cancel" onclick="window.location.href='/home';">Annuler</button>
-                    <button type="button" class="delete" onclick="deleteTache();">Supprimer</button>
+                <div class="buttons_form" id="buttons_form">
+                    <?=$buttonForm?>
                 </div>
             </form>
         </div>
@@ -406,31 +520,303 @@
         </script>
         <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const buttons = document.querySelectorAll('.button_add'); // Bouton
-                const form = document.getElementById('taskForm'); // Formulaire
+           document.addEventListener('DOMContentLoaded', function () {
+                const button = document.getElementById('button_add'); // Bouton Add
+                const buttonTaches = document.querySelectorAll('.button_liste');//les boutons de liste tache
+                const divForm = document.getElementById('taskForm'); // div Formulaire
+                const form = document.getElementById('Form'); // Formulaire
                 const taskListDiv = document.querySelector('.divListeTache'); // Div de la liste des tâches
-                const container_filtre=document.querySelector('.container_filtre');//div des filtre
+                const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
+                const checks = document.querySelectorAll('.check');//les checkbox des boutons de liste tache
+                const filtres = document.querySelectorAll('.input_filtre');//filtre de recherche
+                
+                let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
 
-                buttons.forEach(button => {
-                    button.addEventListener('click', function () {
-                        if (!form.classList.contains('active')) {
-                            form.style.display = 'flex'; // Rendre le formulaire visible pour la transition 
-                            setTimeout(() => {
-                                form.classList.add('active');
-                                taskListDiv.classList.add('active');
-                                container_filtre.classList.add('active');
-                            }, 10);
+                // Fonction pour envoyer une requête AJAX pour mettre à jour les boutons de formulaire
+                function updateButtonForm(mode) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateButtonForm&mode=' + mode, true);
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour la section des boutons avec le nouveau bouton
+                                    document.getElementById('buttons_form').innerHTML = response.buttonForm;
+
+                                     // Réaffecter l'événement au bouton "cancel"
+                                    const buttonCancel = document.getElementById('cancel');
+                                    if (buttonCancel) {
+                                        buttonCancel.addEventListener('click', AnimationArriere);
+                                    }
+
+                                    // Ajouter l'écouteur d'événements au bouton ajouter
+                                    const buttonAdd = document.getElementById('add');
+                                    if(buttonAdd){
+                                        buttonAdd.addEventListener('click', function (event) {
+                                            if (isFormValid()) {
+                                                AnimationArriere()
+                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                                                setTimeout(function () {
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache';
+                                                        form.submit();  // Si le formulaire existe, soumettre
+                                                    updateListTask();
+                                                }, 500);
+                                            }else{
+                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                                            }
+                                        });
+
+                                    }
+
+                                    // Ajouter l'ecouteur du button modifier
+                                    const buttonUpd = document.getElementById('update');
+                                    if(buttonUpd){
+                                        buttonUpd.addEventListener('click', function (event) {
+                                            if (isFormValid()) {
+                                                AnimationArriere()
+                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                                                setTimeout(function () {
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateTache';
+                                                        form.submit();  // Si le formulaire existe, soumettre
+                                                    updateListTask();
+                                                }, 500);
+                                            }else{
+                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                                            }
+                                        });
+
+                                    }
+
+                                    // Ajouter l'ecouteur du button supprimer
+                                    const buttonDet = document.getElementById('delete');
+                                    if(buttonDet){
+                                        buttonDet.addEventListener('click', function (event) {
+                                            if (isFormValid()) {
+                                                AnimationArriere()
+                                                // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
+                                                setTimeout(function () {
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=deleteTache';
+                                                        form.submit();  // Si le formulaire existe, soumettre
+                                                    updateListTask();
+                                                }, 500);
+                                            }else{
+                                                form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
+                                            }
+                                        });
+
+                                    }
+                                } else {
+                                    console.error('Erreur : ' + response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
                         } else {
-                            form.classList.remove('active');
-                            taskListDiv.classList.remove('active');
-                            container_filtre.classList.remove('active');
-                            setTimeout(() => {
-                                form.style.display = 'none'; // Masquer complètement après l'animation
-                            }, 400); // Délai correspondant à la durée de la transition
+                            console.error('Erreur de serveur :', xhr.status);
+                        }
+                    };
+
+                    xhr.send(); // Envoi de la requête
+                }
+
+                function updateListTask() {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask', true);
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour la section de la liste de tache
+                                    document.getElementById('divListeTache').innerHTML = response.listeTache;
+                                } else {
+                                    console.error('Erreur : ' + response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
+                        } else {
+                            console.error('Erreur de serveur :', xhr.status);
+                        }
+                    };
+
+                    xhr.send(); // Envoi de la requête
+                }
+
+                function updateFromTask(id) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateFromTask&id=' + id, true);
+
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse JSON parsée:', response);
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour les champs du formulaire
+                                    document.getElementById('titre').value = response.titre || '';
+                                    document.getElementById('description').value = response.description || '';
+                                    document.getElementById('date').value = response.date || '';
+                                    document.getElementById('statut').value = response.statut || '';
+                                    document.getElementById('priorite').value = response.priorite || '';
+                                    document.getElementById('assigne').value = response.assigne || '';
+                                    document.getElementById('categorie').value = response.categorie || '';
+                                } else {
+                                    console.error('Erreur :', response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
+                        } else {
+                            console.error('Erreur du serveur :', xhr.status);
+                        }
+                    };
+
+                    xhr.onerror = function () {
+                        console.error('Erreur de requête AJAX');
+                    };
+
+                    xhr.send();
+                }
+
+                function isFormValid() {
+                    const requiredFields = form.querySelectorAll('[required]');
+                    return Array.from(requiredFields).every(field => field.value.trim() !== '');
+                }
+                
+                function AnimationAvant() {
+                    if (!divForm.classList.contains('active')) {
+                        divForm.style.display = 'flex'; // Rendre le formulaire visible pour la transition
+                        setTimeout(() => {
+                            divForm.classList.add('active');
+                            taskListDiv.classList.add('active');
+                            container_filtre.classList.add('active');
+                        }, 10);
+                    } 
+                }
+
+                function updateLoader() {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateLoader', true);
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse serveur :', response); // Tente de parser la réponse JSON
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour la section de la liste de tache
+                                    document.getElementById('container_filtre1').innerHTML = response.loader;
+                                } else {
+                                    console.error('Erreur : ' + response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
+                        } else {
+                            console.error('Erreur de serveur :', xhr.status);
+                        }
+                    };
+
+                    xhr.send(); // Envoi de la requête
+                }
+
+                function AnimationArriere() {
+                    if(divForm.classList.contains('active')){
+                        divForm.classList.remove('active');
+                        taskListDiv.classList.remove('active');
+                        container_filtre.classList.remove('active');
+                        setTimeout(() => {
+                            divForm.style.display = 'none'; // Masquer complètement après l'animation
+                        }, 400); // Délai correspondant à la durée de la transition
+                    }
+
+                }
+
+                // Gestion des clics sur les boutons de tâches
+                buttonTaches.forEach(tache => {
+                    tache.addEventListener('click', function () {
+                        if (lastClickedButton !== 'tache') {
+                            lastClickedButton = 'tache'; // Met à jour le dernier bouton cliqué
+                        }
+                        if (divForm.classList.contains('active')) {
+                            AnimationArriere();
+                            setTimeout(function () {
+                                updateButtonForm('update');
+                                updateFromTask(tache.getAttribute('id'));
+                                AnimationAvant();
+                            }, 500);
+                        } else {
+                            updateButtonForm('update');
+                            updateFromTask(tache.getAttribute('id'));
+                            AnimationAvant();
                         }
                     });
                 });
+
+                //gestion des checkbox
+                checks.forEach(box=>{
+                    if (box.disabled) {
+                        // Si elle n'est pas désactivée, on la coche et on la désactive
+                        setTimeout(function () {
+                            box.checked = true;
+                            }, 500);
+                    }else{
+                        box.disabled = true;
+                    }
+                });
+                //gestion des filtres
+                filtres.forEach(filtre=>{
+                    filtre.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // Empêche le comportement par défaut du formulaire si nécessaire
+                            const inputValue = filtre.value.trim(); // Récupère la valeur entrée
+                            if (inputValue) {
+                                console.log('Texte entré :', inputValue);
+                                taskListDiv.style.removeProperty('overflow-y');
+                                updateLoader();
+                            } 
+                        }
+                    });
+                });
+
+                // Gestion des clics sur le bouton Ajouter vert
+                button.addEventListener('click', function () {
+
+                    if (lastClickedButton !== 'add') {
+                        lastClickedButton = 'add'; // Met à jour le dernier bouton cliqué
+                        if (divForm.classList.contains('active')) {
+                                AnimationArriere();
+                                setTimeout(function () {
+                                    updateButtonForm('add');
+                                    updateFromTask(null);
+                                    AnimationAvant();
+                                }, 500);
+                            } else {
+                                updateButtonForm('add');
+                                updateFromTask(null);
+                                AnimationAvant();
+                            }
+                    }else{
+                        updateButtonForm('add');
+                        updateFromTask(null);
+                        if (divForm.classList.contains('active')) {
+                            AnimationArriere();
+                        } else {
+                            AnimationAvant();
+                        }
+                    }
+                });
+
             });
         </script>
 

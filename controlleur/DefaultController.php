@@ -1,5 +1,5 @@
 <?php
-Class DefaultControlller{
+Class DefaultController{
 
     public function persit($entity){
         

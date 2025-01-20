@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__.'/DefaultController.php';
 
-class ControllerModifTache extends DefaultControlller{
+class ControllerModifTache extends DefaultController{
     
     function afficheForm(){
        

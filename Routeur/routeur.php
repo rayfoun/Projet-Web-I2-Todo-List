@@ -2,30 +2,30 @@
     // Exemple d'appel dans index.php
     require_once '../controlleur/controllerAccueil.php';
 
-    $controller = new ControllerAccueil();
+    $controllerAc = new ControllerAccueil();
     if(!isset($_GET["action"])){
-        $controller->afficheAccueil();
+        $controllerAc->afficheAccueil();
     }else{
          // save , delete update une tache
         if ( $_GET["action"] === "saveTache") {
-            $controller->saveForm();
+            $controllerAc->saveForm();
         }if ( $_GET["action"] === "updateTache") {
-            $controller->modifForm();
+            $controllerAc->modifForm();
         }if ( $_GET["action"] === "deleteTache") {
-            $controller->deleteForm();
+            $controllerAc->deleteForm();
         }
         //Recherche
         if ( $_GET["action"] === "updateLoader") {
-            $controller->updateLoader();
+            $controllerAc->updateLoader();
         }if ( $_GET["action"] === "search") {
-            $controller->searchForm();
+            $controllerAc->searchForm();
         }
         
         // Mettre à jour les buttons du formulaire
         if ( $_GET["action"] === "updateButtonForm") {
             // Vérifiez que le paramètre 'mode' est passé dans la requête GET
             if (isset($_GET["mode"])) {
-                $controller->updateButtonForm($_GET["mode"]);
+                $controllerAc->updateButtonForm($_GET["mode"]);
             } else {
                 // Si 'mode' n'est pas défini dans la requête GET, renvoyer une erreur JSON
                 echo json_encode([
@@ -36,12 +36,12 @@
             }  
         //update la liste de taches apres un add, modif ou supprim
         }if ( $_GET["action"] === "updateListTask") {
-            $controller->updateListTask("accueil");
+            $controllerAc->updateListTask("accueil");
 
         //update le form avec des donne si on clique sur une tache
         }if ( $_GET["action"] === "updateFromTask") {
             if (isset($_GET["id"])) {
-                $controller->updateFormTask($_GET["id"]);
+                $controllerAc->updateFormTask($_GET["id"]);
             } else {
                 // Si 'id' n'est pas défini dans la requête GET, renvoyer une erreur JSON
                 echo json_encode([

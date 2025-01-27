@@ -10,15 +10,15 @@
         if ( $_GET["action"] === "saveTache") {
             $controller->saveForm();
         }if ( $_GET["action"] === "updateTache") {
-            $controller->updateForm();
+            $controller->modifForm();
         }if ( $_GET["action"] === "deleteTache") {
             $controller->deleteForm();
         }
         //Recherche
         if ( $_GET["action"] === "updateLoader") {
             $controller->updateLoader();
-        }if ( $_GET["action"] === "searchList") {
-            $controller->searchList();
+        }if ( $_GET["action"] === "search") {
+            $controller->searchForm();
         }
         
         // Mettre à jour les buttons du formulaire
@@ -34,11 +34,14 @@
                 ]);
                 exit;
             }  
+        //update la liste de taches apres un add, modif ou supprim
         }if ( $_GET["action"] === "updateListTask") {
-            $controller->updateListTask();
+            $controller->updateListTask("accueil");
+
+        //update le form avec des donne si on clique sur une tache
         }if ( $_GET["action"] === "updateFromTask") {
             if (isset($_GET["id"])) {
-                $controller->updateFromTask($_GET["id"]);
+                $controller->updateFormTask($_GET["id"]);
             } else {
                 // Si 'id' n'est pas défini dans la requête GET, renvoyer une erreur JSON
                 echo json_encode([

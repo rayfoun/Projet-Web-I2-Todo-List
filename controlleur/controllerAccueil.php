@@ -4,46 +4,44 @@ require_once __DIR__ .'/../Modele/DAO/UtilisateurDao.php';
 require_once __DIR__ .'/../Modele/DAO/TacheDao.php';
 require_once __DIR__ .'/../Modele/entite/tache.php';
 require_once __DIR__ .'/../Modele/entite/Utilisateur.php';
+require_once __DIR__ .'/../controlleur/ControllerUser.php';
+require_once __DIR__ .'/../controlleur/ControllerTask.php';
 
 class ControllerAccueil extends DefaultController { 
-    
-    public function updateFromTask($id){
-        $tacheDAO = new TacheDao(); 
-        $tache = $tacheDAO->getTaskById($id);
 
-        // Si la tâche est trouvée, on renvoie les données en format JSON
-        if ($tache) {
-            // Assurez-vous que les propriétés sont correctement définies
-            $response = [
-                'status' => 'success',
-                'titre' => $tache->getLibelle(),
-                'description' => $tache->getDescriptif()?: 'Description non fournie',
-                'date' => $tache->getDateEcheance(),
-                'statut' => $tache->getStatut(),
-                'priorite' => $tache->getPriorite(),
-                'assigne' => $tache->getUtilisateur()->getPrenom() . ' ' . $tache->getUtilisateur()->getNom(),
-                'categorie' => $tache->getCategorie()
-            ];
-        } else {
-            $response = [
-                'status' => 'success',
-                'titre' => null,
-                'description' => null,
-                'date' => null,
-                'statut' => "",
-                'priorite' => "",
-                'assigne' => "",
-                'categorie' => ""
-            ];
-        }
+    //controlleurs
+    private $controlUser;
+    private $controlTask;
+
+
+    /*******************************************************************************************************************************************************************/
+    // PAGE
+    public function afficheAccueil() {
+
+        // Gestion du thème (CSS)
+        $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
         
-        // Renvoi de la réponse JSON
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit();
+        //recuper la liste de tache
+        if(!$this->controlTask){
+            $this->controlTask=new ControllerTask();
+        }
+        $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil"));
+
+        // Rendu de la vue
+        $this->renderView(
+            __DIR__ . '/../Vue/page/Acceuil.php', // Correction du chemin
+            [
+                'listeUser' => $this->getListUser(),//list de user pour les input Assigne
+                'listeTache'=> $listeTache,//liste de taches en mode acccueil
+                'loader'=> "",//loader vide pour l'instant
+                'themeProjet' => $themeProjet
+            ]
+        );
     }
 
-    public function updateLoader(){
+    /*******************************************************************************************************************************************************************/
+    // LOADER
+    public function updateLoader(){//update le loader si le result de search est vide
         
         $loader="<button class='cta'>
                     <span style='font-family:'Freestyle Script''>Reinitialisation</span>
@@ -62,7 +60,10 @@ class ControllerAccueil extends DefaultController {
                 echo json_encode($response); // Renvoi uniquement de JSON
                 exit; // Assurez-vous qu'aucune autre sortie n'est envoyée après
     }
-    public function updateButtonForm($mode){
+
+    /*******************************************************************************************************************************************************************/
+    //BUTTON
+    public function updateButtonForm($mode){//update les button du form en mode add ou modif
         if (isset($_GET["action"]) && $_GET["action"] === "updateButtonForm") {
             if (isset($_GET["mode"])) {
                 $mode = $_GET["mode"];
@@ -103,21 +104,16 @@ class ControllerAccueil extends DefaultController {
             }
         }
     }
-    public function getListeTache(){
-        //recuper une liste de tache
-        $tacheDAO = new TacheDao(); 
-        $listeTaches = $tacheDAO->getAllTask();
-        //transformer la liste en liste de titre
-        // Créer une nouvelle liste contenant uniquement les titres
-        //cocher ou pas cocher
-        function check($tache) {
-            return ($tache->getStatut() == "Terminee") ? "disabled" : "";
-        }
+
+    /*******************************************************************************************************************************************************************/
+    // LIST
+    public function formatedListTask($listeTaches){//formate la liste de tache pour l'afficher
+
         $listeTachesCheck = array_map(function($tache) {
             return [
                 'id'=>$tache->getId(),
                 'libelle' => $tache->getLibelle(),
-                'check' => check($tache)
+                'check' => $this->controlTask->check($tache)
             ];
         }, $listeTaches);
 
@@ -139,23 +135,8 @@ class ControllerAccueil extends DefaultController {
         }
         return $listeTache; 
     }
-    public function updateListTask(){
-        if (isset($_GET["action"]) && $_GET["action"] === "updateListTask") {
-            $listeTache=$this->getListeTache();
-             // Créer la réponse en format JSON
-                $response = [
-                    'status' => 'success',
-                    'listeTache' => $listeTache
-                ];
-                
-                // Assurez-vous que les headers sont correctement définis pour envoyer du JSON                    header('Content-Type: application/json');
-                echo json_encode($response); // Renvoi uniquement de JSON
-                exit();
-            
-        }
-    }
 
-    public function afficheAccueil() {
+    public function getListUser(){//retourne la liste des utilisateurs afficher pour remplir Assigne
         //recuperer une liste d'utilisateur
         $userDAO = new UtilisateurDao();
         $listeUsers = $userDAO->getAllUsers();
@@ -169,26 +150,71 @@ class ControllerAccueil extends DefaultController {
         foreach($listeNom as $nom){
             $listeUser.= "<option value='$nom'>$nom</option>";
         }
-
-        // Gestion du thème (CSS)
-        $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
-        //listeTache
-        $listeTache=$this->getListeTache();
-        //initialisation du loarder
-        $loader="";
-        // Rendu de la vue
-        $this->renderView(
-            __DIR__ . '/../Vue/page/Acceuil.php', // Correction du chemin
-            [
-                'listeUser' => $listeUser,
-                'listeTache'=> $listeTache,
-                'loader'=>$loader,
-                'themeProjet' => $themeProjet,
-            ]
-        );
+        return $listeUser;
     }
 
-    public function saveForm(){
+    public function updateListTask($mode){//update la liste des taches apres un ajout, une modif un supprim
+        if (isset($_GET["action"]) && $_GET["action"] === "updateListTask"||$_GET["action"] === "search") {
+
+            //recuper la liste de tache
+            if(!$this->controlTask){
+                $this->controlTask=new ControllerTask();
+            }
+            $listeTaches=$this->controlTask->getListTask($mode);
+        
+            $listeTache=$this->formatedListTask($listeTaches);
+             // Créer la réponse en format JSON
+                $response = [
+                    'status' => 'success',
+                    'listeTache' => $listeTache
+                ];
+                
+                // Assurez-vous que les headers sont correctement définis pour envoyer du JSON                    header('Content-Type: application/json');
+                echo json_encode($response); // Renvoi uniquement de JSON
+                exit();
+            
+        }
+    }
+
+    /*******************************************************************************************************************************************************************/
+    // FORM
+    public function updateFormTask($id){//affiche les informations dans le form si on clique sur une tache
+        $tacheDAO = new TacheDao(); 
+        $tache = $tacheDAO->getTaskById($id);
+
+        // Si la tâche est trouvée, on renvoie les données en format JSON
+        if ($tache) {
+            // Assurez-vous que les propriétés sont correctement définies
+            $response = [
+                'status' => 'success',
+                'titre' => $tache->getLibelle(),
+                'description' => $tache->getDescriptif()?: 'Description non fournie',
+                'date' => $tache->getDateEcheance(),
+                'statut' => $tache->getStatut(),
+                'priorite' => $tache->getPriorite(),
+                'assigne' => $tache->getUtilisateur()->getPrenom() . ' ' . $tache->getUtilisateur()->getNom(),
+                'categorie' => $tache->getCategorie()
+            ];
+        } else {
+            $response = [
+                'status' => 'success',
+                'titre' => null,
+                'description' => null,
+                'date' => null,
+                'statut' => "",
+                'priorite' => "",
+                'assigne' => "",
+                'categorie' => ""
+            ];
+        }
+        
+        // Renvoi de la réponse JSON
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();
+    }
+
+    public function saveForm(){//ajoute un tache dans la base de donnée
         // Vérifier si la méthode de requête est POST et les champs nécessaires sont présents
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (
@@ -207,13 +233,11 @@ class ControllerAccueil extends DefaultController {
                 // Créer les valeurs pour l'entité
                 $dateCreation = date('Y-m-d'); // Date actuelle
                 $heureCreation = date('H:i:s'); // Heure actuelle
-                //recuper l'id user
-                $parts = explode(' ', $assigne); // Divise la chaîne par les espaces
-                $nom = end($parts);              // Récupère le dernier élément du tableau (nom)
-                $prenom = reset($parts);         // Récupère le premier élément du tableau (prénom)
-                $user=new UtilisateurDao();
-                $id_user=$user->getUserByName($nom,$prenom);
-
+                //recuper l'utilisateur
+                if(!$this->controlUser){
+                    $this->controlUser=new ControllerUser();
+                }
+                $assigne=$this->controlUser->getUserByAssigne($assigne);
                 //creér la tache a ajouter
                 $newTache=new tache(null,
                                     $titre, 
@@ -225,7 +249,7 @@ class ControllerAccueil extends DefaultController {
                                     $statut, 
                                     $priorite, 
                                     $categorie, 
-                                    $id_user);
+                                    $assigne);
 
                 try {
                     // Créer une instance du DAO pour insérer les données
@@ -245,7 +269,8 @@ class ControllerAccueil extends DefaultController {
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }
-    public function updateForm(){
+
+    public function modifForm(){
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }
@@ -255,9 +280,50 @@ class ControllerAccueil extends DefaultController {
         exit;
     }
 
-    public function searchList(){
-        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+    public function searchForm(){
+        // Initialisation des variables avec des valeurs par défaut ou null
+        $titre = $statut = $priorite = $assigne = $categorie = null;
+
+        // Vérifier et affecter uniquement si la propriété est disponible
+       /* if (isset($_POST['titre'])) {
+            $titre = $_POST['titre'];
+        }
+
+        if (isset($_POST['statut'])) {
+            $statut = $_POST['statut'];
+        }
+
+        if (isset($_POST['priorite'])) {
+            $priorite = $_POST['priorite'];
+        }
+
+        if (isset($_POST['assigne'])) {
+            $assigne = $_POST['assigne'];
+            //recuper l'utilisateur
+            if(!$this->controlUser){
+                $this->controlUser=new ControllerUser();
+            }
+            $assigne=$this->controlUser->getUserByAssigne($assigne);
+        }
+
+        if (isset($_POST['categorie'])) {
+            $categorie = $_POST['categorie'];
+        }*/
+
+        $this->updateListTask("search");
+        //header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+        //recupere le resultat
+        /*$tacheDao = new TacheDao();
+        $listeTask=$tacheDao->getTasksByFilters( $titre, $statut , $priorite , $assigne , $categorie);
+        if($listeTask==null){//si la liste est vide
+
+        }else{//si la liste n'est pas vide
+    
+        }*/
+
         exit;
     }
+    /*******************************************************************************************************************************************************************/
+
 }
 ?>

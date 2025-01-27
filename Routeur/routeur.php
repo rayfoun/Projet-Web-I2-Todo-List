@@ -37,8 +37,7 @@
         }if ( $_GET["action"] === "deleteTache") {
             $controllerAccueil->deleteForm();
         }
-
-        //Recherche
+        //Recherche, et affichage
         if ( $_GET["action"] === "updateLoader") {
             $controllerAccueil->updateLoader();
         }if ( $_GET["action"] === "searchList") {
@@ -58,18 +57,18 @@
                 ]);
                 exit;
             }  
-        }if ( $_GET["action"] === "updateListTask") {
-            $controllerAccueil->updateListTask();
-        }if ( $_GET["action"] === "updateFromTask") {
-            if (isset($_GET["id"])) {
-                $controllerAccueil->updateFromTask($_GET["id"]);
-            } else {
-                // Si 'id' n'est pas défini dans la requête GET, renvoyer une erreur JSON
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Le paramètre mode est manquant.'
-                ]);
-                exit;
+            }if ( $_GET["action"] === "updateListTask") {
+                $controller->updateListTask();
+            }if ( $_GET["action"] === "updateFromTask") {
+                if (isset($_GET["id"])) {
+                    $controller->updateFromTask($_GET["id"]);
+                } else {
+                    // Si 'id' n'est pas défini dans la requête GET, renvoyer une erreur JSON
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Le paramètre mode est manquant.'
+                    ]);
+                    exit;
             }  
         }
         // Si 'action' n'est pas définie dans la requête GET, renvoyer une erreur JSON
@@ -80,93 +79,34 @@
         exit;
 
     }
-    #require_once '../controlleur/AfficheAccueil.php';
-    #require_once '../controlleur/ConnexionController.php';
 
-    #$controllerAccueil = new ControllerAccueil();
-    #$controllerAccueil->afficheAccueil();
+   
+    session_start();  // Assurez-vous que la session est démarrée
 
-    #$controllerAccueil = new ControllerConnexion();
-    #$controllerAccueil->affichePageConnexion();
+    // Vérifiez si l'utilisateur est connecté et s'il existe un rôle dans la session
+    if (isset($_SESSION['user'])) {
+        // Récupérer le rôle de l'utilisateur depuis la session
+        $role = $_SESSION['user']['role'];  // Exemple : 'admin' ou 'utilisateur'
 
-    //session_start();
-
-    // page de connextion : routeur sans action
-
-    //     echo "<pre>";
-    // echo "GET : ";
-    // print_r($_GET);
-    // echo "POST : ";
-    // print_r($_POST);
-    // echo "</pre>";
-
-    // if (!isset($_GET["action"])){
-    //     // => accueil;
-    //     require '../controlleur/ConnexionController.php';
-    //     $controllerAccueil = new ControllerConnexion();
-    //     $controllerAccueil->affichePageConnexion();
-    //     exit();
-    // } 
-
-    // if ($_GET["action"]=="traiterAuthentification"){
-    //     echo "hellooo nice to meet you";
-    //     require_once '../controlleur/ConnexionController.php';
-    //     echo "hellooo";
-    //     $controllerAccueil = new ControllerConnexion();
-    //     $controllerAccueil->login();
-    //     exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
-    // }
-
-    // if ($_GET["action"]=="accueil"){
-    //     require '../controlleur/AccueilController.php';
-    //     $controllerAccueil = new ControllerAccueil();
-    //     $controllerAccueil->afficheAccueil();
-    //     exit();
-    // }
-
-    /*session_start();
-    require_once "utils_inc/inc_pdo.php";
-    require_once "utils_inc/inc_verifsDroits.php";
-
-
-    // syntaxe attendue : router.php?action=monAction&param1=valeurA&param2=valeurB...
-
-    // page de connextion : routeur sans action
-    if (!isset($_GET["action"])){
-        // => accueil;
-        require "vues/formCo.php";
-        exit();
-    } 
-
-
-    if ($_GET["action"]=="accueil"){
-        require "vues/accueil.php";
-        exit();
+        // Rediriger en fonction du rôle
+        if ($role === 'admin') {
+            // Rediriger vers la page spécifique pour l'admin
+            header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+            exit;  // Terminer le script pour éviter toute exécution après la redirection
+        } elseif ($role === 'utilisateur') {
+            // Rediriger vers la page spécifique pour un utilisateur normal
+            header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+            exit;  // Terminer le script pour éviter toute exécution après la redirection
+        } else {
+            // Si le rôle n'est ni admin ni utilisateur, rediriger vers une page d'erreur ou une page de connexion
+            header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+            exit;
+        }
+    } else {
+        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
+        exit;
     }
 
 
-    if ($_GET["action"]=="traiterAuthentification"){
-        require_once "controleurs/controleurLogin.php";
-        login();
-        exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
-    }
-
-
-    if ($_GET["action"]=="toutesContribs"){
-        require_once "controleurs/controleurContribs.php";
-
-        if (!estConnecte()){
-            header("location:routeur.php"); // => connection
-            exit();
-        }
-
-        if (!aDroit("admin")) {
-            header("location:vues/accueil.php");
-            exit();
-        }else{
-            listerToutesContribs(); // fonction située dans le controleur, c'est elle qui apelle (inclut) la vue
-        }
-
-        exit();
-    }*/
 ?>

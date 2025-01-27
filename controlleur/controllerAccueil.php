@@ -246,16 +246,113 @@ class ControllerAccueil extends DefaultController {
         exit;
     }
     public function updateForm(){
+        // Vérifier si la méthode de requête est POST et les champs nécessaires sont présents
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['id'], $_POST['titre'], $_POST['description'], $_POST['date'], 
+                    $_POST['statut'], $_POST['priorite'], $_POST['categorie'])) {
+                
+                // Récupérer les données du formulaire
+                $id = $_POST['id'];
+                $titre = $_POST['titre'];
+                $description = $_POST['description'];
+                $dateLimite = $_POST['date'];
+                $statut = $_POST['statut'];
+                $priorite = $_POST['priorite'];
+                $categorie = $_POST['categorie'];
+                
+                // Récupérer la tâche existante
+                $tacheDao = new TacheDao();
+                $tache = $tacheDao->getTaskById($id);
+
+                if ($tache) {
+                    // Mettre à jour les données de la tâche
+                    $tache->setLibelle($titre);
+                    $tache->setDescriptif($description);
+                    $tache->setDateEcheance($dateLimite);
+                    $tache->setStatut($statut);
+                    $tache->setPriorite($priorite);
+                    $tache->setCategorie($categorie);
+
+                    // Sauvegarder les modifications
+                    $tacheDao->updateTask($tache);
+                } else {
+                    echo "<script type='text/javascript'>alert('Tâche introuvable.');</script>";
+                }
+            } else {
+                echo "<script type='text/javascript'>alert('Tous les champs obligatoires ne sont pas remplis.');</script>";
+            }
+        }
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }
 
     public function deleteForm(){
+        // Vérifier si l'ID de la tâche à supprimer est fourni
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+            $id = $_POST['id'];
+            
+            // Supprimer la tâche
+            $tacheDao = new TacheDao();
+            try {
+                $tacheDao->deleteTask($id);
+            } catch (Exception $e) {
+                echo "<script type='text/javascript'>alert('Erreur lors de la suppression : {$e->getMessage()}');</script>";
+            }
+        } else {
+            echo "<script type='text/javascript'>alert('ID de tâche manquant.');</script>";
+        }
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }
 
     public function searchList(){
+        if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
+            // Récupérer les paramètres de recherche depuis la requête GET
+            $libelle = $_GET['libelle'] ?? null;
+            $statut = $_GET['statut'] ?? null;
+            $priorite = $_GET['priorite'] ?? null;
+            $assigne = $_GET['assigne'] ?? null;
+    
+            // Récupérer l'utilisateur correspondant (s'il y a une recherche par assigné)
+            $utilisateurId = null;
+            if ($assigne) {
+                $parts = explode(' ', $assigne); // Divise par espace
+                $nom = end($parts);             // Dernier mot = nom
+                $prenom = reset($parts);        // Premier mot = prénom
+                
+                $userDao = new UtilisateurDao();
+                $utilisateur = $userDao->getUserByName($nom, $prenom);
+                if ($utilisateur) {
+                    $utilisateurId = $utilisateur->getId();
+                }
+            }
+    
+            // Effectuer la recherche
+            $tacheDao = new TacheDao();
+            $taches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId);
+    
+            // Formater les résultats pour affichage
+            $resultHtml = '';
+            foreach ($taches as $tache) {
+                $resultHtml .= "
+                    <div class='checkbox-wrapper'>
+                        <input type='checkbox' class='check' id='{$tache->getId()}' " . ($tache->getStatut() === 'Terminee' ? 'disabled' : '') . ">
+                        <label for='{$tache->getId()}' class='label'>
+                            <span>{$tache->getLibelle()}</span>
+                        </label>
+                    </div>";
+            }
+    
+            // Retourner la réponse JSON
+            $response = [
+                'status' => 'success',
+                'results' => $resultHtml,
+            ];
+    
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
+        }
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
         exit;
     }

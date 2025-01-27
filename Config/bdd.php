@@ -17,6 +17,7 @@ class Database {
 
                 // Retourne la connexion si elle réussit
                 $message ="Connexion réussie à la base de données";
+                //echo  $message;
                 //echo "<script type='text/javascript'>alert('$message');</script>";
                 return $this->conn;
             } catch (PDOException $e) {

@@ -1,8 +1,7 @@
 <?php
-
-require_once __DIR__ .'/../../Config/bdd.php'; // Inclut la connexion à la base de données
-require_once __DIR__ .'/../entite/tache.php'; // Inclut la classe Tache
-require_once __DIR__ .'/../DAO/UtilisateurDao.php';
+require_once __DIR__ . '/../../Config/bdd.php';
+require_once __DIR__ . '/../entite/Utilisateur.php';
+require_once __DIR__ . '/../entite/tache.php'; // Inclut la classe tache
 
 class TacheDao {
     private $db;
@@ -16,6 +15,26 @@ class TacheDao {
 
     // 1. Ajouter une tâche
     public function addTask($tache) {
+        $query = $this->db->prepare("
+            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
+            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
+        ");
+
+        $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
+
+        $query->execute([
+            ':libelle' => $tache->getLibelle(),
+            ':descriptif' => $tache->getDescriptif(),
+            ':dateCreation' => $tache->getDateCreation(),
+            ':dateEcheance' => $tache->getDateEcheance(),
+            ':heureCreation' => $tache->getHeureCreation(),
+            ':heureEcheance' => $tache->getHeureEcheance(),
+            ':statut' => $tache->getStatut(),
+            ':priorite' => $tache->getPriorite(),
+            ':categorie' => $tache->getCategorie(),
+
+            ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
+        ]);
         $query = $this->db->prepare("
             INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
             VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)

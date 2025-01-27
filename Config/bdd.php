@@ -1,6 +1,8 @@
 <?php
-    class Database {
-        private $conn; // Instance de connexion PDO
+class Database {
+    private $conn; // Instance de connexion PDO
+
+
 
         // Méthode pour établir une connexion à la base de données
         public function getConnection() {
@@ -8,12 +10,14 @@
                 // Création de la connexion avec PDO
                 $this->conn = new PDO('mysql:host=localhost;dbname=to-do list', 'root', '');
 
-                // Configuration des options PDO
-                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            // Configuration des options PDO
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
                 // Retourne la connexion si elle réussit
                 $message ="Connexion réussie à la base de données";
+                //echo  $message;
                 //echo "<script type='text/javascript'>alert('$message');</script>";
                 return $this->conn;
             } catch (PDOException $e) {

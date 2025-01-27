@@ -1,9 +1,9 @@
 <?php
-require_once  __DIR__ .'/../../Config/bdd.php'; // Inclut la connexion à la base de données
-require_once  __DIR__ .'/../entite/Utilisateur.php'; // Inclut la classe Utilisateur
-require_once  __DIR__ .'/../entite/tache.php'; // Inclut la classe tache
+require_once __DIR__ . '/../../Config/bdd.php';
+require_once __DIR__ . '/../entite/Utilisateur.php';
+require_once __DIR__ . '/../entite/tache.php'; // Inclut la classe tache
 
-
+//<?php
 class UtilisateurDao {
     private $db;
 

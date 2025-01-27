@@ -10,7 +10,7 @@ class Utilisateur {
     private $photo;
     private $emailVerifie;
 
-    // Constructor
+    // Constructeur
     public function __construct($id, $nom, $prenom, $email, $password, $token, $type, $photo, $emailVerifie) {
         $this->id = $id;
         $this->nom = $nom;
@@ -23,7 +23,7 @@ class Utilisateur {
         $this->emailVerifie = $emailVerifie;
     }
 
-    // Getters and setters
+    // Getters
     public function getId() { return $this->id; }
     public function getNom() { return $this->nom; }
     public function getPrenom() { return $this->prenom; }
@@ -34,6 +34,7 @@ class Utilisateur {
     public function getPhoto() { return $this->photo; }
     public function getEmailVerifie() { return $this->emailVerifie; }
 
+    // Setters
     public function setNom($nom) { $this->nom = $nom; }
     public function setPrenom($prenom) { $this->prenom = $prenom; }
     public function setEmail($email) { $this->email = $email; }
@@ -43,4 +44,3 @@ class Utilisateur {
     public function setPhoto($photo) { $this->photo = $photo; }
     public function setEmailVerifie($emailVerifie) { $this->emailVerifie = $emailVerifie; }
 }
-?>

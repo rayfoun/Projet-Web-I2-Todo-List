@@ -91,23 +91,21 @@
     <body>
         <div class="container">
             <div class="container_form">
-                <form class="form">
+                <form class="form" id="formlogin" action="/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=traiterAuthentification" method="POST">
                     <h2>To-Do List</h2>
                     
                     <div class="input-container">
-                    <input type="email" placeholder="Enter email">
-                    <span>
-                    </span>
-                </div>
-                <div class="input-container">
-                    <input type="password" placeholder="Enter password">
+                        <input type="email" name="email" id="email" placeholder="Enter email">
+                        <span>
+                        </span>
                     </div>
-                    <button type="submit" class="submit">
-                    Connexion
-                </button>
-                <p class="signup-link">
-                    __________ProjetWebI2___________
-                </p>
+                    <div class="input-container">
+                        <input type="password" name="password" id="password" placeholder="Enter password">
+                    </div>
+                    <button type="submit" class="submit" name="submit" value="Valider">Connexion</button>
+                    <p class="signup-link">
+                        __________ProjetWebI2___________
+                    </p>
                 </form>
             </div>
         </div>

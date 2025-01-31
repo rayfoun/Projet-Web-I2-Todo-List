@@ -335,12 +335,14 @@ class ControllerAccueil extends DefaultController {
     }
 
     public function searchForm(){
+
         if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
             // Récupérer les paramètres de recherche depuis la requête GET
             $libelle = $_GET['libelle'] ?? null;
             $statut = $_GET['statut'] ?? null;
             $priorite = $_GET['priorite'] ?? null;
             $assigne = $_GET['assigne'] ?? null;
+            $categorie = $_GET['categorie'] ?? null; // Nouveau paramètre catégorie
     
             // Récupérer l'utilisateur correspondant (s'il y a une recherche par assigné)
             $utilisateurId = null;
@@ -352,7 +354,9 @@ class ControllerAccueil extends DefaultController {
            $utilisateurId=$assigne->getId();
             // Effectuer la recherche
             $tacheDao = new TacheDao();
-            $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId);
+
+            $taches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
+
     
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON

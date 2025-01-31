@@ -8,6 +8,7 @@ class TacheDao {
     private $utilisateurDao;
 
     public function __construct() {
+
         $database= new Database();
         $this->db = $database->getConnection();
         $this->utilisateurDao = new UtilisateurDao(); // Initialisation de UtilisateurDao
@@ -20,88 +21,96 @@ class TacheDao {
             VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
         ");
 
-        $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
-
-        $query->execute([
-            ':libelle' => $tache->getLibelle(),
-            ':descriptif' => $tache->getDescriptif(),
-            ':dateCreation' => $tache->getDateCreation(),
-            ':dateEcheance' => $tache->getDateEcheance(),
-            ':heureCreation' => $tache->getHeureCreation(),
-            ':heureEcheance' => $tache->getHeureEcheance(),
-            ':statut' => $tache->getStatut(),
-            ':priorite' => $tache->getPriorite(),
-            ':categorie' => $tache->getCategorie(),
-
-            ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
-        ]);
+        try{
+            $database= new Database();
+            $this->db = $database->getConnection();
+            $this->utilisateurDao = new UtilisateurDao();
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->utilisateurDao = new UtilisateurDao();
+        } catch (PDOException $e) {
+            die("Erreur de connexion à la base de données: " . $e->getMessage());
+        }
     }
 
+    // 1. Ajouter une tâche
+    
     // 2. Modifier une tâche
     public function updateTask($tache) {
-        $query = $this->db->prepare("
-            UPDATE tache
-            SET libelle_tache = :libelle, descriptif_tache = :descriptif, date_echeance = :dateEcheance, 
-                heure_echeance = :heureEcheance, statut_tache = :statut, priorite_tache = :priorite, categorie = :categorie
-            WHERE id_tache = :id
-        ");
-        $query->execute([
-            ':libelle' => $tache->getLibelle(),
-            ':descriptif' => $tache->getDescriptif(),
-            ':dateEcheance' => $tache->getDateEcheance(),
-            ':heureEcheance' => $tache->getHeureEcheance(),
-            ':statut' => $tache->getStatut(),
-            ':priorite' => $tache->getPriorite(),
-            ':categorie' => $tache->getCategorie(),
-            ':id' => $tache->getId()
-        ]);
+        try{
+            $query = $this->db->prepare("
+                UPDATE tache
+                SET libelle_tache = :libelle, descriptif_tache = :descriptif, date_echeance = :dateEcheance, 
+                    heure_echeance = :heureEcheance, statut_tache = :statut, priorite_tache = :priorite, categorie = :categorie
+                WHERE id_tache = :id
+            ");
+            $query->execute([
+                ':libelle' => $tache->getLibelle(),
+                ':descriptif' => $tache->getDescriptif(),
+                ':dateEcheance' => $tache->getDateEcheance(),
+                ':heureEcheance' => $tache->getHeureEcheance(),
+                ':statut' => $tache->getStatut(),
+                ':priorite' => $tache->getPriorite(),
+                ':categorie' => $tache->getCategorie(),
+                ':id' => $tache->getId()
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la mise à jour d'une tâche". $e->getMessage());
+        }
     }
 
     // 3. Supprimer une tâche
     public function deleteTask($id) {
-        $query = $this->db->prepare("DELETE FROM tache WHERE id_tache = :id");
-        $query->execute([':id' => $id]);
+        try{
+            $query = $this->db->prepare("DELETE FROM tache WHERE id_tache = :id");
+            $query->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la suppression d'une tâche". $e->getMessage());
+        }
     }
 
     // 4. Consulter une tâche par ID
     public function getTaskById($id) {
-        $query = $this->db->prepare("
-            SELECT t.*, u.id_user, u.nom_user, u.prenom_user, u.email_user, u.type
-            FROM tache t
-            JOIN users u ON t.id_user = u.id_user
-            WHERE t.id_tache = :id
-        ");
-        $query->execute([':id' => $id]);
-        $row = $query->fetch(PDO::FETCH_ASSOC);
+        try{
+            $query = $this->db->prepare("
+                SELECT t.*, u.id_user, u.nom_user, u.prenom_user, u.email_user, u.type
+                FROM tache t
+                JOIN users u ON t.id_user = u.id_user
+                WHERE t.id_tache = :id
+            ");
+            $query->execute([':id' => $id]);
+            $row = $query->fetch(PDO::FETCH_ASSOC);
 
-        if ($row) {
-            $utilisateur = new Utilisateur(
-                $row['id_user'],
-                $row['nom_user'],
-                $row['prenom_user'],
-                $row['email_user'],
-                null,
-                null,
-                $row['type'],
-                null,
-                null
-            );
+            if ($row) {
+                $utilisateur = new Utilisateur(
+                    $row['id_user'],
+                    $row['nom_user'],
+                    $row['prenom_user'],
+                    $row['email_user'],
+                    null,
+                    null,
+                    $row['type'],
+                    null,
+                    null
+                );
 
-            return new Tache(
-                $row['id_tache'],
-                $row['libelle_tache'],
-                $row['descriptif_tache'],
-                $row['date_creation'],
-                $row['date_echeance'],
-                $row['heure_creation'],
-                $row['heure_echeance'],
-                $row['statut_tache'],
-                $row['priorite_tache'],
-                $row['categorie'],
-                $utilisateur
-            );
+                return new Tache(
+                    $row['id_tache'],
+                    $row['libelle_tache'],
+                    $row['descriptif_tache'],
+                    $row['date_creation'],
+                    $row['date_echeance'],
+                    $row['heure_creation'],
+                    $row['heure_echeance'],
+                    $row['statut_tache'],
+                    $row['priorite_tache'],
+                    $row['categorie'],
+                    $utilisateur
+                );
+            }
+            return null;
+        }catch(PDOException $e) {
+            throw new Exception("Erreur lors de la consultation d'une tâche". $e->getMessage());
         }
-        return null;
     }
 
     // 5. Assigner une tâche à un utilisateur
@@ -162,7 +171,9 @@ class TacheDao {
 
 
     //8. Rechercher des tâches en fonction de plusieurs paramètres
+
     public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null,$categorie=null) {
+
         // Début de la requête SQL
         $query = "SELECT t.* FROM tache t WHERE 1=1";
 
@@ -185,6 +196,9 @@ class TacheDao {
         if ($utilisateur !== null) {
             $query .= " AND t.id_user = :utilisateur";
             $params[':utilisateur'] = $utilisateur;
+        }
+        if ($categorie !== null) {
+            $query .= " AND t.categorie_tache=:categorie";
         }
 
         // Préparation et exécution de la requête

@@ -515,8 +515,9 @@
         <!--La navbar-->
         <div class="nav">
             <div class="container_nav">
-            <div class="btn">To-Do List</div>
-            <div class="btn">Profil</div>
+            <div class="btn" id="toDoList">To-Do List</div>
+            <div class="btn" id="profil">Profil</div>
+            <div class="btn" id="deconnexion">Deconnexion</div>
             <svg class="outline" overflow="visible" width="400" height="60" viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg">
                 <rect class="rect" pathLength="100" x="0" y="0" width="400" height="60" fill="transparent" stroke-width="5"></rect>
             </svg>
@@ -563,11 +564,6 @@
                         </datalist>
                     </div>
                     <div style="display:inline;align-items:center; ">
-                        <!-- assigne -->
-                        <input class="input_filtre"  type="search" name="assigne" list="assigne-list" placeholder="Assigne..." autocomplete="off">
-                        <datalist id="assigne-list">
-                            <?=$listeUser?>
-                        </datalist>
                         
                         <!-- Bouton de recherche -->
                         <button class="button_search" id="button_search" type="button">
@@ -617,13 +613,6 @@
                 </select>
                 </select>
 
-                <label >Assigné :</label>
-                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." autocomplete="off" value="<?= htmlspecialchars($assigne ?? '') ?>  ">
-                <datalist id="assigne-list">
-                    <!-- Ces options sont générées dynamiquement par le serveur -->
-                    <?=$listeUser?>
-                </datalist>
-
                 <label >Categorie :</label>
                 <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie..." autocomplete="off" value="<?= htmlspecialchars($categorie ?? '') ?>" >
                 <datalist id="categorie-list">
@@ -653,7 +642,9 @@
                 const filtres = document.querySelectorAll('.input_filtre');//filtre de recherche
                 const searchButton = document.getElementById("button_search");//button recherche
                 const SearchForm = document.getElementById('form_search'); // Formulaire de recherche
-                
+                const deconButton = document.getElementById("deconnexion");//button deconnexion
+                const profButton = document.getElementById("profil");//button de profil
+                const toDoButton = document.getElementById("toDoList");//button d'acceuil
                 
                 let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
 
@@ -794,7 +785,6 @@
                                     document.getElementById('date').value = response.date || '';
                                     document.getElementById('statut').value = response.statut || '';
                                     document.getElementById('priorite').value = response.priorite || '';
-                                    document.getElementById('assigne').value = response.assigne || '';
                                     document.getElementById('categorie').value = response.categorie || '';
                                     document.querySelector('.Task').id=response.id ||'';
                                 } else {
@@ -941,6 +931,16 @@
                     });
                 });
 
+                //button de navigation
+                deconButton.addEventListener('click', function () {
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php";
+                });
+                profButton.addEventListener('click', function () {
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=profil";
+                });
+                toDoButton.addEventListener('click', function () {
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil";
+                });
 
                 // Gestion des clics sur le bouton Ajouter vert
                 button.addEventListener('click', function () {

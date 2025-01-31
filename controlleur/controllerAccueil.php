@@ -16,7 +16,7 @@ class ControllerAccueil extends DefaultController {
 
     /*******************************************************************************************************************************************************************/
     // PAGE
-    public function afficheAccueil() {
+    public function afficheAccueil($type) {
 
         // Gestion du thème (CSS)
         $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
@@ -25,19 +25,44 @@ class ControllerAccueil extends DefaultController {
         if(!$this->controlTask){
             $this->controlTask=new ControllerTask();
         }
-        $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil"));
+        $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil", $_SESSION["id_user"]));
 
-        // Rendu de la vue
-        $this->renderView(
-            __DIR__ . '/../Vue/page/Acceuil.php', // Correction du chemin
-            [
-                'listeUser' => $this->getListUser(),//list de user pour les input Assigne
-                'listeTache'=> $listeTache,//liste de taches en mode acccueil
-                'loader'=> "",//loader vide pour l'instant
-                'idTask'=>"",//id de la tache du formulaire vide pour l'instant
-                'themeProjet' => $themeProjet
-            ]
-        );
+        if($type="Utilisateur"){
+            // Rendu de la vue
+            $this->renderView(
+                __DIR__ . '/../Vue/page/AcceuilUtil.php', // Correction du chemin
+                [
+                    'listeUser' => $this->getListUser(),//list de user pour les input Assigne
+                    'listeTache'=> $listeTache,//liste de taches en mode acccueil
+                    'loader'=> "",//loader vide pour l'instant
+                    'idTask'=>"",//id de la tache du formulaire vide pour l'instant
+                    'themeProjet' => $themeProjet
+                ]
+            );
+        }elseif($type="Administrateur"){
+            // Rendu de la vue
+            $this->renderView(
+                __DIR__ . '/../Vue/page/AcceuilAdmin.php', // Correction du chemin
+                [
+                    'listeUser' => $this->getListUser(),//list de user pour les input Assigne
+                    'listeTache'=> $listeTache,//liste de taches en mode acccueil
+                    'loader'=> "",//loader vide pour l'instant
+                    'idTask'=>"",//id de la tache du formulaire vide pour l'instant
+                    'themeProjet' => $themeProjet
+                ]
+            );
+        }else{
+            echo "<script type='text/javascript'>alert('Type d'utilisateur inconnu');</script>";
+        }
+        
+    }
+
+    public function afficheProfil(){
+         // Rendu de la vue
+         $this->renderView(
+            __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
+            null
+            );
     }
 
     /*******************************************************************************************************************************************************************/
@@ -110,6 +135,11 @@ class ControllerAccueil extends DefaultController {
     // LIST
     public function formatedListTask($listeTaches){//formate la liste de tache pour l'afficher
 
+        // Assurer que $listeTaches est toujours un tableau
+        if (!is_array($listeTaches)) {
+            $listeTaches = [$listeTaches];
+        }
+
         $listeTachesCheck = array_map(function($tache) {
             return [
                 'id'=>$tache->getId(),
@@ -154,13 +184,13 @@ class ControllerAccueil extends DefaultController {
         return $listeUser;
     }
 
-    public function updateListTask($mode){//update la liste des taches apres un ajout, une modif un supprim
+    public function updateListTask($mode,$idUser){//update la liste des taches apres un ajout, une modif un supprim
         if ($_GET["action"] === "updateListTask"||$_GET["action"] === "search") {
             //recuper la liste de tache
             if(!$this->controlTask){
                 $this->controlTask=new ControllerTask();
             }
-            $listeTaches=$this->controlTask->getListTask($mode);
+            $listeTaches=$this->controlTask->getListTask($mode,$idUser);
             $listeTache=$this->formatedListTask($listeTaches);
              // Créer la réponse en format JSON
                 $response = [

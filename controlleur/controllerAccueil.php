@@ -336,8 +336,6 @@ class ControllerAccueil extends DefaultController {
 
 
     public function searchForm(){
-
-
         if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
             // Récupérer les paramètres de recherche depuis la requête GET
             $libelle = $_GET['libelle'] ?? null;

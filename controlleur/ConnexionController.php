@@ -21,7 +21,7 @@
             $email = $_POST["email"];
             $password = $_POST["password"];
     
-            $textR = "select password_utser, type, id_user ";
+            $textR = "select password_user, type, id_user ";
             $textR.= "from users ";
             $textR.= "where email_user=:email";
             $req = $pdo->prepare($textR);

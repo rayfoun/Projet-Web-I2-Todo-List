@@ -13,7 +13,6 @@ class TacheDao {
             $this->db = $database->getConnection();
             $this->utilisateurDao = new UtilisateurDao();
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->utilisateurDao = new UtilisateurDao();
         } catch (PDOException $e) {
             die("Erreur de connexion à la base de données: " . $e->getMessage());
         }
@@ -210,6 +209,7 @@ class TacheDao {
         }
         if ($categorie !== null) {
             $query .= " AND t.categorie_tache=:categorie";
+            $params[':categorie'] = $categorie;
         }
 
         // Préparation et exécution de la requête
@@ -281,11 +281,19 @@ class TacheDao {
         $tasks = [];
 
         foreach ($results as $row){
-            $tasks[] = new Task(
+            $tasks[] = new Tache(
                 $row['id'],
                 $row['libelle'],
                 $row['descriptif'],
-                $row['dateCreation']
+                $row['dateCreation'],
+                $row['dateEcheance'],
+                $row['heureCreation'],
+                $row['heureEcheance'],
+                $row['statut'],
+                $row['priorite'],
+                $row['categorie'],
+                $row['utilisateur'],
+
             );
         }
         return $query->fetchAll(PDO::FETCH_ASSOC);

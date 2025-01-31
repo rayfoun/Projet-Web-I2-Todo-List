@@ -334,13 +334,18 @@ class ControllerAccueil extends DefaultController {
         exit;
     }
 
+<<<<<<< HEAD
     public function searchForm(){
+=======
+    public function searchList() {
+>>>>>>> 14723a7c890a6666c3abd1bed7156821a56aef96
         if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
             // Récupérer les paramètres de recherche depuis la requête GET
             $libelle = $_GET['libelle'] ?? null;
             $statut = $_GET['statut'] ?? null;
             $priorite = $_GET['priorite'] ?? null;
             $assigne = $_GET['assigne'] ?? null;
+            $categorie = $_GET['categorie'] ?? null; // Nouveau paramètre catégorie
     
             // Récupérer l'utilisateur correspondant (s'il y a une recherche par assigné)
             $utilisateurId = null;
@@ -352,7 +357,11 @@ class ControllerAccueil extends DefaultController {
            $utilisateurId=$assigne->getId();
             // Effectuer la recherche
             $tacheDao = new TacheDao();
+<<<<<<< HEAD
             $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId);
+=======
+            $taches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
+>>>>>>> 14723a7c890a6666c3abd1bed7156821a56aef96
     
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON

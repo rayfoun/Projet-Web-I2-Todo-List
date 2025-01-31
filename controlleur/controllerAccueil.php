@@ -27,7 +27,7 @@ class ControllerAccueil extends DefaultController {
         }
         $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil", $_SESSION["id_user"]));
 
-        if($type="Utilisateur"){
+        if($type=="Utilisateur"){
             // Rendu de la vue
             $this->renderView(
                 __DIR__ . '/../Vue/page/AcceuilUtil.php', // Correction du chemin
@@ -39,7 +39,7 @@ class ControllerAccueil extends DefaultController {
                     'themeProjet' => $themeProjet
                 ]
             );
-        }elseif($type="Administrateur"){
+        }elseif($type=="Administrateur"){
             // Rendu de la vue
             $this->renderView(
                 __DIR__ . '/../Vue/page/AcceuilAdmin.php', // Correction du chemin
@@ -251,7 +251,7 @@ class ControllerAccueil extends DefaultController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (
                 isset($_POST['titre'], $_POST['description'], $_POST['date'], 
-                    $_POST['statut'], $_POST['priorite'], $_POST['assigne'], $_POST['categorie'])
+                    $_POST['statut'], $_POST['priorite'], $_POST['categorie'])
             ) {
                 // Récupérer les données du formulaire
                 $titre =  $_POST['titre'];
@@ -259,7 +259,6 @@ class ControllerAccueil extends DefaultController {
                 $dateLimite = $_POST['date'];
                 $statut = $_POST['statut'];
                 $priorite = $_POST['priorite'];
-                $assigne = $_POST['assigne'];
                 $categorie = $_POST['categorie'];
 
                 // Créer les valeurs pour l'entité
@@ -269,8 +268,13 @@ class ControllerAccueil extends DefaultController {
                 if(!$this->controlUser){
                     $this->controlUser=new ControllerUser();
                 }
-                
-                $assigne= $this->controlUser->getUserByAssigne($assigne);
+                if( $_SESSION["type"]=="Administrateur"){
+                    $assigne = $_POST['assigne'];
+                    $assigne= $this->controlUser->getUserByAssigne($assigne);
+                }else{
+                    $UserDAO=new UtilisateurDao();
+                    $assigne=$UserDAO->getUserById( $_SESSION["id_user"]);
+                }
                 //creér la tache a ajouter
                 $newTache=new Tache(null,
                                     $titre, 
@@ -366,6 +370,7 @@ class ControllerAccueil extends DefaultController {
 
 
     public function searchForm(){
+
         if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
             // Récupérer les paramètres de recherche depuis la requête GET
             $libelle = $_GET['libelle'] ?? null;
@@ -381,13 +386,12 @@ class ControllerAccueil extends DefaultController {
             }
             
             $assigne= $this->controlUser->getUserByAssigne($assigne);
-           $utilisateurId=$assigne->getId();
+            $utilisateurId=$assigne->getId();
             // Effectuer la recherche
             $tacheDao = new TacheDao();
 
             $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
 
-    
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON
                $response = [

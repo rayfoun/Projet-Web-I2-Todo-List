@@ -29,10 +29,11 @@
             //si c'est un utilisateur
             if($_SESSION["type"] =="Utilisateur"){
                 $controllerAccueil->afficheAccueil("Utilisateur");
-                   //si c'est un admin
             }if($_SESSION["type"] =="Administrateur"){
                 $controllerAccueil->afficheAccueil("Administrateur");
             }
+           
+            //si c'est un admin
             exit();
         }
 

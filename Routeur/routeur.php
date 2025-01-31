@@ -27,8 +27,12 @@
         //Affichage de l'accueil
         if ($_GET["action"]=="accueil"){
             //si c'est un utilisateur
-            if($_SESSION["type"] =="Utilisateur")
-            $controllerAccueil->afficheAccueil("Utilisateur");
+            if($_SESSION["type"] =="Utilisateur"){
+                $controllerAccueil->afficheAccueil("Utilisateur");
+            }if($_SESSION["type"] =="Administrateur"){
+                $controllerAccueil->afficheAccueil("Administrateur");
+            }
+           
             //si c'est un admin
             exit();
         }

@@ -1,5 +1,5 @@
 <?php
-    session_start();
+ 
     require_once __DIR__.'/DefaultController.php';
     require_once '../Config/bdd.php';
 
@@ -35,7 +35,7 @@
             echo $var;
             if ($tabRes != null){
                 var_dump($tabRes[0]);
-                $hashedPassword = password_hash($tabRes[0]['password_utser'], PASSWORD_DEFAULT);
+                $hashedPassword = password_hash($tabRes[0]['password_user'], PASSWORD_DEFAULT);
                 echo $hashedPassword;
             }
             

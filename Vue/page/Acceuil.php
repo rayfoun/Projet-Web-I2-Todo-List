@@ -120,6 +120,112 @@
             .input_filtre:hover {
                 outline: 1px solid lightgrey;
             }
+            
+            /*button recherche*/
+            .button_search {
+            background-color: transparent;
+            border: 2px solid #000;
+            border-radius: 0;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            display: inline-block;
+            float: right;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-left: 14px;
+            outline: none;
+            overflow: visible;
+            padding: 1.25em 2em;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            text-transform: none;
+            transition: all 0.3s ease-in-out;
+            user-select: none;
+            font-size: 8.5px;
+            }
+
+            .button_search::before {
+            content: " ";
+            width: 1rem;
+            height: 2px;
+            background: black;
+            top: 50%;
+            left: 1.5em;
+            position: absolute;
+            transform: translateY(-50%);
+            transform-origin: center;
+            transition: background 0.3s linear, width 0.3s linear;
+            }
+
+            .button_search .text {
+            font-size: 1.125em;
+            line-height: 1.33333em;
+            padding-left: 2em;
+            display: block;
+            text-align: left;
+            transition: all 0.3s ease-in-out;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: black;
+            }
+
+            .button_search .top-key {
+            height: 2px;
+            width: 1.5625rem;
+            top: -2px;
+            left: 0.625rem;
+            position: absolute;
+            background: #e8e8e8;
+            transition: width 0.5s ease-out, left 0.3s ease-out;
+            }
+
+            .button_search .bottom-key-1 {
+            height: 2px;
+            width: 1.5625rem;
+            right: 1.875rem;
+            bottom: -2px;
+            position: absolute;
+            background: #e8e8e8;
+            transition: width 0.5s ease-out, right 0.3s ease-out;
+            }
+
+            .button_search .bottom-key-2 {
+            height: 2px;
+            width: 0.625rem;
+            right: 0.625rem;
+            bottom: -2px;
+            position: absolute;
+            background: #e8e8e8;
+            transition: width 0.5s ease-out, right 0.3s ease-out;
+            }
+
+            .button_search:hover {
+            color: white;
+            background: black;
+            }
+
+            .button_search:hover::before {
+            width: 0.9375rem;
+            background: white;
+            }
+
+            .button_search:hover .text {
+            color: white;
+            padding-left: 1.5em;
+            }
+
+            .button_search:hover .top-key {
+            left: -2px;
+            width: 0px;
+            }
+
+            .button_search:hover .bottom-key-1,
+            .button_search:hover .bottom-key-2 {
+            right: 0;
+            width: 0;
+            }
 
              /*button ajouter*/ 
              .button_add {
@@ -180,12 +286,12 @@
                 /*transform: translate(10%, 0%);  Déplace le div pour le centrer */
                 height:50% ;
                 bottom:3% ;
-                width: 450px;
+                width: 37%;
                 display: block;
                
                 justify-content: center;
                 flex-direction: column;
-                transform: translateX(48%);  /* Pas de décalage initial */
+                transform: translateX(42%);  /* Pas de décalage initial */
                 opacity: 1; /* Transparent au départ */
                 transition: transform 0.4s ease; /* Transition fluide */
                 overflow-y:auto;
@@ -278,7 +384,6 @@
 
             /*form*/
             .information {
-                width: 30%;
                 background: #fff;
                 padding: 20px;
                 border-radius: 10px;
@@ -287,6 +392,7 @@
                 position: fixed;
                 left: 66%;
                 width: 30%;
+                height: 92%;
                 /*right: -100%;  Position initiale hors écran à droite */
                 flex-direction: column;
                 align-items: center; /* Centre les éléments à l'intérieur */
@@ -428,11 +534,50 @@
                 </button>
 
             </div>
-            <div style=" display: flex;align-items: center;">
-                <input class="input_filtre" name="text" placeholder="Titre..." type="search">
-                <input class="input_filtre" name="text" placeholder="statut..." type="search">
-                <input class="input_filtre" name="text" placeholder="Priorite..." type="search">
-                <input class="input_filtre" name="text" placeholder="Assigne..." type="search">
+            <div>
+                <form style="align-items:center; " id="form_search" method="POST">
+                    <div style="display:inline;align-items: center; ">
+                        <!-- titre -->
+                        <input class="input_filtre"  name="titre" placeholder="Titre..." type="search" autocomplete="off">
+                       
+                        <!-- statut -->
+                        <input class="input_filtre" list="statut-list" name="statut" placeholder="statut..." type="search" autocomplete="off">
+                        <datalist id="statut-list">
+                            <option value="En cours">En cours</option>
+                            <option value="En attente">En attente</option>
+                            <option value="Terminee">Terminee</option>
+                        </datalist>
+                        <!-- priorite -->
+                        <input class="input_filtre" list="priorite-list" name="priorite" placeholder="Priorite..." type="search" autocomplete="off">
+                        <datalist id="priorite-list">
+                            <option value="Moyenne">Moyenne</option>
+                            <option value="Haute">Haute</option>
+                            <option value="Basse">Basse</option>
+                        </datalist>
+                        <!-- categorie -->
+                        <input class="input_filtre" list="categorie-list" name="categorie" placeholder="Categorie..." type="search" autocomplete="off">
+                        <datalist id="categorie-list">
+                            <option value="A domicile">A domicile</option>
+                            <option value="Travail">Travail</option>
+                            <option value="Autre">Autre</option>
+                        </datalist>
+                    </div>
+                    <div style="display:inline;align-items:center; ">
+                        <!-- assigne -->
+                        <input class="input_filtre"  type="search" name="assigne" list="assigne-list" placeholder="Assigne..." autocomplete="off">
+                        <datalist id="assigne-list">
+                            <?=$listeUser?>
+                        </datalist>
+                        
+                        <!-- Bouton de recherche -->
+                        <button class="button_search" id="button_search" type="button">
+                            <span class="top-key"></span>
+                            <span class="text">Recherche</span>
+                            <span class="bottom-key-1"></span>
+                            <span class="bottom-key-2"></span>
+                        </button> 
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -444,7 +589,7 @@
 
         <!--Le formulaire-->
         <div class="information" id="taskForm">
-            <h1>Information</h1>
+            <h1 class="Task">Informations</h1>
             <form id="Form"  method="POST">
                 <label for="titre">Titre :</label>
                 <input id="titre" required type="text" name="titre" value="<?= htmlspecialchars($titre ?? '') ?>">
@@ -483,8 +628,8 @@
                 <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie..." autocomplete="off" value="<?= htmlspecialchars($categorie ?? '') ?>" >
                 <datalist id="categorie-list">
                     <!-- Ces options sont générées dynamiquement par le serveur -->
-                    <option value="personnel" >personnel</option>
-                    <option value="Au travail" >Au travail</option>
+                    <option value="A domicile" >A domicile</option>
+                    <option value="Travail" >Travail</option>
                     <option value="Autre" >Autre</option>
                 </datalist>
 
@@ -494,29 +639,6 @@
             </form>
         </div>
 
-        <script>
-            function deleteTache() {
-                // Exemple de requête fetch pour appeler un contrôleur
-                fetch('/delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: '12345' }) // Exemple de données envoyées
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Élément supprimé avec succès !');
-                        window.location.href = '/home'; // Redirection après suppression
-                    } else {
-                        alert('Erreur lors de la suppression.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    alert('Une erreur est survenue.');
-                });
-            }
         </script>
         <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
         <script>
@@ -529,6 +651,9 @@
                 const container_filtre = document.querySelector('.container_filtre'); // Div des filtres
                 const checks = document.querySelectorAll('.check');//les checkbox des boutons de liste tache
                 const filtres = document.querySelectorAll('.input_filtre');//filtre de recherche
+                const searchButton = document.getElementById("button_search");//button recherche
+                const SearchForm = document.getElementById('form_search'); // Formulaire de recherche
+                
                 
                 let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
 
@@ -563,7 +688,7 @@
                                                 setTimeout(function () {
                                                         form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache';
                                                         form.submit();  // Si le formulaire existe, soumettre
-                                                    updateListTask();
+                                                        updateListTask("accueil");
                                                 }, 500);
                                             }else{
                                                 form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
@@ -572,17 +697,19 @@
 
                                     }
 
+
                                     // Ajouter l'ecouteur du button modifier
                                     const buttonUpd = document.getElementById('update');
                                     if(buttonUpd){
                                         buttonUpd.addEventListener('click', function (event) {
                                             if (isFormValid()) {
+                                                event.preventDefault(); 
                                                 AnimationArriere()
                                                 // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
                                                 setTimeout(function () {
-                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateTache';
+                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateTache&id='+document.querySelector('.Task').id;
                                                         form.submit();  // Si le formulaire existe, soumettre
-                                                    updateListTask();
+                                                        updateListTask("accueil");
                                                 }, 500);
                                             }else{
                                                 form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
@@ -599,9 +726,8 @@
                                                 AnimationArriere()
                                                 // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
                                                 setTimeout(function () {
-                                                        form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=deleteTache';
-                                                        form.submit();  // Si le formulaire existe, soumettre
-                                                    updateListTask();
+                                                    window.location.href = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=deleteTache&id=' + document.querySelector('.Task').id;
+                                                    updateListTask("accueil");
                                                 }, 500);
                                             }else{
                                                 form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
@@ -623,9 +749,9 @@
                     xhr.send(); // Envoi de la requête
                 }
 
-                function updateListTask() {
+                function updateListTask(mode) {
                     let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask', true);
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode='+mode, true);
 
                     xhr.onload = function() {
                         if (xhr.status === 200) {
@@ -635,7 +761,7 @@
 
                                 if (response.status === 'success') {
                                     // Mettre à jour la section de la liste de tache
-                                    document.getElementById('divListeTache').innerHTML = response.listeTache;
+                                    document.getElementById('container_filtre2').innerHTML = response.listeTache;
                                 } else {
                                     console.error('Erreur : ' + response.message);
                                 }
@@ -662,6 +788,7 @@
 
                                 if (response.status === 'success') {
                                     // Mettre à jour les champs du formulaire
+                                    
                                     document.getElementById('titre').value = response.titre || '';
                                     document.getElementById('description').value = response.description || '';
                                     document.getElementById('date').value = response.date || '';
@@ -669,6 +796,7 @@
                                     document.getElementById('priorite').value = response.priorite || '';
                                     document.getElementById('assigne').value = response.assigne || '';
                                     document.getElementById('categorie').value = response.categorie || '';
+                                    document.querySelector('.Task').id=response.id ||'';
                                 } else {
                                     console.error('Erreur :', response.message);
                                 }
@@ -703,6 +831,18 @@
                     } 
                 }
 
+                function AnimationArriere() {
+                    if(divForm.classList.contains('active')){
+                        divForm.classList.remove('active');
+                        taskListDiv.classList.remove('active');
+                        container_filtre.classList.remove('active');
+                        setTimeout(() => {
+                            divForm.style.display = 'none'; // Masquer complètement après l'animation
+                        }, 400); // Délai correspondant à la durée de la transition
+                    }
+
+                }
+
                 function updateLoader() {
                     let xhr = new XMLHttpRequest();
                     xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateLoader', true);
@@ -730,17 +870,6 @@
                     xhr.send(); // Envoi de la requête
                 }
 
-                function AnimationArriere() {
-                    if(divForm.classList.contains('active')){
-                        divForm.classList.remove('active');
-                        taskListDiv.classList.remove('active');
-                        container_filtre.classList.remove('active');
-                        setTimeout(() => {
-                            divForm.style.display = 'none'; // Masquer complètement après l'animation
-                        }, 400); // Délai correspondant à la durée de la transition
-                    }
-
-                }
 
                 // Gestion des clics sur les boutons de tâches
                 buttonTaches.forEach(tache => {
@@ -788,6 +917,30 @@
                         }
                     });
                 });
+
+                //button de recherche
+                searchButton.addEventListener('click', function () {
+                    SearchForm.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search';
+                   // SearchForm.submit();  // Si le formulaire existe, soumettre
+                    updateListTask("seach");
+                    // Récupérer les données du formulaire
+                    let formData = new FormData(SearchForm);
+
+                    // Envoi des données via fetch
+                    fetch('/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search', {
+                        method: 'POST',
+                        body: formData // Utilisation de FormData pour envoyer les données du formulaire
+                    })
+                    .then(response => response.json()) // Réponse JSON du serveur
+                    .then(data => {
+                        // Traitement de la réponse serveur
+                        document.getElementById('container_filtre2').innerHTML = response.listeTache;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+
 
                 // Gestion des clics sur le bouton Ajouter vert
                 button.addEventListener('click', function () {

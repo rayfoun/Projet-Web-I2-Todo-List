@@ -374,7 +374,7 @@ $Acceuil="<!DOCTYPE html>
                 </datalist>
 
                 <div class='buttons_form'>
-                    <button type='submit' class='add'>Ajouter</button>
+                    <button type='button' class='add'>Ajouter</button>
                     <button type='button' class='cancel' onclick='window.location.href='/home';'>Annuler</button>
                     <button type='button' class='delete' onclick='deleteTache();'>Supprimer</button>
                 </div>

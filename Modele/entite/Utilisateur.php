@@ -11,7 +11,7 @@ class Utilisateur {
     private $emailVerifie;
 
     // Constructeur
-    public function __construct($id, $nom, $prenom, $email, $password, $token, $type, $photo, $emailVerifie) {
+    public function __construct($id, $nom, $prenom, $email, $password=null, $token=null, $type=null, $photo=null, $emailVerifie=null) {
         $this->id = $id;
         $this->nom = $nom;
         $this->prenom = $prenom;

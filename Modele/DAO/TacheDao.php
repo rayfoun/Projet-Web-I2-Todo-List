@@ -8,6 +8,9 @@ class TacheDao {
     private $utilisateurDao;
 
     public function __construct() {
+        $database= new Database();
+        $this->db = $database->getConnection();
+        $this->utilisateurDao = new UtilisateurDao(); // Initialisation de UtilisateurDao
         try{
             $database= new Database();
             $this->db = $database->getConnection();
@@ -183,7 +186,7 @@ class TacheDao {
 
 
     //8. Rechercher des tâches en fonction de plusieurs paramètres
-    public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null, $categorie = null) {
+    public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null,$categorie=null) {
         // Début de la requête SQL
         $query = "SELECT t.* FROM tache t WHERE 1=1";
 
@@ -271,31 +274,4 @@ class TacheDao {
     }
     
 
-    // Rayan
-    // Récupération de la liste des tâches d'un utilisateur
-    public function getAllTasks() {
-        $query = $this->db->prepare("SELECT * FROM tache");
-        $query->execute();
-        $results = $query->fetchAll(PDO::FETCH_ASSOC);
-
-        $tasks = [];
-
-        foreach ($results as $row){
-            $tasks[] = new Tache(
-                $row['id'],
-                $row['libelle'],
-                $row['descriptif'],
-                $row['dateCreation'],
-                $row['dateEcheance'],
-                $row['heureCreation'],
-                $row['heureEcheance'],
-                $row['statut'],
-                $row['priorite'],
-                $row['categorie'],
-                $row['utilisateur'],
-
-            );
-        }
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
 }

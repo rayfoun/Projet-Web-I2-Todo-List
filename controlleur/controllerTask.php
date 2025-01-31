@@ -24,6 +24,7 @@ class ControllerTask{
                 // Initialisation des variables avec des valeurs par défaut ou null
                 $titre = $statut = $priorite = $assigne = $categorie = null;
                 // Vérifier et affecter uniquement si la propriété est disponible
+
                 if (isset($_POST['titre'])) {
                     $titre = $_POST['titre'];
                 }
@@ -43,6 +44,7 @@ class ControllerTask{
                         $this->controlUser=new ControllerUser();
                     }
                     $assigne=$this->controlUser->getUserByAssigne($assigne);
+                    $assigne=$assigne->getId();
 
                 }
       

@@ -15,7 +15,7 @@ class UtilisateurDao {
     // 1. Ajouter un utilisateur
     public function addUser($utilisateur) {
         $query = $this->db->prepare("
-            INSERT INTO users (nom_user, prenom_user, password_utser, email_user, type)
+            INSERT INTO users (nom_user, prenom_user, password_user, email_user, type)
             VALUES (:nom, :prenom, :password, :email, :type)
         ");
         $query->execute([
@@ -99,7 +99,7 @@ class UtilisateurDao {
     }
 
     //
-    public function getUserByName($name,$firstName){
+    public function getUserByName(string $name,string $firstName){
 
         // Préparation de la requête SQL pour compter le nombre d'utilisateurs correspondants
         $query = $this->db->prepare("SELECT COUNT(*) FROM users WHERE nom_user = :nom AND prenom_user = :prenom");
@@ -109,22 +109,41 @@ class UtilisateurDao {
         $count = $query->fetchColumn();
 
         // Vérification du nombre d'utilisateurs trouvés
-        if ($count === 1) {
+        if ((int)$count === 1) {
             // Si un seul utilisateur est trouvé, récupération de ses informations
             $query = $this->db->prepare("SELECT * FROM users WHERE nom_user = :nom AND prenom_user = :prenom");
             $query->execute([':nom' => $name, ':prenom' => $firstName]);
             $result=$query->fetch(PDO::FETCH_ASSOC);
+            //echo json_encode($result);
+            
+                $newUser = new Utilisateur(
+                    $result['id_user'], 
+                    $result['nom_user'], 
+                    $result['prenom_user'], 
+                    $result['email_user'], 
+                    null, 
+                    null, 
+                    $result['type'], 
+                    null, 
+                    null
+                );
+                //var_dump($newUser);
+            
+                return $newUser;
+        } elseif ((int)$count > 1) {
+            //echo json_encode("Erreur : Plusieurs utilisateurs trouvés avec le nom");
+            echo "<script type='text/javascript'>alert('Erreur : Plusieurs utilisateurs trouvés avec le nom assigne');</script>";
 
-            return new Utilisateur($result['id_user'], $result['nom_user'], $result['prenom_user'], $result['email_user'],null,null,$result['type'],null,null);
-        } elseif ($count > 1) {
             // Si plusieurs utilisateurs sont trouvés, levée d'une exception
             //throw new Exception("Erreur : Plusieurs utilisateurs trouvés avec le nom '$firstName' '$name'.");
-            return null;
+           
         }
 
         // Si aucun utilisateur n'est trouvé, retour de null
-       // throw new Exception("Erreur: Aucun utilisateur trouvé avec le nom $firstName $name");
-        return null;
+        //echo json_encode("Erreur : Aucun utilisateur trouve avec le nom");
+        echo "<script type='text/javascript'>alert('Erreur : Aucun utilisateur trouve avec le nom assigne');</script>";
+        //throw new Exception("Erreur: Aucun utilisateur trouvé avec le nom $firstName $name");
+      
 
     }
 }

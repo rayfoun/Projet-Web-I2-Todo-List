@@ -14,27 +14,7 @@ class TacheDao {
     }
 
     // 1. Ajouter une tâche
-    public function addTask($tache) {
-        $query = $this->db->prepare("
-            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
-            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
-        ");
-
-        $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
-
-        $query->execute([
-            ':libelle' => $tache->getLibelle(),
-            ':descriptif' => $tache->getDescriptif(),
-            ':dateCreation' => $tache->getDateCreation(),
-            ':dateEcheance' => $tache->getDateEcheance(),
-            ':heureCreation' => $tache->getHeureCreation(),
-            ':heureEcheance' => $tache->getHeureEcheance(),
-            ':statut' => $tache->getStatut(),
-            ':priorite' => $tache->getPriorite(),
-            ':categorie' => $tache->getCategorie(),
-
-            ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
-        ]);
+    public function addTask(Tache $tache) {
         $query = $this->db->prepare("
             INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
             VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)

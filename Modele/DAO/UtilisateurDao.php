@@ -8,70 +8,91 @@ class UtilisateurDao {
     private $db;
 
     public function __construct() {
-        $database= new Database();
-        $this->db = $database->getConnection();
+        try{
+            $database= new Database();
+            $this->db = $database->getConnection();
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Erreur de connexion à la base de données: " . $e->getMessage());
+        }
     }
 
     // 1. Ajouter un utilisateur
     public function addUser($utilisateur) {
-        $query = $this->db->prepare("
-            INSERT INTO users (nom_user, prenom_user, password_utser, email_user, type)
-            VALUES (:nom, :prenom, :password, :email, :type)
-        ");
-        $query->execute([
-            ':nom' => $utilisateur->getNom(),
-            ':prenom' => $utilisateur->getPrenom(),
-            ':password' => password_hash($utilisateur->getPassword(), PASSWORD_BCRYPT),
-            ':email' => $utilisateur->getEmail(),
-            ':type' => $utilisateur->getType()
-        ]);
+        try{
+            $query = $this->db->prepare("
+                INSERT INTO users (nom_user, prenom_user, password_utser, email_user, type)
+                VALUES (:nom, :prenom, :password, :email, :type)
+            ");
+            $query->execute([
+                ':nom' => $utilisateur->getNom(),
+                ':prenom' => $utilisateur->getPrenom(),
+                ':password' => password_hash($utilisateur->getPassword(), PASSWORD_BCRYPT),
+                ':email' => $utilisateur->getEmail(),
+                ':type' => $utilisateur->getType()
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de l'ajout de l'utilisateur:". $e->getMessage());
+        }   
     }
 
     // 2. Modifier un utilisateur
     public function updateUser($utilisateur) {
-        $query = $this->db->prepare("
-            UPDATE users
-            SET nom_user = :nom, prenom_user = :prenom, email_user = :email, type = :type
-            WHERE id_user = :id
-        ");
-        $query->execute([
-            ':nom' => $utilisateur->getNom(),
-            ':prenom' => $utilisateur->getPrenom(),
-            ':email' => $utilisateur->getEmail(),
-            ':type' => $utilisateur->getType(),
-            ':id' => $utilisateur->getId()
-        ]);
+        try{
+            $query = $this->db->prepare("
+                UPDATE users
+                SET nom_user = :nom, prenom_user = :prenom, email_user = :email, type = :type
+                WHERE id_user = :id
+            ");
+            $query->execute([
+                ':nom' => $utilisateur->getNom(),
+                ':prenom' => $utilisateur->getPrenom(),
+                ':email' => $utilisateur->getEmail(),
+                ':type' => $utilisateur->getType(),
+                ':id' => $utilisateur->getId()
+            ]);
+        }catch(PDOException $e) {
+            throw new Exception("Erreur lors de la mise à jour de l'utilisateur". $e->getMessage());
+        }
     }
 
     // 3. Supprimer un utilisateur
     public function deleteUser($id) {
-        $query = $this->db->prepare("DELETE FROM users WHERE id_user = :id");
-        $query->execute([':id' => $id]);
+        try{
+            $query = $this->db->prepare("DELETE FROM users WHERE id_user = :id");
+            $query->execute([':id' => $id]);
+        }catch(PDOException $e) {
+            throw new Exception("Erreur lors de la suppression de l'utilisateur". $e->getMessage());
+        }
         
     }
 
     // 4. Afficher tous les utilisateurs
     public function getAllUsers() {
-        $query = $this->db->prepare("SELECT * FROM users");
-        $query->execute();
-        $result = $query->fetchAll(PDO::FETCH_ASSOC); 
+        try{
+            $query = $this->db->prepare("SELECT * FROM users");
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_ASSOC); 
 
-        $users = [];
-        foreach ($result as $row) {
-            // Crée un objet Utilisateur pour chaque ligne du résultat
-            $users[] = new Utilisateur(
-                $row['id_user'],
-                $row['nom_user'],
-                $row['prenom_user'],
-                $row['email_user'],
-                null, // Vous pouvez ajouter des valeurs supplémentaires si nécessaire
-                null, // Pareil ici
-                $row['type'],
-                null, // Idem
-                null // Idem
-            );
+            $users = [];
+            foreach ($result as $row) {
+                // Crée un objet Utilisateur pour chaque ligne du résultat
+                $users[] = new Utilisateur(
+                    $row['id_user'],
+                    $row['nom_user'],
+                    $row['prenom_user'],
+                    $row['email_user'],
+                    null, // Vous pouvez ajouter des valeurs supplémentaires si nécessaire
+                    null, // Pareil ici
+                    $row['type'],
+                    null, // Idem
+                    null // Idem
+                );
+            }
+            return $users;
+        }catch(PDOException $e) {
+            throw new Exception("Erreur lors de l'affichage de l'utilisateur". $e->getMessage());
         }
-        return $users;
     }
 
     // 5. Afficher les administrateurs
@@ -83,19 +104,24 @@ class UtilisateurDao {
 
     //trouver un user
     public function getUserById($id){
-        $query=$this->db->prepare("SELECT* from users where id_user=:id");
-        $query->execute([':id'=>$id]);
-        return new Utilisateur (
-            ['id_user'],
-            ['nom_user'],
-            ['prenom_user'],
-            ['email_user'],
-            null,
-            null,
-            ['type'],
-            null,
-            null
-        );
+        try{
+            $query=$this->db->prepare("SELECT* from users where id_user=:id");
+            $query->execute([':id'=>$id]);
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return new Utilisateur (
+                    ['id_user'],
+                    ['nom_user'],
+                    ['prenom_user'],
+                    ['email_user'],
+                    null,
+                    null,
+                    $result['type'], null, null );
+                }
+            return null;
+        }catch(PDOException $e){
+            throw new Exception("Erreur lors de la récupération de l'utilisateur:". $e->getMessage());
+        }
     }
 
     //

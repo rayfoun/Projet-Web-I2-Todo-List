@@ -364,8 +364,13 @@ class ControllerAccueil extends DefaultController {
         exit;
     }
 
+<<<<<<< HEAD
 
     public function searchForm(){
+=======
+    public function searchForm(){
+
+>>>>>>> 9589c0d5e9f1aa4dcc6a3742407bb29445bc6ba0
         if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
             // Récupérer les paramètres de recherche depuis la requête GET
             $libelle = $_GET['libelle'] ?? null;
@@ -385,7 +390,11 @@ class ControllerAccueil extends DefaultController {
             // Effectuer la recherche
             $tacheDao = new TacheDao();
 
+<<<<<<< HEAD
             $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
+=======
+            $taches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
+>>>>>>> 9589c0d5e9f1aa4dcc6a3742407bb29445bc6ba0
 
     
             $listeTache=$this->formatedListTask($listeTaches);

@@ -1,13 +1,8 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-
 require_once __DIR__ .'/DefaultController.php';
 require_once __DIR__ .'/../Modele/DAO/UtilisateurDao.php';
 require_once __DIR__ .'/../Modele/entite/Utilisateur.php';
-
 
 class RegisterController {
     private $userDao;
@@ -25,7 +20,10 @@ class RegisterController {
                 $password = $_POST['password'];
                 $confirm_password = $_POST['confirm_password'];
                 $username = trim($_POST['username']);
-                //$photo_profil = isset($_FILES['photo_profil']) ? $_FILES['photo_profil'] : null;
+                $photo_profil = isset($_FILES['photo_profil']) ? $_FILES['photo_profil'] : null;
+
+                // Génération du token
+                $token = $this->generateToken(25);
 
                 // Validation des champs
                 if (empty($prenom) || !ctype_alpha($prenom)) throw new Exception("Le prénom doit être alphabétique !");
@@ -36,24 +34,52 @@ class RegisterController {
                 if ($this->userDao->emailExists($email)) throw new Exception("Cet email est déjà utilisé !");
                 if ($this->userDao->usernameExists($username)) throw new Exception("Nom d'utilisateur déjà pris !");
 
+                // Hachage du mot de passe
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+                /*
                 // Gestion de la photo de profil
-               /* $photoPath = "avatar_defaut.png";
+                $photoPath = "avatar_defaut.png"; // Valeur par défaut
                 if ($photo_profil && $photo_profil['error'] === UPLOAD_ERR_OK) {
                     $allowedExtensions = ['jpeg', 'jpg', 'png'];
                     $fileInfo = pathinfo($photo_profil['name']);
-                    $extension = strtolower($fileInfo['extension']);*/
+                    $extension = strtolower($fileInfo['extension']);
 
-                // Création de l'utilisateur et insertion
-                $utilisateur = new Utilisateur($nom, $prenom, $email, $password, /*$photoPath*/);
+                    // Vérification de l'extension
+                    if (!in_array($extension, $allowedExtensions)) {
+                        throw new Exception("La photo de profil doit être au format jpeg, jpg ou png !");
+                    }
+
+                    // Vérification de la taille du fichier (1 Mo max)
+                    if ($photo_profil['size'] > 1000000) { 
+                        throw new Exception("La taille de la photo ne doit pas dépasser 1 Mo !");
+                    }
+
+                    // Enregistrement de l'image dans le dossier
+                    $photoPath = "include/image/photo_profil/" . uniqid() . "_" . $fileInfo['basename'];
+                    move_uploaded_file($photo_profil['tmp_name'], $photoPath);
+                }
+                */
+
+                // Création de l'utilisateur avec le token et la photo de profil
+                $utilisateur = new Utilisateur($nom, $prenom, $email, $hashedPassword, $token, /*$photoPath*/);
                 $this->userDao->addUser($utilisateur);
 
-                header("Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=connexion&success=1");
-                exit();
+               // echo json_encode(["status" => "success", "message" => "Inscription réussie avec token", "token" => $token]);
 
             } catch (Exception $e) {
-                echo "<script>alert('" . addslashes($e->getMessage()) . "');</script>";
+                echo json_encode(["error" => $e->getMessage()]);
             }
         }
+    }
+
+    // Générer un token aléatoire
+    private function generateToken($length = 25) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $token = '';
+        for ($i = 0; $i < $length; $i++) {
+            $token .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $token;
     }
 }
 

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../Config/bdd.php';
 require_once __DIR__ . '/../entite/Utilisateur.php';
+require_once __DIR__ . '/../DAO/UtilisateurDao.php';
 require_once __DIR__ . '/../entite/tache.php'; // Inclut la classe tache
 
 class TacheDao {
@@ -52,7 +53,7 @@ class TacheDao {
     }
 
     // 2. Modifier une tâche
-    public function updateTask($tache) {
+    /*public function updateTask($tache) {
         try{
             $query = $this->db->prepare("
                 UPDATE tache
@@ -75,7 +76,40 @@ class TacheDao {
             echo "<script type='text/javascript'>alert('$message');</script>";
             
         }
+    }*/
+
+    public function updateTask($tache, $idUser) {
+        try {
+            $query = $this->db->prepare("
+                UPDATE tache
+                SET libelle_tache = :libelle, 
+                    descriptif_tache = :descriptif, 
+                    date_echeance = :dateEcheance, 
+                    heure_echeance = :heureEcheance, 
+                    statut_tache = :statut, 
+                    priorite_tache = :priorite, 
+                    categorie = :categorie,
+                    id_user = :idUser
+                WHERE id_tache = :id
+            ");
+    
+            $query->execute([
+                ':libelle' => $tache->getLibelle(),
+                ':descriptif' => $tache->getDescriptif(),
+                ':dateEcheance' => $tache->getDateEcheance(),
+                ':heureEcheance' => $tache->getHeureEcheance(),
+                ':statut' => $tache->getStatut(),
+                ':priorite' => $tache->getPriorite(),
+                ':categorie' => $tache->getCategorie(),
+                ':idUser' => $idUser,
+                ':id' => $tache->getId()
+            ]);
+    
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la mise à jour d'une tâche: " . $e->getMessage());
+        }
     }
+    
 
     // 3. Supprimer une tâche
     public function deleteTask($id) {

@@ -33,12 +33,8 @@
             $tabRes = $req->fetchAll(PDO::FETCH_ASSOC);
             $var=count($tabRes);
             echo $var;
-            if ($tabRes != null){
-                var_dump($tabRes[0]);
-                $hashedPassword = password_hash($tabRes[0]['password_user'], PASSWORD_DEFAULT);
-                echo $hashedPassword;
-            }
-            
+
+            $hashedPassword = $tabRes[0]['password_user'];
             
             //Vérification de l'existence de l'utilisateur
             if (count($tabRes)!=1) {
@@ -63,9 +59,17 @@
             $_SESSION["id_user"] = $tabRes[0]["id_user"];  
             $_SESSION["type"] = $tabRes[0]["type"];
 
-            
             // Redirection vers la page d'accueil
             header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil");
+        }
+
+        function logout(){
+            // Déconnexion et suppression de la session
+            session_destroy();
+
+            // Redirection vers la page de connexion
+            header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php");
+
         }
     }
 ?>

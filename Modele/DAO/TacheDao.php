@@ -16,24 +16,6 @@ class TacheDao {
     }
 
     // 1. Ajouter une tâche
-    public function addTask(Tache $tache) {
-        $query = $this->db->prepare("
-            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
-            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
-        ");
-
-        try{
-            $database= new Database();
-            $this->db = $database->getConnection();
-            $this->utilisateurDao = new UtilisateurDao();
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            $message="Erreur de connexion à la base de données: " . $e->getMessage();
-            echo "<script type='text/javascript'>alert('$message');</script>";
-        }
-    }
-
-    // 1. Ajouter une tâche
     public function addTask($tache) {
         try{
             $query = $this->db->prepare("

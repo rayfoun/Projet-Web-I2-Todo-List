@@ -8,9 +8,19 @@ class TacheDao {
     private $utilisateurDao;
 
     public function __construct() {
+
         $database= new Database();
         $this->db = $database->getConnection();
         $this->utilisateurDao = new UtilisateurDao(); // Initialisation de UtilisateurDao
+    }
+
+    // 1. Ajouter une tâche
+    public function addTask(Tache $tache) {
+        $query = $this->db->prepare("
+            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
+            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
+        ");
+
         try{
             $database= new Database();
             $this->db = $database->getConnection();
@@ -190,6 +200,7 @@ class TacheDao {
 
 
     //8. Rechercher des tâches en fonction de plusieurs paramètres
+
     public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null,$categorie=null) {
         // Début de la requête SQL
         $query = "SELECT t.* FROM tache t WHERE 1=1";

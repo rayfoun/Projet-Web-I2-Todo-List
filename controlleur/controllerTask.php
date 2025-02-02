@@ -11,13 +11,13 @@ class ControllerTask{
        //controlleurs
        private $controlUser;
 
-    public function getListTask($mode){
+    public function getListTask($mode,$idUser){//retourne la liste des tache en fonction de si on est à l'acceuil ou si on fait une recherche
         //recuper une liste de tache
         $listeTaches=null;
         $tacheDAO = new TacheDao(); 
 
         if($mode=="accueil"){
-            $listeTaches = $tacheDAO->getAllTask();
+            $listeTaches = $tacheDAO->getTaskById($idUser);
         }
         if($mode=="search"){
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {

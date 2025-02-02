@@ -180,5 +180,23 @@ class UtilisateurDao {
       
 
     }
+
+
+    public function emailExists($email) {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email_user = :email");
+        $stmt->execute([':email' => $email]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function usernameExists($username) {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE nom_user = :username");
+        $stmt->execute([':username' => $username]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    
+
+
+
 }
 ?>

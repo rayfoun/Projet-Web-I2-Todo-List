@@ -26,9 +26,14 @@
 
         //Affichage de l'accueil
         if ($_GET["action"]=="accueil"){
-            //require '../controlleur/controllerAccueil.php';
-            //$controllerAccueil = new ControllerAccueil();
-            $controllerAccueil->afficheAccueil();
+            //si c'est un utilisateur
+            if($_SESSION["type"] =="Utilisateur"){
+                $controllerAccueil->afficheAccueil("Utilisateur");
+            }if($_SESSION["type"] =="Administrateur"){
+                $controllerAccueil->afficheAccueil("Administrateur");
+            }
+           
+            //si c'est un admin
             exit();
         }
 
@@ -46,7 +51,11 @@
         }if ( $_GET["action"] === "search") {
             $controllerAccueil->searchForm();
         }
-        
+        //page profil
+        if ( $_GET["action"] === "profil") {
+            $controllerAccueil->AfficheProfil();
+            exit();
+        }
         // Mettre à jour les boutons du formulaire
         if ( $_GET["action"] === "updateButtonForm") {
             // Vérifiez que le paramètre 'mode' est passé dans la requête GET
@@ -62,7 +71,7 @@
             }  
         //update la liste de taches apres un add, modif ou supprim
         }if ( $_GET["action"] === "updateListTask") {
-            $controllerAccueil->updateListTask("accueil");
+            $controllerAccueil->updateListTask("accueil", $_SESSION["id_user"]);
 
         //update le form avec des donne si on clique sur une tache
         }if ( $_GET["action"] === "updateFromTask") {

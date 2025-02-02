@@ -16,7 +16,7 @@ class ControllerAccueil extends DefaultController {
 
     /*******************************************************************************************************************************************************************/
     // PAGE
-    public function afficheAccueil() {
+    public function afficheAccueil($type) {
 
         // Gestion du thème (CSS)
         $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
@@ -25,19 +25,44 @@ class ControllerAccueil extends DefaultController {
         if(!$this->controlTask){
             $this->controlTask=new ControllerTask();
         }
-        $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil"));
+        $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil", $_SESSION["id_user"]));
 
-        // Rendu de la vue
-        $this->renderView(
-            __DIR__ . '/../Vue/page/Acceuil.php', // Correction du chemin
-            [
-                'listeUser' => $this->getListUser(),//list de user pour les input Assigne
-                'listeTache'=> $listeTache,//liste de taches en mode acccueil
-                'loader'=> "",//loader vide pour l'instant
-                'idTask'=>"",//id de la tache du formulaire vide pour l'instant
-                'themeProjet' => $themeProjet
-            ]
-        );
+        if($type=="Utilisateur"){
+            // Rendu de la vue
+            $this->renderView(
+                __DIR__ . '/../Vue/page/AcceuilUtil.php', // Correction du chemin
+                [
+                    'listeUser' => $this->getListUser(),//list de user pour les input Assigne
+                    'listeTache'=> $listeTache,//liste de taches en mode acccueil
+                    'loader'=> "",//loader vide pour l'instant
+                    'idTask'=>"",//id de la tache du formulaire vide pour l'instant
+                    'themeProjet' => $themeProjet
+                ]
+            );
+        }elseif($type=="Administrateur"){
+            // Rendu de la vue
+            $this->renderView(
+                __DIR__ . '/../Vue/page/AcceuilAdmin.php', // Correction du chemin
+                [
+                    'listeUser' => $this->getListUser(),//list de user pour les input Assigne
+                    'listeTache'=> $listeTache,//liste de taches en mode acccueil
+                    'loader'=> "",//loader vide pour l'instant
+                    'idTask'=>"",//id de la tache du formulaire vide pour l'instant
+                    'themeProjet' => $themeProjet
+                ]
+            );
+        }else{
+            echo "<script type='text/javascript'>alert('Type d'utilisateur inconnu');</script>";
+        }
+        
+    }
+
+    public function afficheProfil(){
+         // Rendu de la vue
+         $this->renderView(
+            __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
+            null
+            );
     }
 
     /*******************************************************************************************************************************************************************/
@@ -110,6 +135,11 @@ class ControllerAccueil extends DefaultController {
     // LIST
     public function formatedListTask($listeTaches){//formate la liste de tache pour l'afficher
 
+        // Assurer que $listeTaches est toujours un tableau
+        if (!is_array($listeTaches)) {
+            $listeTaches = [$listeTaches];
+        }
+
         $listeTachesCheck = array_map(function($tache) {
             return [
                 'id'=>$tache->getId(),
@@ -154,13 +184,13 @@ class ControllerAccueil extends DefaultController {
         return $listeUser;
     }
 
-    public function updateListTask($mode){//update la liste des taches apres un ajout, une modif un supprim
+    public function updateListTask($mode,$idUser){//update la liste des taches apres un ajout, une modif un supprim
         if ($_GET["action"] === "updateListTask"||$_GET["action"] === "search") {
             //recuper la liste de tache
             if(!$this->controlTask){
                 $this->controlTask=new ControllerTask();
             }
-            $listeTaches=$this->controlTask->getListTask($mode);
+            $listeTaches=$this->controlTask->getListTask($mode,$idUser);
             $listeTache=$this->formatedListTask($listeTaches);
              // Créer la réponse en format JSON
                 $response = [
@@ -221,7 +251,7 @@ class ControllerAccueil extends DefaultController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (
                 isset($_POST['titre'], $_POST['description'], $_POST['date'], 
-                    $_POST['statut'], $_POST['priorite'], $_POST['assigne'], $_POST['categorie'])
+                    $_POST['statut'], $_POST['priorite'], $_POST['categorie'])
             ) {
                 // Récupérer les données du formulaire
                 $titre =  $_POST['titre'];
@@ -229,7 +259,6 @@ class ControllerAccueil extends DefaultController {
                 $dateLimite = $_POST['date'];
                 $statut = $_POST['statut'];
                 $priorite = $_POST['priorite'];
-                $assigne = $_POST['assigne'];
                 $categorie = $_POST['categorie'];
 
                 // Créer les valeurs pour l'entité
@@ -239,8 +268,13 @@ class ControllerAccueil extends DefaultController {
                 if(!$this->controlUser){
                     $this->controlUser=new ControllerUser();
                 }
-                
-                $assigne= $this->controlUser->getUserByAssigne($assigne);
+                if( $_SESSION["type"]=="Administrateur"){
+                    $assigne = $_POST['assigne'];
+                    $assigne= $this->controlUser->getUserByAssigne($assigne);
+                }else{
+                    $UserDAO=new UtilisateurDao();
+                    $assigne=$UserDAO->getUserById( $_SESSION["id_user"]);
+                }
                 //creér la tache a ajouter
                 $newTache=new Tache(null,
                                     $titre, 
@@ -337,6 +371,7 @@ class ControllerAccueil extends DefaultController {
 
 
     public function searchForm(){
+
         if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
             // Récupérer les paramètres de recherche depuis la requête GET
             $libelle = $_GET['libelle'] ?? null;
@@ -352,13 +387,12 @@ class ControllerAccueil extends DefaultController {
             }
             
             $assigne= $this->controlUser->getUserByAssigne($assigne);
-           $utilisateurId=$assigne->getId();
+            $utilisateurId=$assigne->getId();
             // Effectuer la recherche
             $tacheDao = new TacheDao();
 
             $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
 
-    
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON
                $response = [

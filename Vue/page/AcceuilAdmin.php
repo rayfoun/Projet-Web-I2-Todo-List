@@ -515,8 +515,9 @@
         <!--La navbar-->
         <div class="nav">
             <div class="container_nav">
-            <div class="btn">To-Do List</div>
-            <div class="btn">Profil</div>
+            <div class="btn" id="toDoList">To-Do List</div>
+            <div class="btn" id="profil">Profil</div>
+            <div class="btn" id="deconnexion">Deconnexion</div>
             <svg class="outline" overflow="visible" width="400" height="60" viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg">
                 <rect class="rect" pathLength="100" x="0" y="0" width="400" height="60" fill="transparent" stroke-width="5"></rect>
             </svg>
@@ -653,6 +654,10 @@
                 const filtres = document.querySelectorAll('.input_filtre');//filtre de recherche
                 const searchButton = document.getElementById("button_search");//button recherche
                 const SearchForm = document.getElementById('form_search'); // Formulaire de recherche
+                const deconButton = document.getElementById("deconnexion");//button deconnexion
+                const profButton = document.getElementById("profil");//button de profil
+                const toDoButton = document.getElementById("toDoList");//button d'acceuil
+                
                 
                 
                 let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
@@ -902,6 +907,16 @@
                     }else{
                         box.disabled = true;
                     }
+                });
+                //button de navigation
+                deconButton.addEventListener('click', function () {
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php";
+                });
+                profButton.addEventListener('click', function () {
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=profil";
+                });
+                toDoButton.addEventListener('click', function () {
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil";
                 });
                 //gestion des filtres
                 filtres.forEach(filtre=>{

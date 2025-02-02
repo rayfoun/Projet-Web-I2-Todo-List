@@ -64,6 +64,7 @@ class ControllerTask{
     }
 
     function check($tache) {
+        if($tache==null)return null;
         return ($tache->getStatut() == "Terminee") ? "disabled" : "";
     }
 

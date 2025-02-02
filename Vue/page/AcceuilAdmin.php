@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Formulaire Aligné à Droite</title>
+        <title>Accueil To-Do List</title>
         <style>
             /*body*/
             body {
@@ -935,53 +935,57 @@
                 });
 
                 //button de recherche
-                searchButton.addEventListener('click', function (event) {
+                /*searchButton.addEventListener('click', function () {
+
+                    if (divForm.classList.contains('active')) {//si le formulaire est visible
+                        AnimationArriere(); 
+                        setTimeout(function () {
+                            SearchForm.submit();  // Si le formulaire existe, soumettre
+                        }, 1500);
+                    }else{
+                            SearchForm.submit();  // Si le formulaire existe, soumettre
+                    }
+                    
+                    //updateListTask("search");
+                });*/
+
+
+                //formulaire de recherche
+               SearchForm.addEventListener('submit', function(event) {
                     event.preventDefault(); // Empêche le rechargement de la page
 
-                    if (divForm.classList.contains('active')) {
-                        AnimationArriere(); 
-                        setTimeout(() => {
-                            console.log('mise en forme!');
-                        }, 500);
-                    }
+                    // Créer un objet FormData avec les données du formulaire
+                    var formData = new FormData(SearchForm);
 
-                    // Création et affichage des données du formulaire
-                    const formData = new FormData(SearchForm);
-
-                    formData.forEach((value, key) => {
-                        console.log(`${key}: ${value}`);
+                     // Afficher les données dans la console
+                     formData.forEach(function (value, key) {
+                        console.log(key + ": " + value);
                     });
-
-                    if (!Array.from(formData.entries()).length) {
-                        console.log('Le formulaire est vide!');
-                        return;
-                    }
-
-                    // Envoi des données avec fetch
+                    setTimeout(function () {
+                        }, 500);
                     fetch(SearchForm.action, {
                         method: 'POST',
-                        body: formData,
+                        body: formData
                     })
                     .then(response => {
-                        if (response.ok) {
-                            console.log('Données envoyées avec succès.');
+                        if (!response.ok) {
+                            throw new Error('Erreur réseau');
+                        }
+                        return response.json(); // Parse la réponse JSON
+                    })
+                    .then(response => {
+                        // Utilisation des données JSON
+                        if (response.status === 'success') {
+                            console.log('Liste des tâches reçues :', response.listeTache);
+                            document.getElementById('container_filtre2').innerHTML = response.listeTache;
                         } else {
-                            console.log('Erreur lors de l\'envoi des données.');
+                            console.error('Erreur côté serveur', response);
                         }
                     })
-                    .catch(() => {
-                        console.log('Erreur réseau ou serveur.');
+                    .catch(error => {
+                        console.error('Erreur:', error);
                     });
-
-                    // Mise à jour des tâches après un court délai
-                    setTimeout(() => {
-                       // updateListTask("search");
-                    }, 100);
                 });
-                //formulaire de recherche
-               /* SearchForm.addEventListener('submit', function(event) {
-                    
-                });*/
 
 // le bouton Ajouter vert******************************************************************************************************************************************************
                 button.addEventListener('click', function () {

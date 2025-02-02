@@ -50,6 +50,7 @@
             $controllerAccueil->updateLoader();
         }if ( $_GET["action"] === "search") {
             $controllerAccueil->searchForm();
+           exit();
         }
         //page profil
         if ( $_GET["action"] === "profil") {

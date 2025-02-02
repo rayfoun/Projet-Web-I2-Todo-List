@@ -139,6 +139,9 @@ class ControllerAccueil extends DefaultController {
         if (!is_array($listeTaches)) {
             $listeTaches = [$listeTaches];
         }
+        if(!$this->controlTask){
+            $this->controlTask=new ControllerTask();
+        }
 
         $listeTachesCheck = array_map(function($tache) {
             return [
@@ -190,47 +193,30 @@ class ControllerAccueil extends DefaultController {
                 $this->controlTask=new ControllerTask();
             }
             if($mode === "search"){
-                    // Initialisation des variables avec des valeurs par défaut ou null
-                    $titre = $statut = $priorite = $assigne = $categorie = null;
-                  
-                    
-                      // Vérifier et affecter uniquement si la propriété est disponible
-      
-                      if (isset($_POST['titre'])) {
-                        echo"zzz";
-                          $titre = $_POST['titre'];
-                      }
-            
-                      if (isset($_POST['statut'])) {
-                        echo"zzz";
-                          $statut = $_POST['statut'];
-                      }
-            
-                      if (isset($_POST['priorite'])) {
-                        echo"zzz";
-                          $priorite = $_POST['priorite'];
-                      }
-            
-                      if (isset($_POST['assigne'])) {
-                        echo"zzz";
-                            $assigne = $_POST['assigne'];
-                           //recuper l'utilisateur
-                          if(!$this->controlUser){
-                              $this->controlUser=new ControllerUser();
-                          }
-                          $assigne=$this->controlUser->getUserByAssigne($assigne);
-                          $assigne=$assigne->getId();
-      
-                      }
-            
-                      if (isset($_POST['categorie'])) {
-                        echo"zzz";
-                          $categorie = $_POST['categorie'];
-                      }
-                    
-                $tacheDAO = new TacheDao(); 
-                $listeTaches = $tacheDAO->getTasksByFilters($titre, $statut, $priorite, $assigne,$categorie);
-
+                $libelle = $_POST['titre'] ?? null;
+                $statut = $_POST['statut'] ?? null;
+                $priorite = $_POST['priorite'] ?? null;
+                $assigne = $_POST['assigne'] ?? null;
+                $categorie = $_POST['categorie'] ?? null; // Nouveau paramètre catégorie
+        
+                // Récupérer l'utilisateur correspondant (s'il y a une recherche par assigné)
+                $utilisateurId = null;
+                if(!$this->controlUser){
+                    $this->controlUser=new ControllerUser();
+                }
+                /*var_dump($libelle);
+                var_dump($statut);
+                var_dump($priorite);
+                var_dump($assigne);
+                var_dump($categorie);*/
+                $assigne= $this->controlUser->getUserByAssigne($assigne);
+                $utilisateurId=$assigne->getId();
+                // Effectuer la recherche
+                $tacheDao = new TacheDao();
+    
+                $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,$categorie);
+                // var_dump($listeTaches);
+                $listeTache=$this->formatedListTask($listeTaches);
             }else{
                 $listeTaches=$this->controlTask->getListTask($mode,$idUser);
             }
@@ -330,7 +316,7 @@ class ControllerAccueil extends DefaultController {
                                     $priorite, 
                                     $categorie, 
                                     $assigne);
-                var_dump($newTache);
+                // var_dump($newTache);
                 try {
                     $tacheDao = new TacheDao();
                     $tacheDao->addTask($newTache);
@@ -414,27 +400,31 @@ class ControllerAccueil extends DefaultController {
 
     public function searchForm(){
 
-        if (isset($_GET['action']) && $_GET['action'] === 'searchList') {
+        if (isset($_GET['action']) && $_GET['action'] === 'search') {
             // Récupérer les paramètres de recherche depuis la requête GET
-            $libelle = $_GET['libelle'] ?? null;
-            $statut = $_GET['statut'] ?? null;
-            $priorite = $_GET['priorite'] ?? null;
-            $assigne = $_GET['assigne'] ?? null;
-            $categorie = $_GET['categorie'] ?? null; // Nouveau paramètre catégorie
+            $libelle = $_POST['titre'] ?? null;
+            $statut = $_POST['statut'] ?? null;
+            $priorite = $_POST['priorite'] ?? null;
+            $assigne = $_POST['assigne'] ?? null;
+            $categorie = $_POST['categorie'] ?? null; // Nouveau paramètre catégorie
     
             // Récupérer l'utilisateur correspondant (s'il y a une recherche par assigné)
             $utilisateurId = null;
             if(!$this->controlUser){
                 $this->controlUser=new ControllerUser();
             }
-            
+           /* var_dump($libelle);
+            var_dump($statut);
+            var_dump($priorite);
+            var_dump($assigne);
+            var_dump($categorie);*/
             $assigne= $this->controlUser->getUserByAssigne($assigne);
             $utilisateurId=$assigne->getId();
             // Effectuer la recherche
             $tacheDao = new TacheDao();
-
-            $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,categorie: null);
-            var_dump($listeTaches);
+            
+            $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,$categorie);
+            //var_dump($listeTaches);
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON
                $response = [

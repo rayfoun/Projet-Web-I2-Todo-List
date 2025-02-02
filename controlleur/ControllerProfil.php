@@ -1,8 +1,8 @@
 <?php
-require_once '/Config/bdd.php'; // Inclut la connexion à la base de données
-require_once '/Modele/DAO/UtilisateurDAO.php';
+require_once '../Config/bdd.php'; // Inclut la connexion à la base de données
+require_once __DIR__ .'/../Modele/DAO/UtilisateurDao.php';
 require_once __DIR__.'/DefaultController.php';
-require_once __DIR__.'/UtilisateurDAO.php';
+//require_once __DIR__.'/UtilisateurDAO.php';
 
 class ControllerProfil extends DefaultController{
     private $utilisateurDAO;

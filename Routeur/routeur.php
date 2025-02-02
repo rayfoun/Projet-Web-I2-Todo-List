@@ -2,6 +2,7 @@
     // Exemple d'appel dans index.php
     require_once '../controlleur/controllerAccueil.php';
     require_once '../controlleur/ControllerConnexion.php';
+    require_once '../controlleur/ControllerProfil.php';
 
     session_start();  // Assurez-vous que la session est démarrée
 

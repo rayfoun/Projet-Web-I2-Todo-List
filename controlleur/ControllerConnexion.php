@@ -14,12 +14,21 @@
         } 
         
         function login(){
+
+            // Récupération de la connexion à la base de données
             global $pdo;
             $database = new Database();
             $pdo = $database->getConnection();
+
             // on devrait vérifier qu'ils sont set
+            $csrf = $_POST["csrf_token"];
             $email = $_POST["email"];
             $password = $_POST["password"];
+
+            // Vérification du token
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
+                die("⛔ Erreur : Token CSRF invalide !");
+            }
     
             $textR = "select password_user, type, id_user ";
             $textR.= "from users ";

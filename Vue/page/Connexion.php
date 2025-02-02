@@ -102,11 +102,16 @@
                     <div class="input-container">
                         <input type="password" name="password" id="password" placeholder="Enter password" autocomplete="password">
                     </div>
+
+                    <!-- Token CSRF -->
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                     <button type="submit" class="submit" name="submit" value="Valider">Connexion</button>
                     <p class="signup-link">
                         __________ProjetWebI2___________
                     </p>
                 </form>
+                <p>Token CSRF généré : <?= $_SESSION['csrf_token']; ?></p>
             </div>
         </div>
     </body>

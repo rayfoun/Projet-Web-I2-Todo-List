@@ -13,7 +13,8 @@ class UtilisateurDao {
             $this->db = $database->getConnection();
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données: " . $e->getMessage());
+            $message="Erreur de connexion à la base de données: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
     }
 
@@ -32,7 +33,9 @@ class UtilisateurDao {
                 ':type' => $utilisateur->getType()
             ]);
         } catch (PDOException $e) {
-            throw new Exception("Erreur lors de l'ajout de l'utilisateur:". $e->getMessage());
+           // throw new Exception("Erreur lors de l'ajout de l'utilisateur:". $e->getMessage());
+            $message="Erreur lors de l'ajout de l'utilisateur: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }   
     }
 
@@ -52,7 +55,8 @@ class UtilisateurDao {
                 ':id' => $utilisateur->getId()
             ]);
         }catch(PDOException $e) {
-            throw new Exception("Erreur lors de la mise à jour de l'utilisateur". $e->getMessage());
+            $message="Erreur lors de la mise à jour de l'utilisateur: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
     }
 
@@ -62,7 +66,8 @@ class UtilisateurDao {
             $query = $this->db->prepare("DELETE FROM users WHERE id_user = :id");
             $query->execute([':id' => $id]);
         }catch(PDOException $e) {
-            throw new Exception("Erreur lors de la suppression de l'utilisateur". $e->getMessage());
+            $message="Erreur lors de la suppression de l'utilisateur: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
         
     }
@@ -91,7 +96,8 @@ class UtilisateurDao {
             }
             return $users;
         }catch(PDOException $e) {
-            throw new Exception("Erreur lors de l'affichage de l'utilisateur". $e->getMessage());
+            $message="Erreur lors de l'affichage de l'utilisateur: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
     }
 
@@ -120,7 +126,9 @@ class UtilisateurDao {
                 }
             return null;
         }catch(PDOException $e){
-            throw new Exception("Erreur lors de la récupération de l'utilisateur:". $e->getMessage());
+            $message="Erreur lors de la récupération de l'utilisateur: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
+            
         }
     }
 

@@ -17,7 +17,8 @@ class TacheDao {
             $this->utilisateurDao = new UtilisateurDao();
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données: " . $e->getMessage());
+            $message="Erreur de connexion à la base de données: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
     }
 
@@ -45,7 +46,8 @@ class TacheDao {
                 ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
             ]);
         } catch (PDOException $e) {
-            throw new Exception("Erreur de l'ajout de la tâche:". $e->getMessage());
+            $message="Erreur de l'ajout de la tâche: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
     }
 
@@ -69,7 +71,9 @@ class TacheDao {
                 ':id' => $tache->getId()
             ]);
         } catch (PDOException $e) {
-            throw new Exception("Erreur lors de la mise à jour d'une tâche". $e->getMessage());
+            $message="Erreur lors de la mise à jour d'une tâche". $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
+            
         }
     }
 

@@ -33,6 +33,7 @@
             $tabRes = $req->fetchAll(PDO::FETCH_ASSOC);
             $var=count($tabRes);
             echo $var;
+
             if ($tabRes != null){
                 var_dump($tabRes[0]);
                 $hashedPassword = password_hash($tabRes[0]['password_user'], PASSWORD_DEFAULT);
@@ -44,6 +45,7 @@
             if (count($tabRes)!=1) {
                 // pas trouvé => retour au formulaire de co
                 // die("Erreur de co");
+                $_SESSION['error'] = 'Identifiant ou mot de passe incorrect';
                 header("Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php");
                 echo "Nom d'utilisateur incorrect";
                 exit();
@@ -52,6 +54,7 @@
             //Vérification du mot de passe crypté
             if (!password_verify($password, $hashedPassword)) {
                 // Mot de passe incorrect
+                $_SESSION['error'] = 'Identifiant ou mot de passe incorrect';
                 header("Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php");
                 echo "Mot de passe incorrect";
                 exit();

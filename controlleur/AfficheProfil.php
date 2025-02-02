@@ -50,7 +50,7 @@ class ControllerProfil extends DefaultController{
     }
 
     function supprimerCompteUtilisateur($id){
-        $this->utilisateurDAO->supprimerUtilisateur($id);
+        //$this->utilisateurDAO->supprimerUtilisateur($id);
     }
 
     function creerCompteUtilisateur(){

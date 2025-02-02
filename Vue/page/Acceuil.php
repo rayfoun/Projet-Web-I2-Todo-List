@@ -509,8 +509,45 @@
             .cta:active {
             transform: scale(0.95);
             }
+            .popup {
+                position: fixed;
+                top: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 9999;
+                width: 300px;
+            }
 
-            /* Style global pour la popup */
+            .popup.success {
+                border-left: 5px solid green;
+                background-color: #e7f7e7;
+            }
+
+            .popup.error {
+                border-left: 5px solid red;
+                background-color: #f8d7da;
+            }
+
+            .popup_content {
+                text-align: center;
+            }
+
+            .close_popup {
+                background-color: #ccc;
+                border: none;
+                padding: 10px;
+                cursor: pointer;
+            }
+
+            .close_popup:hover {
+                background-color: #aaa;
+            }
+
+            
             .popup {
                 position: fixed;
                 top: 20px;
@@ -576,9 +613,8 @@
         <!--La navbar-->
         <div class="nav">
             <div class="container_nav">
-            <div class="btn" id="toDoList">To-Do List</div>
-            <div class="btn" id="profil">Profil</div>
-            <div class="btn" id="deconnexion">Deconnexion</div>
+            <div class="btn">To-Do List</div>
+            <div class="btn">Profil</div>
             <svg class="outline" overflow="visible" width="400" height="60" viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg">
                 <rect class="rect" pathLength="100" x="0" y="0" width="400" height="60" fill="transparent" stroke-width="5"></rect>
             </svg>
@@ -625,6 +661,11 @@
                         </datalist>
                     </div>
                     <div style="display:inline;align-items:center; ">
+                        <!-- assigne -->
+                        <input class="input_filtre"  type="search" name="assigne" list="assigne-list" placeholder="Assigne..." autocomplete="off">
+                        <datalist id="assigne-list">
+                            <?=$listeUser?>
+                        </datalist>
                         
                         <!-- Bouton de recherche -->
                         <button class="button_search" id="button_search" type="button">
@@ -674,6 +715,13 @@
                 </select>
                 </select>
 
+                <label >Assigné :</label>
+                <input  required id="assigne" type="search" name="assigne" list="assigne-list" placeholder="Entrez un nom..." autocomplete="off" value="<?= htmlspecialchars($assigne ?? '') ?>  ">
+                <datalist id="assigne-list">
+                    <!-- Ces options sont générées dynamiquement par le serveur -->
+                    <?=$listeUser?>
+                </datalist>
+
                 <label >Categorie :</label>
                 <input  required id="categorie" type="search" name="categorie" list="categorie-list" placeholder="Entrez une categorie..." autocomplete="off" value="<?= htmlspecialchars($categorie ?? '') ?>" >
                 <datalist id="categorie-list">
@@ -688,6 +736,7 @@
                 </div>
             </form>
         </div>
+
         <?php if ($popupMessage): ?>
             <div class="popup <?= $popupType ?>"> <!-- Ajoute une classe dynamique selon le type -->
                 <p><?= $popupMessage ?></p>
@@ -716,6 +765,7 @@
         });
 
         </script>
+
         </script>
         <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
         <script>
@@ -730,9 +780,7 @@
                 const filtres = document.querySelectorAll('.input_filtre');//filtre de recherche
                 const searchButton = document.getElementById("button_search");//button recherche
                 const SearchForm = document.getElementById('form_search'); // Formulaire de recherche
-                const deconButton = document.getElementById("deconnexion");//button deconnexion
-                const profButton = document.getElementById("profil");//button de profil
-                const toDoButton = document.getElementById("toDoList");//button d'acceuil
+                
                 
                 let lastClickedButton ='add'; // Variable pour mémoriser le dernier bouton cliqué
 
@@ -873,6 +921,7 @@
                                     document.getElementById('date').value = response.date || '';
                                     document.getElementById('statut').value = response.statut || '';
                                     document.getElementById('priorite').value = response.priorite || '';
+                                    document.getElementById('assigne').value = response.assigne || '';
                                     document.getElementById('categorie').value = response.categorie || '';
                                     document.querySelector('.Task').id=response.id ||'';
                                 } else {
@@ -1000,7 +1049,7 @@
                 searchButton.addEventListener('click', function () {
                     SearchForm.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search';
                    // SearchForm.submit();  // Si le formulaire existe, soumettre
-                    updateListTask("seach");
+                    updateListTask("search");
                     // Récupérer les données du formulaire
                     let formData = new FormData(SearchForm);
 
@@ -1012,23 +1061,14 @@
                     .then(response => response.json()) // Réponse JSON du serveur
                     .then(data => {
                         // Traitement de la réponse serveur
-                        document.getElementById('container_filtre2').innerHTML = response.listeTache;
+                        console.log(data);  // Ajout d'un log pour déboguer et vérifier la réponse
+                        document.getElementById('container_filtre2').innerHTML = data.listeTache;
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
                 });
 
-                //button de navigation
-                deconButton.addEventListener('click', function () {
-                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php";
-                });
-                profButton.addEventListener('click', function () {
-                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=profil";
-                });
-                toDoButton.addEventListener('click', function () {
-                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil";
-                });
 
                 // Gestion des clics sur le bouton Ajouter vert
                 button.addEventListener('click', function () {
@@ -1060,13 +1100,22 @@
 
             });
         </script>
-     
-     <?php
-        if (isset($popupMessage) && !empty($popupMessage)) {
-            echo "Message: " . $popupMessage . " - Type: " . $popupType;
-        }
-        ?>
-
+    <?php
+// Vérification si la session message est définie
+if (isset($_SESSION['message'])):
+    $message = $_SESSION['message'];
+    $message_type = $_SESSION['message_type'];
+    // Suppression du message de la session après l'avoir affiché
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']);
+?>
+    <div class="popup <?php echo $message_type; ?>">
+        <div class="popup_content">
+            <p><?php echo htmlspecialchars($message); ?></p>
+            <button class="close_popup">Fermer</button>
+        </div>
+    </div>
+<?php endif; ?>
 
     </body>
 </html>

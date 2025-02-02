@@ -509,6 +509,65 @@
             .cta:active {
             transform: scale(0.95);
             }
+
+            .popup {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px;
+                background-color: #f8d7da; /* Couleur de fond pour une erreur */
+                color: #721c24; /* Couleur du texte pour une erreur */
+                border: 1px solid #f5c6cb;
+                border-radius: 5px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                font-family: Arial, sans-serif;
+                max-width: 300px;
+                z-index: 9999;
+                transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .popup.success {
+                background-color: #d4edda; /* Couleur de fond pour un succès */
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .popup.error {
+                background-color: #f8d7da; /* Couleur de fond pour une erreur */
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+
+            .popup p {
+                margin: 0;
+                font-size: 16px;
+            }
+
+            .popup .close-popup {
+                background: none;
+                border: none;
+                color: inherit;
+                font-size: 18px;
+                font-weight: bold;
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+
+            .popup .close-popup:hover {
+                color: #ccc;
+            }
+
+            /* Animation de fermeture */
+            .popup.hide {
+                opacity: 0;
+                transform: translateY(-20px);
+                pointer-events: none;
+            }
         </style>
     </head>
     <body>
@@ -639,7 +698,34 @@
                 </div>
             </form>
         </div>
+        <?php if ($popupMessage): ?>
+            <div class="popup <?= $popupType ?>"> <!-- Ajoute une classe dynamique selon le type -->
+                <p><?= $popupMessage ?></p>
+                <button class="close-popup">X</button>
+            </div>
+        <?php endif; ?>
 
+        <script>
+           document.addEventListener("DOMContentLoaded", function() {
+            const closeButton = document.querySelector('.close-popup');
+            const popup = document.querySelector('.popup');
+
+            // Fonction pour fermer la popup
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    popup.style.display = 'none'; // Ou utilisez une animation de fermeture
+                });
+            }
+
+            // Optionnel: Fermer après un délai (5 secondes)
+            setTimeout(() => {
+                if (popup && popup.style.display !== 'none') {
+                    popup.style.display = 'none'; // Ou utilisez une animation pour la disparition
+                }
+            }, 5000); // 5 secondes pour fermer la popup
+        });
+
+        </script>
         </script>
         <!-- javaScript lorsqu'on appui su button_add le formulaire apparait-->
         <script>
@@ -988,6 +1074,7 @@
 
             });
         </script>
+
 
     </body>
 </html>

@@ -23,7 +23,7 @@ class Database {
             } catch (PDOException $e) {
                 // Gestion des erreurs de connexion
                 $message="Erreur de connexion : " . $e->getMessage() ;
-                //echo "<script type='text/javascript'>alert('$message');</script>";
+                echo "<script type='text/javascript'>alert('$message');</script>";
                 return null;
             }
         }

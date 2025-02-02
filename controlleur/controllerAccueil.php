@@ -7,6 +7,12 @@ require_once __DIR__ .'/../Modele/entite/Utilisateur.php';
 require_once __DIR__ .'/../controlleur/ControllerUser.php';
 require_once __DIR__ .'/../controlleur/ControllerTask.php';
 
+
+
+// Exemple dans le contrôleur pour ajouter un message
+$_SESSION['popup_message'] = 'Votre tâche a été mise à jour avec succès!';
+$_SESSION['popup_type'] = 'success'; // ou 'error' selon le type de message
+
 class ControllerAccueil extends DefaultController { 
 
     //controlleurs
@@ -27,6 +33,15 @@ class ControllerAccueil extends DefaultController {
         }
         $listeTache=$this->formatedListTask($this->controlTask->getListTask("accueil", $_SESSION["id_user"]));
 
+
+          // Vérifier si un message est présent dans la session
+        $popupMessage = isset($_SESSION['popup_message']) ? $_SESSION['popup_message'] : '';
+        $popupType = isset($_SESSION['popup_type']) ? $_SESSION['popup_type'] : '';
+
+        // Effacer les messages après leur utilisation
+        unset($_SESSION['popup_message']);
+        unset($_SESSION['popup_type']);
+
         if($type=="Utilisateur"){
             // Rendu de la vue
             $this->renderView(
@@ -36,7 +51,9 @@ class ControllerAccueil extends DefaultController {
                     'listeTache'=> $listeTache,//liste de taches en mode acccueil
                     'loader'=> "",//loader vide pour l'instant
                     'idTask'=>"",//id de la tache du formulaire vide pour l'instant
-                    'themeProjet' => $themeProjet
+                    'themeProjet' => $themeProjet,
+                    'popupMessage' => $popupMessage, // Passer le message de la session
+                    'popupType' => $popupType, // Passer le type de message
                 ]
             );
         }elseif($type=="Administrateur"){
@@ -48,11 +65,15 @@ class ControllerAccueil extends DefaultController {
                     'listeTache'=> $listeTache,//liste de taches en mode acccueil
                     'loader'=> "",//loader vide pour l'instant
                     'idTask'=>"",//id de la tache du formulaire vide pour l'instant
-                    'themeProjet' => $themeProjet
+                    'themeProjet' => $themeProjet,
+                    'popupMessage' => $popupMessage, // Passer le message de la session
+                    'popupType' => $popupType, // Passer le type de message
                 ]
             );
         }else{
-            echo "<script type='text/javascript'>alert('Type d'utilisateur inconnu');</script>";
+            $_SESSION['popup_message'] = 'Type d utilisateur inconnu.';
+            $_SESSION['popup_type'] = 'error';
+            //echo "<script type='text/javascript'>alert('Type d'utilisateur inconnu');</script>";
         }
         
     }
@@ -291,16 +312,25 @@ class ControllerAccueil extends DefaultController {
                 try {
                     $tacheDao = new TacheDao();
                     $tacheDao->addTask($newTache);
+
+                     // Message de succès
+                    $_SESSION['popup_message'] = 'Tâche ajoutée avec succès!';
+                    $_SESSION['popup_type'] = 'success';
                 } catch (Exception $e) {
-                    $message= "Erreur : " . $e->getMessage();
-                    var_dump($message);
-                    echo "<script type='text/javascript'>alert('$message');</script";
+                    $_SESSION['popup_message'] = 'Erreur : ' . $e->getMessage();
+                    $_SESSION['popup_type'] = 'error';
+                    /*var_dump($message);
+                    echo "<script type='text/javascript'>alert('$message');</script";*/
                 }
             } else {
-                echo "<script type='text/javascript'>alert('Erreur : Tous les champs obligatoires ne sont pas remplis pour l'ajout.');</script>";
+                $_SESSION['popup_message'] = 'Erreur : Tous les champs obligatoires ne sont pas remplis pour l\'ajout.';
+                $_SESSION['popup_type'] = 'error';
+               // echo "<script type='text/javascript'>alert('Erreur : Tous les champs obligatoires ne sont pas remplis pour l'ajout.');</script>";
             }
         } else {
-            echo "<script type='text/javascript'>alert('Méthode non autorisée.');</script>";
+            $_SESSION['popup_message'] = 'Méthode non autorisée.';
+            $_SESSION['popup_type'] = 'error';
+            //echo "<script type='text/javascript'>alert('Méthode non autorisée.');</script>";
         }
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil');
         exit;
@@ -318,7 +348,6 @@ class ControllerAccueil extends DefaultController {
                 $description = $_POST['description'];
                 $dateLimite = $_POST['date'];
                 $statut = $_POST['statut'];
-     
                 $priorite = $_POST['priorite'];
                 $categorie = $_POST['categorie'];
                 
@@ -339,11 +368,18 @@ class ControllerAccueil extends DefaultController {
 
                     // Sauvegarder les modifications
                     $tacheDao->updateTask($tache);
+                    // Message de succès
+                    $_SESSION['popup_message'] = 'Tâche mise à jour avec succès!';
+                    $_SESSION['popup_type'] = 'success';
                 } else {
-                    echo "<script type='text/javascript'>alert('Tâche introuvable.');</script>";
+                    $_SESSION['popup_message'] = 'Tâche introuvable.';
+                    $_SESSION['popup_type'] = 'error';
+                    //echo "<script type='text/javascript'>alert('Tâche introuvable.');</script>";
                 }
             } else {
-                echo "<script type='text/javascript'>alert('Tous les champs obligatoires ne sont pas remplis pour la modification.');</script>";
+                $_SESSION['popup_message'] = 'Tous les champs obligatoires ne sont pas remplis pour la modification.';
+                $_SESSION['popup_type'] = 'error';
+                //echo "<script type='text/javascript'>alert('Tous les champs obligatoires ne sont pas remplis pour la modification.');</script>";
             }
         }
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil');
@@ -359,11 +395,17 @@ class ControllerAccueil extends DefaultController {
             $tacheDao = new TacheDao();
             try {
                 $tacheDao->deleteTask($id);
+                $_SESSION['popup_message'] = 'Tâche supprimée avec succès!';
+                $_SESSION['popup_type'] = 'success';
             } catch (Exception $e) {
-                echo "<script type='text/javascript'>alert('Erreur lors de la suppression : {$e->getMessage()}');</script>";
+                $_SESSION['popup_message'] = 'Erreur lors de la suppression : ' . $e->getMessage();
+                $_SESSION['popup_type'] = 'error';
+                //echo "<script type='text/javascript'>alert('Erreur lors de la suppression : {$e->getMessage()}');</script>";
             }
         } else {
-            echo "<script type='text/javascript'>alert('ID de tâche manquant.');</script>";
+            $_SESSION['popup_message'] = 'ID de tâche manquant.';
+            $_SESSION['popup_type'] = 'error';
+            //echo "<script type='text/javascript'>alert('ID de tâche manquant.');</script>";
         }
         header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil');
         exit;

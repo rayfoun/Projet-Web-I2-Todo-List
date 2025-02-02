@@ -86,6 +86,37 @@
             .signup-link a {
             text-decoration: underline;
             }
+
+             /* ====== Style pour la popup ====== */
+             .error-popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #ffdddd;
+                color: #d8000c;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                display: none; /* Caché par défaut */
+                width: 300px;
+                text-align: center;
+            }
+
+            .error-popup button {
+                background: #d8000c;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                margin-top: 10px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            .error-popup button:hover {
+                background: #a60008;
+            }
+
         </style>
     </head>
     <body>
@@ -109,5 +140,26 @@
                 </form>
             </div>
         </div>
+         <!-- Script pour afficher le message d'erreur -->
+        <!-- Popup d'erreur -->
+        <div id="errorPopup" class="error-popup">
+            <p id="errorMessage"></p>
+            <button onclick="closePopup()">OK</button>
+        </div>
+
+        <!-- Script pour afficher le message d'erreur -->
+        <script>
+            window.onload = function() {
+                <?php if(isset($_SESSION['error'])): ?>
+                    document.getElementById("errorMessage").textContent = "<?= $_SESSION['error']; ?>";
+                    document.getElementById("errorPopup").style.display = "block"; // Afficher la popup
+                    <?php unset($_SESSION['error']); ?> // Supprimer l'erreur après affichage
+                <?php endif; ?>
+            }
+
+            function closePopup() {
+                document.getElementById("errorPopup").style.display = "none";
+            }
+        </script>
     </body>
 </html>

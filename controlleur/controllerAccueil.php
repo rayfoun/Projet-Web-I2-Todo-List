@@ -57,13 +57,13 @@ class ControllerAccueil extends DefaultController {
         
     }
 
-    public function afficheProfil(){
-         // Rendu de la vue
-         $this->renderView(
-            __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
-            null
-            );
-    }
+    // public function afficheProfil(){
+    //      // Rendu de la vue
+    //      $this->renderView(
+    //         __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
+    //         null
+    //         );
+    // }
 
     /*******************************************************************************************************************************************************************/
     // LOADER
@@ -190,7 +190,7 @@ class ControllerAccueil extends DefaultController {
             if(!$this->controlTask){
                 $this->controlTask=new ControllerTask();
             }
-            $listeTaches=$this->controlTask->getListTask($mode,$idUser);
+            $listeTaches=$this->controlTask->getListTask($mode, $idUser);
             $listeTache=$this->formatedListTask($listeTaches);
              // Créer la réponse en format JSON
                 $response = [

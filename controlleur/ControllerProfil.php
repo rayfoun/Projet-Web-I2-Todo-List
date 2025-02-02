@@ -31,23 +31,14 @@ class ControllerProfil extends DefaultController{
         );
     }
 
-    function afficheProfil(){
-
-        // Préparation des composants à inclure
-        $navbar = $this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
-        $infoUtilisateur = $this->renderComponent(__DIR__."/../Vue/composant/infoUtilisateur.php");
-
-        //gerer le theme
-        $themeCSS = $this->renderComponent(__DIR__."/../Vue/css/themeProjet.css");
-
+    public function afficheProfil(){
+        // Rendu de la vue
         $this->renderView(
-            __DIR__."/../Vue/template/profil.php",
-            [
-               'navbar' => $navbar,
-                'infoUtilisateur' => $infoUtilisateur,
-            ]
-        );
-    }
+           __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
+           null
+           );
+   }
+
 
     function supprimerCompteUtilisateur($id){
         //$this->utilisateurDAO->supprimerUtilisateur($id);

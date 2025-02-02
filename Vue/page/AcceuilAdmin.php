@@ -910,7 +910,7 @@
                 });
                 //button de navigation
                 deconButton.addEventListener('click', function () {
-                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php";
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=logout";
                 });
                 profButton.addEventListener('click', function () {
                     window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=profil";

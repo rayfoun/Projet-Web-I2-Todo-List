@@ -53,7 +53,7 @@
         }
         //page profil
         if ( $_GET["action"] === "profil") {
-            $controllerAccueil->AfficheProfil();
+            $controllerProfil->AfficheProfil();
             exit();
         }
         // Mettre à jour les boutons du formulaire

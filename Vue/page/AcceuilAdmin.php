@@ -80,6 +80,15 @@
                 background:  #e2e2e2;
             }
 
+            /*Nom et Bienvenu*/
+            .bienvenu{
+                position: fixed;
+                top:15%;
+                left: 1%;
+                font-family: 'Freestyle Script';
+                font-size: 40px;
+            }
+
              /*Filtre de recherche*/
              .container_filtre {
                 display: flex;
@@ -522,6 +531,11 @@
                 <rect class="rect" pathLength="100" x="0" y="0" width="400" height="60" fill="transparent" stroke-width="5"></rect>
             </svg>
             </div>
+        </div>
+
+        <!--Nom et Bienvenu-->
+        <div class="bienvenu">
+            Bienvenu <?=$nomUser?>
         </div>
 
         <!--Le filtre de recherche-->

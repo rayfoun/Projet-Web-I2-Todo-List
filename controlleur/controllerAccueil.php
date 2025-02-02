@@ -20,7 +20,11 @@ class ControllerAccueil extends DefaultController {
 
         // Gestion du thème (CSS)
         $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
-        
+        //nom utilisateur
+        $user=new UtilisateurDao();
+        $nomUser=$user->getUserById( $_SESSION["id_user"]);
+        $nomUser=(string)$nomUser->getPrenom();
+      
         //recuper la liste de tache
         if(!$this->controlTask){
             $this->controlTask=new ControllerTask();
@@ -36,7 +40,8 @@ class ControllerAccueil extends DefaultController {
                     'listeTache'=> $listeTache,//liste de taches en mode acccueil
                     'loader'=> "",//loader vide pour l'instant
                     'idTask'=>"",//id de la tache du formulaire vide pour l'instant
-                    'themeProjet' => $themeProjet
+                    'themeProjet' => $themeProjet,
+                    'nomUser'=>$nomUser
                 ]
             );
         }elseif($type=="Administrateur"){
@@ -48,7 +53,8 @@ class ControllerAccueil extends DefaultController {
                     'listeTache'=> $listeTache,//liste de taches en mode acccueil
                     'loader'=> "",//loader vide pour l'instant
                     'idTask'=>"",//id de la tache du formulaire vide pour l'instant
-                    'themeProjet' => $themeProjet
+                    'themeProjet' => $themeProjet,
+                    'nomUser'=>$nomUser
                 ]
             );
         }else{
@@ -365,6 +371,14 @@ class ControllerAccueil extends DefaultController {
                     $tache->setPriorite($priorite);
                     $tache->setCategorie($categorie);
 
+                    if( $_SESSION["type"]=="Administrateur"){
+                        $assigne = $_POST['assigne'];
+                        $assigne= $this->controlUser->getUserByAssigne($assigne);
+                    }else{
+                        $UserDAO=new UtilisateurDao();
+                        $assigne=$UserDAO->getUserById( $_SESSION["id_user"]);
+                    }
+                    $tache->setUtilisateur($assigne);
                     // Sauvegarder les modifications
                     $tacheDao->updateTask($tache);
                 } else {
@@ -418,8 +432,12 @@ class ControllerAccueil extends DefaultController {
             var_dump($priorite);
             var_dump($assigne);
             var_dump($categorie);*/
-            $assigne= $this->controlUser->getUserByAssigne($assigne);
-            $utilisateurId=$assigne->getId();
+            if( $_SESSION["type"]=="Administrateur"){
+                $assigne= $this->controlUser->getUserByAssigne($assigne);
+            }else{
+                $UserDAO=new UtilisateurDao();
+                $assigne=$UserDAO->getUserById( $_SESSION["id_user"]);
+            }
             // Effectuer la recherche
             $tacheDao = new TacheDao();
             

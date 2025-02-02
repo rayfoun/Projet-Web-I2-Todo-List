@@ -110,10 +110,10 @@ class UtilisateurDao {
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if ($result) {
                 return new Utilisateur (
-                    ['id_user'],
-                    ['nom_user'],
-                    ['prenom_user'],
-                    ['email_user'],
+                    $result['id_user'],
+                    $result['nom_user'],
+                    $result['prenom_user'],
+                    $result['email_user'],
                     null,
                     null,
                     $result['type'], null, null );

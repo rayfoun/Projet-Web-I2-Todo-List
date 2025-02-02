@@ -922,7 +922,7 @@
                 searchButton.addEventListener('click', function () {
                     SearchForm.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search';
                    // SearchForm.submit();  // Si le formulaire existe, soumettre
-                    updateListTask("seach");
+                    updateListTask("search");
                     // Récupérer les données du formulaire
                     let formData = new FormData(SearchForm);
 
@@ -934,7 +934,8 @@
                     .then(response => response.json()) // Réponse JSON du serveur
                     .then(data => {
                         // Traitement de la réponse serveur
-                        document.getElementById('container_filtre2').innerHTML = response.listeTache;
+                        console.log(data);  // Ajout d'un log pour déboguer et vérifier la réponse
+                        document.getElementById('container_filtre2').innerHTML = data.listeTache;
                     })
                     .catch(error => {
                         console.error('Error:', error);

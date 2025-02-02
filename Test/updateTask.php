@@ -1,5 +1,6 @@
 <?php
 header("Content-Type: application/json");
+
 require_once __DIR__ . '/../Config/bdd.php';
 require_once __DIR__ . '/../Modele/entite/tache.php';
 require_once __DIR__ . '/../Modele/DAO/TacheDao.php';
@@ -22,13 +23,14 @@ if (!$data) {
 }
 
 // Vérifier que tous les champs requis sont présents
-if (empty($data['id']) || empty($data['libelle']) || empty($data['descriptif']) || empty($data['dateEcheance']) || empty($data['heureEcheance']) || empty($data['statut']) || empty($data['priorite']) || empty($data['categorie'])) {
+if (empty($data['id']) || empty($data['libelle']) || empty($data['descriptif']) || empty($data['dateEcheance']) || empty($data['heureEcheance']) || empty($data['statut']) || empty($data['priorite']) || empty($data['categorie']) || empty($data['idUser'])) {
     echo json_encode(["error" => "Tous les champs sont obligatoires"]);
     exit;
 }
 
 // Sécurisation des données
 $id = intval($data['id']);
+$idUser = intval($data['idUser']);
 $libelle = htmlspecialchars(trim($data['libelle']));
 $descriptif = htmlspecialchars(trim($data['descriptif']));
 $dateEcheance = $data['dateEcheance'];
@@ -46,12 +48,21 @@ if (!$query->fetch()) {
     exit;
 }
 
-// Création d'un objet tâche
-$tache = new Tache($id, $libelle, $descriptif, "", $dateEcheance, "", $heureEcheance, $statut, $priorite, $categorie, null);
+// Vérifier si l'utilisateur existe
+$queryUser = $db->prepare("SELECT * FROM users WHERE id_user = :idUser");
+$queryUser->execute([':idUser' => $idUser]);
+
+if (!$queryUser->fetch()) {
+    echo json_encode(["error" => "Utilisateur introuvable"]);
+    exit;
+}
+
+// Création d'un objet tâche avec l'utilisateur
+$tache = new Tache($id, $libelle, $descriptif, "", $dateEcheance, "", $heureEcheance, $statut, $priorite, $categorie, $idUser);
 
 // Instanciation du DAO et mise à jour de la tâche
-$tacheDao = new TacheDao($db, null);
-$tacheDao->updateTask($tache);
+$tacheDao = new TacheDao($db);
+$tacheDao->updateTask($tache, $idUser);
 
 echo json_encode(["message" => "Tâche modifiée avec succès"]);
 ?>

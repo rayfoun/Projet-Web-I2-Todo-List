@@ -8,7 +8,7 @@
     // Instanciation des controleurs
      $controllerAccueil = new ControllerAccueil();
      $controllerConnexion = new ControllerConnexion();
-
+     $controllerProfil = new ControllerProfil();
    
     if(!isset($_GET["action"])){
         $controllerConnexion->affichePageConnexion();
@@ -60,7 +60,7 @@
         }
         //page profil
         if ( $_GET["action"] === "profil") {
-            $controllerProfil->AfficheProfil();
+            $controllerProfil->afficheProfil();
             exit();
         }
         // Mettre à jour les boutons du formulaire

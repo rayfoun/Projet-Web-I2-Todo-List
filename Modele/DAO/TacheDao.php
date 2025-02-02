@@ -169,7 +169,7 @@ class TacheDao {
 
     //8. Rechercher des tâches en fonction de plusieurs paramètres
 
-    public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null,$categorie=null) {
+    public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null, $categorie=null) {
         // Début de la requête SQL
         $query = "SELECT t.* FROM tache t WHERE 1=1";
 

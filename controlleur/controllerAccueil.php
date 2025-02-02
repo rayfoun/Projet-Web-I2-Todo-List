@@ -390,8 +390,9 @@ class ControllerAccueil extends DefaultController {
             // Effectuer la recherche
             $tacheDao = new TacheDao();
 
-            $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId, $categorie);
-
+            $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,categorie: null);
+            var_dump($listeTaches);
+            echo "<script>console.error('Erreur: " .$listeTaches. "');</script>";
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON
                $response = [
@@ -399,9 +400,10 @@ class ControllerAccueil extends DefaultController {
                    'listeTache' => $listeTache
                ];
                
-               // Assurez-vous que les headers sont correctement définis pour envoyer du JSON                    header('Content-Type: application/json');
-               echo json_encode($response); // Renvoi uniquement de JSON
-                exit();
+               // Assurez-vous que les headers sont correctement définis pour envoyer du JSON     
+            header('Content-Type: application/json');
+            echo json_encode($response); // Renvoi uniquement de JSON
+            exit();
         }
     }
     /*******************************************************************************************************************************************************************/

@@ -536,7 +536,7 @@
 
             </div>
             <div>
-                <form style="align-items:center; " id="form_search" method="POST">
+                <form style="align-items:center; " id="form_search" method="POST" action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search'> 
                     <div style="display:inline;align-items: center; ">
                         <!-- titre -->
                         <input class="input_filtre"  name="titre" placeholder="Titre..." type="search" autocomplete="off">
@@ -933,27 +933,54 @@
                     });
                 });
 
+                //soumetre le formulaire de recherche en AJAX
+                SearchForm.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    try {
+                        const response = await fetch('process_form.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const result = await response.text();
+                        document.getElementById('result').innerText = 'Succès : ' + result;
+                    } catch (error) {
+                        document.getElementById('result').innerText = 'Erreur lors de la soumission';
+                    }
+                });
                 //button de recherche
                 searchButton.addEventListener('click', function () {
                     SearchForm.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search';
                    // SearchForm.submit();  // Si le formulaire existe, soumettre
-                    updateListTask("seach");
+                    //updateListTask("seach");
                     // Récupérer les données du formulaire
-                    let formData = new FormData(SearchForm);
 
-                    // Envoi des données via fetch
-                    fetch('/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search', {
-                        method: 'POST',
-                        body: formData // Utilisation de FormData pour envoyer les données du formulaire
-                    })
-                    .then(response => response.json()) // Réponse JSON du serveur
-                    .then(data => {
-                        // Traitement de la réponse serveur
-                        document.getElementById('container_filtre2').innerHTML = response.listeTache;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                    let formData = new FormData(SearchForm);
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search', true);
+
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            try {
+                                let response = JSON.parse(xhr.responseText);
+                                console.log('Réponse JSON parsée:', response);
+
+                                if (response.status === 'success') {
+                                    // Mettre à jour les champs du formulaire
+                                    document.getElementById('container_filtre2').innerHTML = reponse.listeTache;
+                                } else {
+                                    console.error('Erreur :', response.message);
+                                }
+                            } catch (e) {
+                                console.error('Erreur de parsing JSON :', e);
+                            }
+                        } else {
+                            console.error('Erreur du serveur :', xhr.status);
+                        }
+                    };
                 });
 
 

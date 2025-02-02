@@ -27,7 +27,37 @@ class TacheDao {
             $this->utilisateurDao = new UtilisateurDao();
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données: " . $e->getMessage());
+            $message="Erreur de connexion à la base de données: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
+        }
+    }
+
+    // 1. Ajouter une tâche
+    public function addTask($tache) {
+        try{
+            $query = $this->db->prepare("
+                INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
+                VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
+            ");
+
+            $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
+
+            $query->execute([
+                ':libelle' => $tache->getLibelle(),
+                ':descriptif' => $tache->getDescriptif(),
+                ':dateCreation' => $tache->getDateCreation(),
+                ':dateEcheance' => $tache->getDateEcheance(),
+                ':heureCreation' => $tache->getHeureCreation(),
+                ':heureEcheance' => $tache->getHeureEcheance(),
+                ':statut' => $tache->getStatut(),
+                ':priorite' => $tache->getPriorite(),
+                ':categorie' => $tache->getCategorie(),
+
+                ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
+            ]);
+        } catch (PDOException $e) {
+            $message="Erreur de l'ajout de la tâche: " . $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
         }
     }
 
@@ -51,7 +81,9 @@ class TacheDao {
                 ':id' => $tache->getId()
             ]);
         } catch (PDOException $e) {
-            throw new Exception("Erreur lors de la mise à jour d'une tâche". $e->getMessage());
+            $message="Erreur lors de la mise à jour d'une tâche". $e->getMessage();
+            echo "<script type='text/javascript'>alert('$message');</script>";
+            
         }
     }
 

@@ -318,6 +318,7 @@ class ControllerAccueil extends DefaultController {
                 $description = $_POST['description'];
                 $dateLimite = $_POST['date'];
                 $statut = $_POST['statut'];
+     
                 $priorite = $_POST['priorite'];
                 $categorie = $_POST['categorie'];
                 

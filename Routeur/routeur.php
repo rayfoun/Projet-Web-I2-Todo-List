@@ -21,7 +21,14 @@
             //require_once '../controlleur/ControllerConnexion.php';
             //$controllerAccueil = new ControllerConnexion();
             $controllerConnexion->login();
-           exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
+            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
+        }
+
+        if ($_GET["action"]=="logout"){
+            //require_once '../controlleur/ControllerConnexion.php';
+            //$controllerAccueil = new ControllerConnexion();
+            $controllerConnexion->logout();
+            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
         }
 
         //Affichage de l'accueil

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ .'/DefaultController.php';
-require_once __DIR__ .'/../Modele/DAO/UtilisateurDao.php';
-require_once __DIR__ .'/../Modele/DAO/TacheDao.php';
+//require_once __DIR__ .'/../Modele/DAO/UtilisateurDao.php';
+//require_once __DIR__ .'/../Modele/DAO/TacheDao.php';
 require_once __DIR__ .'/../Modele/entite/tache.php';
 require_once __DIR__ .'/../Modele/entite/Utilisateur.php';
 require_once __DIR__ .'/../controlleur/ControllerUser.php';
@@ -198,7 +198,8 @@ class ControllerAccueil extends DefaultController {
                     'listeTache' => $listeTache
                 ];
                 
-                // Assurez-vous que les headers sont correctement définis pour envoyer du JSON                    header('Content-Type: application/json');
+                // Assurez-vous que les headers sont correctement définis pour envoyer du JSON  
+                header('Content-Type: application/json');
                 echo json_encode($response); // Renvoi uniquement de JSON
                 exit();
             
@@ -302,7 +303,7 @@ class ControllerAccueil extends DefaultController {
         } else {
             echo "<script type='text/javascript'>alert('Méthode non autorisée.');</script>";
         }
-        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil');
+       header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil');
         exit;
     }
 

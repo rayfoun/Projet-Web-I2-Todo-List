@@ -7,8 +7,8 @@ require_once __DIR__.'/UtilisateurDAO.php';
 class ControllerProfil extends DefaultController{
     private $utilisateurDAO;
 
-    public function __construct($pdo) {
-        $this->utilisateurDAO = new UtilisateurDAO($pdo);
+    public function __construct() {
+        $this->utilisateurDAO = new UtilisateurDAO();
     }
     
     function afficheAccueil(){
@@ -50,7 +50,7 @@ class ControllerProfil extends DefaultController{
     }
 
     function supprimerCompteUtilisateur($id){
-        $this->utilisateurDAO->supprimerUtilisateur($id);
+        //$this->utilisateurDAO->supprimerUtilisateur($id);
     }
 
     function creerCompteUtilisateur(){

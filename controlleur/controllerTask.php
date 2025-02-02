@@ -17,7 +17,7 @@ class ControllerTask{
         $tacheDAO = new TacheDao(); 
 
         if($mode=="accueil"){
-            $listeTaches = $tacheDAO->getTaskById($idUser);
+            $listeTaches = $tacheDAO->getTasksByUserId($idUser);
         }
         if($mode=="search"){
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {

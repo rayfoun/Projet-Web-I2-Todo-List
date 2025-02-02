@@ -1,7 +1,7 @@
 <?php
     // Exemple d'appel dans index.php
     require_once '../controlleur/controllerAccueil.php';
-    require_once '../controlleur/ConnexionController.php';
+    require_once '../controlleur/ControllerConnexion.php';
 
     session_start();  // Assurez-vous que la session est démarrée
 
@@ -18,7 +18,7 @@
 
         // Authentification
         if ($_GET["action"]=="traiterAuthentification"){
-            //require_once '../controlleur/ConnexionController.php';
+            //require_once '../controlleur/ControllerConnexion.php';
             //$controllerAccueil = new ControllerConnexion();
             $controllerConnexion->login();
            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul

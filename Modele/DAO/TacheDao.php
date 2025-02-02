@@ -16,16 +16,26 @@ class TacheDao {
 
     // 1. Ajouter une tâche
     public function addTask(Tache $tache) {
+        try{
         $query = $this->db->prepare("
             INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
             VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
         ");
+        $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
 
-        try{
-            $database= new Database();
-            $this->db = $database->getConnection();
-            $this->utilisateurDao = new UtilisateurDao();
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $query->execute([
+            ':libelle' => $tache->getLibelle(),
+            ':descriptif' => $tache->getDescriptif(),
+            ':dateCreation' => $tache->getDateCreation(),
+            ':dateEcheance' => $tache->getDateEcheance(),
+            ':heureCreation' => $tache->getHeureCreation(),
+            ':heureEcheance' => $tache->getHeureEcheance(),
+            ':statut' => $tache->getStatut(),
+            ':priorite' => $tache->getPriorite(),
+            ':categorie' => $tache->getCategorie(),
+
+            ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
+        ]);
         } catch (PDOException $e) {
             die("Erreur de connexion à la base de données: " . $e->getMessage());
         }
@@ -37,7 +47,8 @@ class TacheDao {
             $query = $this->db->prepare("
                 UPDATE tache
                 SET libelle_tache = :libelle, descriptif_tache = :descriptif, date_echeance = :dateEcheance, 
-                    heure_echeance = :heureEcheance, statut_tache = :statut, priorite_tache = :priorite, categorie = :categorie
+                    heure_echeance = :heureEcheance, statut_tache = :statut, priorite_tache = :priorite, categorie = :categorie,
+                    id_user=:idUser
                 WHERE id_tache = :id
             ");
             $query->execute([
@@ -48,8 +59,11 @@ class TacheDao {
                 ':statut' => $tache->getStatut(),
                 ':priorite' => $tache->getPriorite(),
                 ':categorie' => $tache->getCategorie(),
+                ':idUser'=> $tache->getUtilisateur()->getId(),
                 ':id' => $tache->getId()
             ]);
+            //var_dump($tache->getUtilisateur()->getId());
+            //$this->assignTaskToUser($tache->getId(), $tache->getUtilisateur()->getId());
         } catch (PDOException $e) {
             throw new Exception("Erreur lors de la mise à jour d'une tâche". $e->getMessage());
         }
@@ -149,19 +163,19 @@ class TacheDao {
 
         // Parcours chaque ligne et transforme en un tableau associatif
         foreach ($rows as $row) {
-            $taches[] = [
-                'id_tache' => $row['id_tache'],
-                'libelle_tache' => $row['libelle_tache'],
-                'descriptif_tache' => $row['descriptif_tache'],
-                'date_creation' => $row['date_creation'],
-                'date_echeance' => $row['date_echeance'],
-                'heure_creation' => $row['heure_creation'],
-                'heure_echeance' => $row['heure_echeance'],
-                'statut_tache' => $row['statut_tache'],
-                'priorite_tache' => $row['priorite_tache'],
-                'categorie' => $row['categorie'],
-                'id_user' => $row['id_user'],
-            ];
+            $taches[] =new Tache( 
+                $row['id_tache'],
+                $row['libelle_tache'],
+                $row['descriptif_tache'],
+                $row['date_creation'],
+                $row['date_echeance'],
+                $row['heure_creation'],
+                $row['heure_echeance'],
+                $row['statut_tache'],
+                $row['priorite_tache'],
+                $row['categorie'],
+                $row['id_user'],
+            );
         }
         return $taches;
     }

@@ -536,7 +536,7 @@
 
             </div>
             <div>
-                <form style="align-items:center; " id="form_search" method="POST" action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search'> 
+                <form style="align-items:center; " id="form_search" method="POST" action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=search'> 
                     <div style="display:inline;align-items: center; ">
                         <!-- titre -->
                         <input class="input_filtre"  name="titre" placeholder="Titre..." type="search" autocomplete="off">
@@ -571,7 +571,7 @@
                         </datalist>
                         
                         <!-- Bouton de recherche -->
-                        <button class="button_search" id="button_search" type="button">
+                        <button class="button_search" id="button_search" type="submit">
                             <span class="top-key"></span>
                             <span class="text">Recherche</span>
                             <span class="bottom-key-1"></span>
@@ -876,7 +876,7 @@
                 }
 
 
-                // Gestion des clics sur les boutons de tâches
+// Gestion des clics sur les boutons de tâches**********************************************************************************************************************************************
                 buttonTaches.forEach(tache => {
                     tache.addEventListener('click', function () {
                         if (lastClickedButton !== 'tache') {
@@ -908,7 +908,7 @@
                         box.disabled = true;
                     }
                 });
-                //button de navigation
+//button de navigation*******************************************************************************************************************************************************************
                 deconButton.addEventListener('click', function () {
                     window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php";
                 });
@@ -918,6 +918,7 @@
                 toDoButton.addEventListener('click', function () {
                     window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil";
                 });
+//Recherche et filtre de recherche*******************************************************************************************************************************************************************
                 //gestion des filtres
                 filtres.forEach(filtre=>{
                     filtre.addEventListener('keydown', (event) => {
@@ -933,58 +934,56 @@
                     });
                 });
 
-                //soumetre le formulaire de recherche en AJAX
-                SearchForm.addEventListener('submit', async function (event) {
-                    event.preventDefault();
-
-                    const formData = new FormData(this);
-
-                    try {
-                        const response = await fetch('process_form.php', {
-                            method: 'POST',
-                            body: formData
-                        });
-
-                        const result = await response.text();
-                        document.getElementById('result').innerText = 'Succès : ' + result;
-                    } catch (error) {
-                        document.getElementById('result').innerText = 'Erreur lors de la soumission';
-                    }
-                });
                 //button de recherche
-                searchButton.addEventListener('click', function () {
-                    SearchForm.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search';
-                   // SearchForm.submit();  // Si le formulaire existe, soumettre
-                    //updateListTask("seach");
-                    // Récupérer les données du formulaire
+                searchButton.addEventListener('click', function (event) {
+                    event.preventDefault(); // Empêche le rechargement de la page
 
-                    let formData = new FormData(SearchForm);
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode=search', true);
+                    if (divForm.classList.contains('active')) {
+                        AnimationArriere(); 
+                        setTimeout(() => {
+                            console.log('mise en forme!');
+                        }, 500);
+                    }
 
-                    xhr.onload = function () {
-                        if (xhr.status === 200) {
-                            try {
-                                let response = JSON.parse(xhr.responseText);
-                                console.log('Réponse JSON parsée:', response);
+                    // Création et affichage des données du formulaire
+                    const formData = new FormData(SearchForm);
 
-                                if (response.status === 'success') {
-                                    // Mettre à jour les champs du formulaire
-                                    document.getElementById('container_filtre2').innerHTML = reponse.listeTache;
-                                } else {
-                                    console.error('Erreur :', response.message);
-                                }
-                            } catch (e) {
-                                console.error('Erreur de parsing JSON :', e);
-                            }
+                    formData.forEach((value, key) => {
+                        console.log(`${key}: ${value}`);
+                    });
+
+                    if (!Array.from(formData.entries()).length) {
+                        console.log('Le formulaire est vide!');
+                        return;
+                    }
+
+                    // Envoi des données avec fetch
+                    fetch(SearchForm.action, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Données envoyées avec succès.');
                         } else {
-                            console.error('Erreur du serveur :', xhr.status);
+                            console.log('Erreur lors de l\'envoi des données.');
                         }
-                    };
+                    })
+                    .catch(() => {
+                        console.log('Erreur réseau ou serveur.');
+                    });
+
+                    // Mise à jour des tâches après un court délai
+                    setTimeout(() => {
+                       // updateListTask("search");
+                    }, 100);
                 });
+                //formulaire de recherche
+               /* SearchForm.addEventListener('submit', function(event) {
+                    
+                });*/
 
-
-                // Gestion des clics sur le bouton Ajouter vert
+// le bouton Ajouter vert******************************************************************************************************************************************************
                 button.addEventListener('click', function () {
 
                     if (lastClickedButton !== 'add') {
@@ -1011,7 +1010,7 @@
                         }
                     }
                 });
-
+//Fin du javaScript*******************************************************************************************************************************************************************
             });
         </script>
 

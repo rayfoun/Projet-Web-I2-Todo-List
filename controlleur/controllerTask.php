@@ -20,9 +20,9 @@ class ControllerTask{
             $listeTaches = $tacheDAO->getTasksByUserId($idUser);
         }
         if($mode=="search"){
+              // Initialisation des variables avec des valeurs par défaut ou null
+              $titre = $statut = $priorite = $assigne = $categorie = null;
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Initialisation des variables avec des valeurs par défaut ou null
-                $titre = $statut = $priorite = $assigne = $categorie = null;
                 // Vérifier et affecter uniquement si la propriété est disponible
 
                 if (isset($_POST['titre'])) {
@@ -52,8 +52,14 @@ class ControllerTask{
                     $categorie = $_POST['categorie'];
                 }
           }
+         // var_dump($titre);
+          //var_dump($statut);
+          //var_dump($priorite);
+          //var_dump($assigne);
+          //var_dump($categorie);
             $listeTaches = $tacheDAO->getTasksByFilters($titre, $statut, $priorite, $assigne,$categorie);
         }
+        //var_dump($listeTaches);
         return $listeTaches;
     }
 

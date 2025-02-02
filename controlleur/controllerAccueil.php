@@ -185,13 +185,57 @@ class ControllerAccueil extends DefaultController {
     }
 
     public function updateListTask($mode,$idUser){//update la liste des taches apres un ajout, une modif un supprim
-        if ($_GET["action"] === "updateListTask"||$_GET["action"] === "search") {
             //recuper la liste de tache
             if(!$this->controlTask){
                 $this->controlTask=new ControllerTask();
             }
-            $listeTaches=$this->controlTask->getListTask($mode,$idUser);
+            if($mode === "search"){
+                    // Initialisation des variables avec des valeurs par défaut ou null
+                    $titre = $statut = $priorite = $assigne = $categorie = null;
+                  
+                    
+                      // Vérifier et affecter uniquement si la propriété est disponible
+      
+                      if (isset($_POST['titre'])) {
+                        echo"zzz";
+                          $titre = $_POST['titre'];
+                      }
+            
+                      if (isset($_POST['statut'])) {
+                        echo"zzz";
+                          $statut = $_POST['statut'];
+                      }
+            
+                      if (isset($_POST['priorite'])) {
+                        echo"zzz";
+                          $priorite = $_POST['priorite'];
+                      }
+            
+                      if (isset($_POST['assigne'])) {
+                        echo"zzz";
+                            $assigne = $_POST['assigne'];
+                           //recuper l'utilisateur
+                          if(!$this->controlUser){
+                              $this->controlUser=new ControllerUser();
+                          }
+                          $assigne=$this->controlUser->getUserByAssigne($assigne);
+                          $assigne=$assigne->getId();
+      
+                      }
+            
+                      if (isset($_POST['categorie'])) {
+                        echo"zzz";
+                          $categorie = $_POST['categorie'];
+                      }
+                    
+                $tacheDAO = new TacheDao(); 
+                $listeTaches = $tacheDAO->getTasksByFilters($titre, $statut, $priorite, $assigne,$categorie);
+
+            }else{
+                $listeTaches=$this->controlTask->getListTask($mode,$idUser);
+            }
             $listeTache=$this->formatedListTask($listeTaches);
+            //var_dump($listeTache);
              // Créer la réponse en format JSON
                 $response = [
                     'status' => 'success',
@@ -199,11 +243,9 @@ class ControllerAccueil extends DefaultController {
                 ];
                 
                 // Assurez-vous que les headers sont correctement définis pour envoyer du JSON  
-                header('Content-Type: application/json');
+               header('Content-Type: application/json');
                 echo json_encode($response); // Renvoi uniquement de JSON
                 exit();
-            
-        }
     }
 
     /*******************************************************************************************************************************************************************/
@@ -393,7 +435,6 @@ class ControllerAccueil extends DefaultController {
 
             $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,categorie: null);
             var_dump($listeTaches);
-            echo "<script>console.error('Erreur: " .$listeTaches. "');</script>";
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON
                $response = [

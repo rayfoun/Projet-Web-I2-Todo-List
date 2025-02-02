@@ -71,7 +71,7 @@
             }  
         //update la liste de taches apres un add, modif ou supprim
         }if ( $_GET["action"] === "updateListTask") {
-            $controllerAccueil->updateListTask("accueil", $_SESSION["id_user"]);
+            $controllerAccueil->updateListTask($_GET["mode"], $_SESSION["id_user"]);
 
         //update le form avec des donne si on clique sur une tache
         }if ( $_GET["action"] === "updateFromTask") {

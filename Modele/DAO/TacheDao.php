@@ -190,27 +190,27 @@ class TacheDao {
         // Tableau pour stocker les paramètres
         $params = [];
 
-        // Ajout des conditions dynamiques
-        if ($libelle !== null) {
-            $query .= " AND t.libelle_tache LIKE :libelle";
-            $params[':libelle'] = '%' . $libelle . '%'; // Recherche partielle
-        }
-        if ($statut !== null) {
-            $query .= " AND t.statut_tache = :statut";
-            $params[':statut'] = $statut;
-        }
-        if ($priorite !== null) {
-            $query .= " AND t.priorite_tache = :priorite";
-            $params[':priorite'] = $priorite;
-        }
-        if ($utilisateur !== null) {
-            $query .= " AND t.id_user = :utilisateur";
-            $params[':utilisateur'] = $utilisateur;
-        }
-        if ($categorie !== null) {
-            $query .= " AND t.categorie_tache=:categorie";
-            $params[':categorie'] = $categorie;
-        }
+       // Ajout des conditions dynamiques
+    if ($libelle !== null && $libelle !== '') { // Vérifie si libelle n'est pas null ou vide
+        $query .= " AND t.libelle_tache LIKE :libelle";
+        $params[':libelle'] = '%' . $libelle . '%'; // Recherche partielle
+    }
+    if ($statut !== null && $statut !== '') { // Vérifie si statut n'est pas null ou vide
+        $query .= " AND t.statut_tache = :statut";
+        $params[':statut'] = $statut;
+    }
+    if ($priorite !== null && $priorite !== '') { // Vérifie si priorite n'est pas null ou vide
+        $query .= " AND t.priorite_tache = :priorite";
+        $params[':priorite'] = $priorite;
+    }
+    if ($utilisateur !== null) { // On garde l'existence de null pour les entiers (utilisateur)
+        $query .= " AND t.id_user = :utilisateur";
+        $params[':utilisateur'] = $utilisateur;
+    }
+    if ($categorie !== null && $categorie !== '') { // Vérifie si categorie n'est pas null ou vide
+        $query .= " AND t.categorie = :categorie";
+        $params[':categorie'] = $categorie;
+    }
 
         // Préparation et exécution de la requête
         $stmt = $this->db->prepare($query);
@@ -236,7 +236,7 @@ class TacheDao {
                 $row['id_user'] ? $this->utilisateurDao->getUserById($row['id_user']) : null
             );
         }
-
+        //var_dump($taches);
         return $taches;
     }
 

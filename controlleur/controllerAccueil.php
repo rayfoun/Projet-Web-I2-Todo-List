@@ -355,6 +355,9 @@ class ControllerAccueil extends DefaultController {
                     $tache->setPriorite($priorite);
                     $tache->setCategorie($categorie);
 
+                    if(!$this->controlUser){
+                        $this->controlUser=new ControllerUser();
+                    }
                     if( $_SESSION["type"]=="Administrateur"){
                         $assigne = $_POST['assigne'];
                         $assigne= $this->controlUser->getUserByAssigne($assigne);

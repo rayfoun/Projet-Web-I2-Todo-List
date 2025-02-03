@@ -78,6 +78,11 @@
                 $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
             }
 
+            // Création d'un token pour la recherche
+            if(!isset($_SESSION["csrf_token_search"])){
+                $_SESSION["csrf_token_search"] = bin2hex(random_bytes(32));
+            }
+
             // Redirection vers la page d'accueil
             header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil");
         }

@@ -570,6 +570,9 @@
                             <?=$listeUser?>
                         </datalist>
                         
+                        <!-- Token CSRF -->
+                        <input type="hidden" name="csrf_token_search" value="<?= $_SESSION['csrf_token_search']; ?>">
+
                         <!-- Bouton de recherche -->
                         <button class="button_search" id="button_search" type="button">
                             <span class="top-key"></span>

@@ -69,7 +69,8 @@
             .btn:hover {
                 background:  #e2e2e2;
             }
-               /*page*/
+            /*page*/
+            /* From Uiverse.io by Yaya12085 */ 
 .page {
   position: absolute;
   width:95%;
@@ -94,17 +95,27 @@
 </head>
 <body>
      <!--La navbar-->
-     <?=$navbar?>
+     <div class="nav">
+        <div class="container_nav">
+        <div class="btn" id="toDoList">To-Do List</div>
+        <div class="btn" id="profil">Profil</div>
+        <div class="btn" id="deconnexion">Deconnexion</div>
+        <svg class="outline" overflow="visible" width="400" height="60" viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg">
+            <rect class="rect" pathLength="100" x="0" y="0" width="400" height="60" fill="transparent" stroke-width="5"></rect>
+        </svg>
+        </div>
+    </div>
      
-     <div class="page">
-     <p><u>Informations Profil</u></p>
-     <p>Nom : <?=$nom?></p>
-     <p>Prenom : <?=$prenom?></p>
-     <p>email : <?=$email?></p>
-     <p>Mot de passe : xxxxxxxxxxxxx</p>
-     <p>Type de compte : <?=$type?></p>
-     <p>Dans cette page, vous trouverez toutes les informations liées à votre compte , des informations personnelles. Pour des raison de problème technique vous ne pourrez pour l'instant ni supprimer ni modifier votre compte merci de votre compéhension</p>
-   </div>
+    <div class="page">
+     
+        <p>Informations Profil</p>
+        <p>Nom :</p>
+        <p>Prenom :</p>
+        <p>email :</p>
+        <p>Mot de passe :</p>
+        <p>Type de compte :</p>
+        <p>Dans cette page, vous trouverez toutes les informations liées à votre compte , des informations personnelles. Pour des raison des problème technique vous ne pourrez pour l'instant ni supprimer ni modifier votre compte merci de votre compéhension</p>
+      </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
                  //button de navigation

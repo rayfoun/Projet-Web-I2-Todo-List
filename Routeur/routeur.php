@@ -34,17 +34,17 @@
         if ($_GET["action"]=="accueil"){
             //si c'est un utilisateur
             if($_SESSION["type"] =="Utilisateur"){
-                $controllerAccueil->afficheAccueil("Utilisateur");
+                $controllerAccueil->afficheAccueil("Utilisateur",$_SESSION["id_user"]);
             //si c'est un administrateur
             }if($_SESSION["type"] =="Administrateur"){
-                $controllerAccueil->afficheAccueil("Administrateur");
+                $controllerAccueil->afficheAccueil("Administrateur",$_SESSION["id_user"]);
             }
             exit();
         }
 
         //page profil
         if ( $_GET["action"] === "profil") {
-            $controllerProfil->afficheProfil();
+            $controllerProfil->afficheProfil($_SESSION["id_user"]);
             exit();
         }
 

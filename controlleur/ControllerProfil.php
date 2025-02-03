@@ -10,15 +10,26 @@ class ControllerProfil extends DefaultController{
     public function __construct() {
         $this->utilisateurDAO = new UtilisateurDAO();
     }
-    public function afficheProfil(){
+    public function afficheProfil($idUser){
         //navbar
         $navbar=$this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
     
+        //info compte
+        $userDAO=new UtilisateurDao();
+        $user=$userDAO->getUserById($idUser);
+        $nom=(string)$user->getNom();
+        $prenom=(string)$user->getPrenom();
+        $email=(string)$user->getEmail();
+        $type=(string)$user->getType();
          // Rendu de la vue
          $this->renderView(
             __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
             [
-                'navbar'=>$navbar
+                'navbar'=>$navbar,
+                'nom'=>$nom,
+                'prenom'=>$prenom,
+                'email'=>$email,
+                'type'=>$type
                 ]
             );
     }

@@ -16,7 +16,7 @@ class ControllerAccueil extends DefaultController {
 
     /*******************************************************************************************************************************************************************/
     // PAGE
-    public function afficheAccueil($type) {
+    public function afficheAccueil($type,$idUser) {
 
         // Gestion du thème (CSS)
         $themeProjet =$this->renderComponent(__DIR__."/../Vue/css/themeProjet.php");
@@ -29,7 +29,7 @@ class ControllerAccueil extends DefaultController {
     
         //nom utilisateur
         $user=new UtilisateurDao();
-        $nomUser=$user->getUserById( $_SESSION["id_user"]);
+        $nomUser=$user->getUserById( $idUser);
         $nomUser=(string)$nomUser->getPrenom();
       
         //recuper la liste de tache

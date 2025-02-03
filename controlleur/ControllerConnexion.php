@@ -8,8 +8,11 @@
         private $db;
         
         function affichePageConnexion(){
-             // Gestion du thème (CSS)
-            $themeConnex =$this->renderComponent(__DIR__."/../Vue/css/themeConnexion.php");
+            // Création du token
+            if(!isset($_SESSION["csrf_token_login"])){
+                $_SESSION["csrf_token_login"] = bin2hex(random_bytes(32));
+            }
+
             $this->renderView(
                  __DIR__."/../Vue/page/Connexion.php",
                  [
@@ -19,12 +22,21 @@
         } 
         
         function login(){
+
+            // Récupération de la connexion à la base de données
             global $pdo;
             $database = new Database();
             $pdo = $database->getConnection();
+
             // on devrait vérifier qu'ils sont set
+            $csrf = $_POST["csrf_token_login"];
             $email = $_POST["email"];
             $password = $_POST["password"];
+
+            // Vérification du token
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token_login'] ){
+                die("⛔ Erreur : Token CSRF invalide !");
+            }
     
             $textR = "select password_user, type, id_user ";
             $textR.= "from users ";
@@ -38,12 +50,8 @@
             $tabRes = $req->fetchAll(PDO::FETCH_ASSOC);
             $var=count($tabRes);
             echo $var;
-            if ($tabRes != null){
-                var_dump($tabRes[0]);
-                $hashedPassword = password_hash($tabRes[0]['password_user'], PASSWORD_DEFAULT);
-                echo $hashedPassword;
-            }
-            
+
+            $hashedPassword = $tabRes[0]['password_user'];
             
             //Vérification de l'existence de l'utilisateur
             if (count($tabRes)!=1) {
@@ -68,9 +76,27 @@
             $_SESSION["id_user"] = $tabRes[0]["id_user"];  
             $_SESSION["type"] = $tabRes[0]["type"];
 
-            
+            // Création d'un token pour les formulaires
+            if(!isset($_SESSION["csrf_token"])){
+                $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+            }
+
+            // Création d'un token pour la recherche
+            if(!isset($_SESSION["csrf_token_search"])){
+                $_SESSION["csrf_token_search"] = bin2hex(random_bytes(32));
+            }
+
             // Redirection vers la page d'accueil
             header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil");
+        }
+
+        function logout(){
+            // Déconnexion et suppression de la session
+            session_destroy();
+
+            // Redirection vers la page de connexion
+            header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php");
+
         }
     }
 ?>

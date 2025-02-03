@@ -2,13 +2,22 @@
     // Exemple d'appel dans index.php
     require_once '../controlleur/controllerAccueil.php';
     require_once '../controlleur/ControllerConnexion.php';
+    require_once '../controlleur/ControllerProfil.php';
 
     session_start();  // Assurez-vous que la session est démarrée
+
+    // Générer un token si c'est nécessaire pour le login, le formulaire d'ajout et de modification
+    // if(!isset($_SESSION["csrf_token_login"])){
+    //     $_SESSION["csrf_token_login"] = bin2hex(random_bytes(32));
+    // }
+    // if(!isset($_SESSION["csrf_token"])){
+    //     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+    // }
 
     // Instanciation des controleurs
      $controllerAccueil = new ControllerAccueil();
      $controllerConnexion = new ControllerConnexion();
-
+     $controllerProfil = new ControllerProfil();
    
     if(!isset($_GET["action"])){
         $controllerConnexion->affichePageConnexion();
@@ -21,7 +30,14 @@
             //require_once '../controlleur/ControllerConnexion.php';
             //$controllerAccueil = new ControllerConnexion();
             $controllerConnexion->login();
-           exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
+            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
+        }
+
+        if ($_GET["action"]=="logout"){
+            //require_once '../controlleur/ControllerConnexion.php';
+            //$controllerAccueil = new ControllerConnexion();
+            $controllerConnexion->logout();
+            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
         }
 
         //Affichage de l'accueil
@@ -54,7 +70,7 @@
         }
         //page profil
         if ( $_GET["action"] === "profil") {
-            $controllerAccueil->AfficheProfil();
+            $controllerProfil->afficheProfil();
             exit();
         }
         // Mettre à jour les boutons du formulaire

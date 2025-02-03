@@ -116,6 +116,9 @@
                     <option value="Autre" >Autre</option>
                 </datalist>
 
+                <!-- Token CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                 <div class="buttons_form" id="buttons_form">
                     <?=$buttonForm?>
                 </div>

@@ -17,6 +17,10 @@
                     <div class="input-container">
                         <input type="password" name="password" id="password" placeholder="Enter password" autocomplete="password">
                     </div>
+
+                    <!-- Token CSRF -->
+                    <input type="hidden" name="csrf_token_login" value="<?= $_SESSION['csrf_token_login']; ?>">
+
                     <button type="submit" class="submit" name="submit" value="Valider">Connexion</button>
                     <p class="signup-link">
                         __________ProjetWebI2___________

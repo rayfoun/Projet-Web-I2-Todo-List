@@ -64,6 +64,9 @@
                             <?=$listeUser?>
                         </datalist>
                         
+                        <!-- Token CSRF -->
+                        <input type="hidden" name="csrf_token_search" value="<?= $_SESSION['csrf_token_search']; ?>">
+
                         <!-- Bouton de recherche -->
                         <button class="button_search" id="button_search" type="submit">
                             <span class="top-key"></span>
@@ -127,6 +130,10 @@
                     <option value="Travail" >Travail</option>
                     <option value="Autre" >Autre</option>
                 </datalist>
+
+                <!-- Token CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
 
                 <div class="buttons_form" id="buttons_form">
                     <?=$buttonForm?>

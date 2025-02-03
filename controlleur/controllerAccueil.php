@@ -74,6 +74,7 @@ class ControllerAccueil extends DefaultController {
         
     }
 
+<<<<<<< HEAD
     public function afficheProfil(){
         //navbar
         $navbar=$this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
@@ -86,6 +87,15 @@ class ControllerAccueil extends DefaultController {
                 ]
             );
     }
+=======
+    // public function afficheProfil(){
+    //      // Rendu de la vue
+    //      $this->renderView(
+    //         __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
+    //         null
+    //         );
+    // }
+>>>>>>> origin/distant_main2
 
     /*******************************************************************************************************************************************************************/
     // LOADER
@@ -214,6 +224,7 @@ class ControllerAccueil extends DefaultController {
             if(!$this->controlTask){
                 $this->controlTask=new ControllerTask();
             }
+<<<<<<< HEAD
             if($mode === "search"){
                 $libelle = $_POST['titre'] ?? null;
                 $statut = $_POST['statut'] ?? null;
@@ -242,6 +253,9 @@ class ControllerAccueil extends DefaultController {
             }else{
                 $listeTaches=$this->controlTask->getListTask($mode,$idUser);
             }
+=======
+            $listeTaches=$this->controlTask->getListTask($mode, $idUser);
+>>>>>>> origin/distant_main2
             $listeTache=$this->formatedListTask($listeTaches);
             //var_dump($listeTache);
              // Créer la réponse en format JSON
@@ -300,6 +314,11 @@ class ControllerAccueil extends DefaultController {
         echo json_encode("saveForm");
        // sleep(10);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf = $_POST["csrf_token"];
+            // Vérification du token
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
+                die("⛔ Erreur : Token CSRF invalide !");
+            }
             if (
                 isset($_POST['titre'], $_POST['description'], $_POST['date'], 
                     $_POST['statut'], $_POST['priorite'], $_POST['categorie'])
@@ -360,6 +379,11 @@ class ControllerAccueil extends DefaultController {
     public function updateTaskForm($idTask){
         // Vérifier si la méthode de requête est POST et les champs nécessaires sont présents
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf = $_POST["csrf_token"];
+            // Vérification du token
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
+                die("⛔ Erreur : Token CSRF invalide !");
+            }
             if (isset( $_POST['titre'], $_POST['description'], $_POST['date'], 
                     $_POST['statut'], $_POST['priorite'], $_POST['categorie'])) {
                 

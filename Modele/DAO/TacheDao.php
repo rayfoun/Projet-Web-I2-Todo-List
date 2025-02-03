@@ -9,46 +9,26 @@ class TacheDao {
     private $utilisateurDao;
 
     public function __construct() {
+
         $database= new Database();
         $this->db = $database->getConnection();
         $this->utilisateurDao = new UtilisateurDao(); // Initialisation de UtilisateurDao
+    }
+
+    // 1. Ajouter une tâche
+    public function addTask(Tache $tache) {
+        $query = $this->db->prepare("
+            INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
+            VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
+        ");
+
         try{
             $database= new Database();
             $this->db = $database->getConnection();
             $this->utilisateurDao = new UtilisateurDao();
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            $message="Erreur de connexion à la base de données: " . $e->getMessage();
-            echo "<script type='text/javascript'>alert('$message');</script>";
-        }
-    }
-
-    // 1. Ajouter une tâche
-    public function addTask($tache) {
-        try{
-            $query = $this->db->prepare("
-                INSERT INTO tache (libelle_tache, descriptif_tache, date_creation, date_echeance, heure_creation, heure_echeance, statut_tache, priorite_tache, categorie, id_user)
-                VALUES (:libelle, :descriptif, :dateCreation, :dateEcheance, :heureCreation, :heureEcheance, :statut, :priorite, :categorie, :idUser)
-            ");
-
-            $idUser = $tache->getUtilisateur() ? $tache->getUtilisateur()->getId() : null;
-
-            $query->execute([
-                ':libelle' => $tache->getLibelle(),
-                ':descriptif' => $tache->getDescriptif(),
-                ':dateCreation' => $tache->getDateCreation(),
-                ':dateEcheance' => $tache->getDateEcheance(),
-                ':heureCreation' => $tache->getHeureCreation(),
-                ':heureEcheance' => $tache->getHeureEcheance(),
-                ':statut' => $tache->getStatut(),
-                ':priorite' => $tache->getPriorite(),
-                ':categorie' => $tache->getCategorie(),
-
-                ':idUser' => $idUser // Évite une erreur fatale si l'utilisateur est null
-            ]);
-        } catch (PDOException $e) {
-            $message="Erreur de l'ajout de la tâche: " . $e->getMessage();
-            echo "<script type='text/javascript'>alert('$message');</script>";
+            die("Erreur de connexion à la base de données: " . $e->getMessage());
         }
     }
 
@@ -72,9 +52,7 @@ class TacheDao {
                 ':id' => $tache->getId()
             ]);
         } catch (PDOException $e) {
-            $message="Erreur lors de la mise à jour d'une tâche". $e->getMessage();
-            echo "<script type='text/javascript'>alert('$message');</script>";
-            
+            throw new Exception("Erreur lors de la mise à jour d'une tâche". $e->getMessage());
         }
     }*/
 
@@ -131,7 +109,7 @@ class TacheDao {
                 WHERE t.id_tache = :id
             ");
             $query->execute([':id' => $id]);
-            $row = $query->fetchAll(PDO::FETCH_ASSOC);
+            $row = $query->fetch(PDO::FETCH_ASSOC);
 
             if ($row) {
                 $utilisateur = new Utilisateur(
@@ -224,6 +202,7 @@ class TacheDao {
 
 
     //8. Rechercher des tâches en fonction de plusieurs paramètres
+
     public function getTasksByFilters($libelle = null, $statut = null, $priorite = null, $utilisateur = null,$categorie=null) {
         // Début de la requête SQL
         $query = "SELECT t.* FROM tache t WHERE 1=1";
@@ -289,7 +268,7 @@ class TacheDao {
         $result = $query->fetchAll(PDO::FETCH_ASSOC); // Récupération des données sous forme de tableau associatif
         $tasks = [];
         foreach ($result as $row) {
-            // Remplacez ci-dessous par la logique correcte pour initialiser un utilisateur (hypothèse : vous avez une méthode `getUtilisateurById` dans une autre classe)
+            // Remplacez ci-dessous par la logique correcte pour initialiser un utilisateur (hypothèse : vous avez une méthode getUtilisateurById dans une autre classe)
             $utilisateur = $this->utilisateurDao->getUserById($row['id_user']); 
     
             // Création de l'objet Tache

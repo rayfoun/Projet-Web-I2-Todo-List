@@ -367,7 +367,7 @@ class ControllerAccueil extends DefaultController {
                     $tache->setCategorie($categorie);
 
                     // Sauvegarder les modifications
-                    $tacheDao->updateTask($tache);
+                    $tacheDao->updateTask($tache, $id);
                     // Message de succès
                     $_SESSION['popup_message'] = 'Tâche mise à jour avec succès!';
                     $_SESSION['popup_type'] = 'success';

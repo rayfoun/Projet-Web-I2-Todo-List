@@ -94,7 +94,7 @@ class ControllerProfil extends DefaultController{
 
                 // Génération du token
                 $token = $this->generateToken(25);
-                $this->userDao = new UtilisateurDao();
+                $userDao = new UtilisateurDao();
 
                 // Validation des champs
                 if (empty($prenom) || !ctype_alpha($prenom)) throw new Exception("Le prénom doit être alphabétique !");
@@ -102,15 +102,15 @@ class ControllerProfil extends DefaultController{
                 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) throw new Exception("Email invalide !");
                 if (empty($password) || $password !== $confirm_password) throw new Exception("Mots de passe différents !");
                 if (empty($username) || !ctype_alnum($username)) throw new Exception("Nom d'utilisateur invalide !");
-                if ($this->userDao->emailExists($email)) throw new Exception("Cet email est déjà utilisé !");
-                if ($this->userDao->usernameExists($username)) throw new Exception("Nom d'utilisateur déjà pris !");
+                if ($userDao->emailExists($email)) throw new Exception("Cet email est déjà utilisé !");
+                if ($userDao->usernameExists($username)) throw new Exception("Nom d'utilisateur déjà pris !");
 
                 // Hachage du mot de passe
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                
                 // Création de l'utilisateur avec le token et la photo de profil
                 $utilisateur = new Utilisateur($nom, $prenom, $email, $hashedPassword, $token, /*$photoPath*/);
-                $this->userDao->addUser($utilisateur);
+                $userDao->addUser($utilisateur);
 
                // echo json_encode(["status" => "success", "message" => "Inscription réussie avec token", "token" => $token]);
 

@@ -8,6 +8,11 @@
         private $db;
         
         function affichePageConnexion(){
+            // Création du token
+            if(!isset($_SESSION["csrf_token_login"])){
+                $_SESSION["csrf_token_login"] = bin2hex(random_bytes(32));
+            }
+
             $this->renderView(
                  __DIR__."/../Vue/page/Connexion.php"
             );
@@ -21,12 +26,12 @@
             $pdo = $database->getConnection();
 
             // on devrait vérifier qu'ils sont set
-            $csrf = $_POST["csrf_token"];
+            $csrf = $_POST["csrf_token_login"];
             $email = $_POST["email"];
             $password = $_POST["password"];
 
             // Vérification du token
-            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token_login'] ){
                 die("⛔ Erreur : Token CSRF invalide !");
             }
     
@@ -67,6 +72,11 @@
             //Enregistrement des informations dans la session
             $_SESSION["id_user"] = $tabRes[0]["id_user"];  
             $_SESSION["type"] = $tabRes[0]["type"];
+
+            // Création d'un token pour les formulaires
+            if(!isset($_SESSION["csrf_token"])){
+                $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+            }
 
             // Redirection vers la page d'accueil
             header("Location:/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=accueil");

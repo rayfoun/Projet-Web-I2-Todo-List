@@ -250,6 +250,11 @@ class ControllerAccueil extends DefaultController {
         echo json_encode("saveForm");
        // sleep(10);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf = $_POST["csrf_token"];
+            // Vérification du token
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
+                die("⛔ Erreur : Token CSRF invalide !");
+            }
             if (
                 isset($_POST['titre'], $_POST['description'], $_POST['date'], 
                     $_POST['statut'], $_POST['priorite'], $_POST['categorie'])
@@ -310,6 +315,11 @@ class ControllerAccueil extends DefaultController {
     public function updateTaskForm($idTask){
         // Vérifier si la méthode de requête est POST et les champs nécessaires sont présents
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf = $_POST["csrf_token"];
+            // Vérification du token
+            if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
+                die("⛔ Erreur : Token CSRF invalide !");
+            }
             if (isset( $_POST['titre'], $_POST['description'], $_POST['date'], 
                     $_POST['statut'], $_POST['priorite'], $_POST['categorie'])) {
                 

@@ -6,10 +6,13 @@
 
     session_start();  // Assurez-vous que la session est démarrée
 
-    // Générer un token si c'est nécessaire
-    if(!isset($_SESSION["csrf_token"])){
-        $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
-    }
+    // Générer un token si c'est nécessaire pour le login, le formulaire d'ajout et de modification
+    // if(!isset($_SESSION["csrf_token_login"])){
+    //     $_SESSION["csrf_token_login"] = bin2hex(random_bytes(32));
+    // }
+    // if(!isset($_SESSION["csrf_token"])){
+    //     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+    // }
 
     // Instanciation des controleurs
      $controllerAccueil = new ControllerAccueil();

@@ -8,8 +8,13 @@
         private $db;
         
         function affichePageConnexion(){
+             // Gestion du thème (CSS)
+            $themeConnex =$this->renderComponent(__DIR__."/../Vue/css/themeConnexion.php");
             $this->renderView(
-                 __DIR__."/../Vue/page/Connexion.php"
+                 __DIR__."/../Vue/page/Connexion.php",
+                 [
+                    'themeConnex'=>$themeConnex
+                 ]
             );
         } 
         

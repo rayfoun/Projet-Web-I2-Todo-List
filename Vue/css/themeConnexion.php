@@ -1,6 +1,4 @@
-<html>
-    <head>
-        <style>
+<style>
              .container {
                 width: 100%;
                 height: 100%;
@@ -87,29 +85,3 @@
             text-decoration: underline;
             }
         </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="container_form">
-                <form class="form">
-                    <h2>To-Do List</h2>
-                    
-                    <div class="input-container">
-                    <input type="email" placeholder="Enter email">
-                    <span>
-                    </span>
-                </div>
-                <div class="input-container">
-                    <input type="password" placeholder="Enter password">
-                    </div>
-                    <button type="submit" class="submit">
-                    Connexion
-                </button>
-                <p class="signup-link">
-                    __________ProjetWebI2___________
-                </p>
-                </form>
-            </div>
-        </div>
-    </body>
-</html>

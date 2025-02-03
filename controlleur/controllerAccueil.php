@@ -19,7 +19,14 @@ class ControllerAccueil extends DefaultController {
     public function afficheAccueil($type) {
 
         // Gestion du thème (CSS)
-        $themeProjet = "/path/to/css/themeProjet.php"; // Mettez ici le chemin public du fichier CSS
+        $themeProjet =$this->renderComponent(__DIR__."/../Vue/css/themeProjet.php");
+
+        // Gestion du javascript(js)
+        $jsProjet =$this->renderComponent(__DIR__."/../Vue/js/javascript.php");
+
+        //navbar
+        $navbar=$this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
+    
         //nom utilisateur
         $user=new UtilisateurDao();
         $nomUser=$user->getUserById( $_SESSION["id_user"]);
@@ -41,7 +48,9 @@ class ControllerAccueil extends DefaultController {
                     'loader'=> "",//loader vide pour l'instant
                     'idTask'=>"",//id de la tache du formulaire vide pour l'instant
                     'themeProjet' => $themeProjet,
-                    'nomUser'=>$nomUser
+                    'nomUser'=>$nomUser,
+                    'jsProjet'=> $jsProjet,
+                    'navbar'=>$navbar
                 ]
             );
         }elseif($type=="Administrateur"){
@@ -54,7 +63,9 @@ class ControllerAccueil extends DefaultController {
                     'loader'=> "",//loader vide pour l'instant
                     'idTask'=>"",//id de la tache du formulaire vide pour l'instant
                     'themeProjet' => $themeProjet,
-                    'nomUser'=>$nomUser
+                    'nomUser'=>$nomUser,
+                    'jsProjet'=> $jsProjet,
+                    'navbar'=>$navbar
                 ]
             );
         }else{
@@ -64,10 +75,15 @@ class ControllerAccueil extends DefaultController {
     }
 
     public function afficheProfil(){
+        //navbar
+        $navbar=$this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
+    
          // Rendu de la vue
          $this->renderView(
             __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
-            null
+            [
+                'navbar'=>$navbar
+                ]
             );
     }
 

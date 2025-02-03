@@ -10,8 +10,8 @@
     // Liste des utilisateurs avec leurs mots de passe en clair
     $users = [
         ["Dupont", "Jean", "hashedpassword1", "jean.dupont@example.com", NULL, "Utilisateur", NULL, TRUE],
-        ["Martin", "Sophie", "hashedpassword2", "sophie.martin@example.com", NULL, "Administrateur", NULL, TRUE],
-        ["Durand", "Paul", "hashedpassword3", "paul.durand@example.com", NULL, "Utilisateur", NULL, FALSE],
+        ["Martin", "Sophie", "tata", "tata@example.com", NULL, "Administrateur", NULL, TRUE],
+        ["Durand", "Paul", "toto", "toto@example.com", NULL, "Utilisateur", NULL, FALSE],
         ["Lemoine", "Claire", "hashedpassword4", "claire.lemoine@example.com", NULL, "Utilisateur", NULL, TRUE],
         ["Petit", "Lucas", "hashedpassword5", "lucas.petit@example.com", NULL, "Utilisateur", NULL, TRUE],
         ["Bernard", "Emma", "hashedpassword6", "emma.bernard@example.com", NULL, "Utilisateur", NULL, FALSE],

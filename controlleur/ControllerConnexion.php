@@ -8,6 +8,8 @@
         private $db;
         
         function affichePageConnexion(){
+            //theme de connexion
+            $themeConnex=$this->renderComponent(__DIR__."/../Vue/css/themeConnexion.php");
             // Création du token
             if(!isset($_SESSION["csrf_token_login"])){
                 $_SESSION["csrf_token_login"] = bin2hex(random_bytes(32));

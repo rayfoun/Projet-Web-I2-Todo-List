@@ -80,7 +80,7 @@
                                                 setTimeout(function () {
                                                         form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=saveTache';
                                                         form.submit();  // Si le formulaire existe, soumettre
-                                                        updateListTask("accueil");
+                                                        updateListTask();
                                                 }, 500);
                                             }else{
                                                 form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
@@ -101,7 +101,7 @@
                                                 setTimeout(function () {
                                                         form.action = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateTache&id='+document.querySelector('.Task').id;
                                                         form.submit();  // Si le formulaire existe, soumettre
-                                                        updateListTask("accueil");
+                                                        updateListTask();
                                                 }, 500);
                                             }else{
                                                 form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
@@ -119,7 +119,7 @@
                                                 // Attendre la fin de l'animation (400 ms) avant de soumettre le formulaire
                                                 setTimeout(function () {
                                                     window.location.href = '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=deleteTache&id=' + document.querySelector('.Task').id;
-                                                    updateListTask("accueil");
+                                                    updateListTask();
                                                 }, 500);
                                             }else{
                                                 form.reportValidity();  // Affiche les bulles de message si le formulaire n'est pas valide
@@ -141,9 +141,9 @@
                     xhr.send(); // Envoi de la requête
                 }
 
-                function updateListTask(mode) {// Fonction pour envoyer une requête AJAX pour mettre à jour la liste de taches
+                function updateListTask() {// Fonction pour envoyer une requête AJAX pour mettre à jour la liste de taches
                     let xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask&mode='+mode, true);
+                    xhr.open('GET', '/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=updateListTask', true);
 
                     xhr.onload = function() {
                         if (xhr.status === 200) {
@@ -186,7 +186,7 @@
                                     document.getElementById('date').value = response.date || '';
                                     document.getElementById('statut').value = response.statut || '';
                                     document.getElementById('priorite').value = response.priorite || '';
-                                    document.getElementById('assigne').value = response.assigne || '';
+                                    if(document.getElementById('assigne'))document.getElementById('assigne').value = response.assigne || '';
                                     document.getElementById('categorie').value = response.categorie || '';
                                     document.querySelector('.Task').id=response.id ||'';
                                 } else {
@@ -270,7 +270,7 @@
                 });
 //button de navigation*******************************************************************************************************************************************************************
                 deconButton.addEventListener('click', function () {
-                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php";
+                    window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=logout";
                 });
                 profButton.addEventListener('click', function () {
                     window.location.href = "/../Projet-Web-I2-Todo-List/Routeur/routeur.php?action=profil";
@@ -306,7 +306,7 @@
                             SearchForm.submit();  // Si le formulaire existe, soumettre
                     }
                     
-                    //updateListTask("search");
+                    //updateListTask();
                 });*/
 
 

@@ -74,29 +74,6 @@ class ControllerAccueil extends DefaultController {
         
     }
 
-<<<<<<< HEAD
-    public function afficheProfil(){
-        //navbar
-        $navbar=$this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
-    
-         // Rendu de la vue
-         $this->renderView(
-            __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
-            [
-                'navbar'=>$navbar
-                ]
-            );
-    }
-=======
-    // public function afficheProfil(){
-    //      // Rendu de la vue
-    //      $this->renderView(
-    //         __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
-    //         null
-    //         );
-    // }
->>>>>>> origin/distant_main2
-
     /*******************************************************************************************************************************************************************/
     // LOADER
     public function updateLoader(){//update le loader si le result de search est vide
@@ -219,55 +196,22 @@ class ControllerAccueil extends DefaultController {
         return $listeUser;
     }
 
-    public function updateListTask($mode,$idUser){//update la liste des taches apres un ajout, une modif un supprim
-            //recuper la liste de tache
-            if(!$this->controlTask){
-                $this->controlTask=new ControllerTask();
-            }
-<<<<<<< HEAD
-            if($mode === "search"){
-                $libelle = $_POST['titre'] ?? null;
-                $statut = $_POST['statut'] ?? null;
-                $priorite = $_POST['priorite'] ?? null;
-                $assigne = $_POST['assigne'] ?? null;
-                $categorie = $_POST['categorie'] ?? null; // Nouveau paramètre catégorie
-        
-                // Récupérer l'utilisateur correspondant (s'il y a une recherche par assigné)
-                $utilisateurId = null;
-                if(!$this->controlUser){
-                    $this->controlUser=new ControllerUser();
-                }
-                /*var_dump($libelle);
-                var_dump($statut);
-                var_dump($priorite);
-                var_dump($assigne);
-                var_dump($categorie);*/
-                $assigne= $this->controlUser->getUserByAssigne($assigne);
-                $utilisateurId=$assigne->getId();
-                // Effectuer la recherche
-                $tacheDao = new TacheDao();
-    
-                $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,$categorie);
-                // var_dump($listeTaches);
-                $listeTache=$this->formatedListTask($listeTaches);
-            }else{
-                $listeTaches=$this->controlTask->getListTask($mode,$idUser);
-            }
-=======
-            $listeTaches=$this->controlTask->getListTask($mode, $idUser);
->>>>>>> origin/distant_main2
-            $listeTache=$this->formatedListTask($listeTaches);
-            //var_dump($listeTache);
-             // Créer la réponse en format JSON
-                $response = [
-                    'status' => 'success',
-                    'listeTache' => $listeTache
-                ];
+    public function updateListTask($idUser){//update la liste des taches apres un ajout, une modif un supprim
+        //recuper la liste de tache
+        $tacheDAO = new TacheDao(); 
+        $listeTaches = $tacheDAO->getTasksByUserId($idUser);
+            
+        $listeTache=$this->formatedListTask($listeTaches);
+        // Créer la réponse en format JSON
+        $response = [
+            'status' => 'success',
+            'listeTache' => $listeTache
+        ];
                 
-                // Assurez-vous que les headers sont correctement définis pour envoyer du JSON  
-               header('Content-Type: application/json');
-                echo json_encode($response); // Renvoi uniquement de JSON
-                exit();
+        // Assurez-vous que les headers sont correctement définis pour envoyer du JSON  
+        header('Content-Type: application/json');
+        echo json_encode($response); // Renvoi uniquement de JSON
+        exit();
     }
 
     /*******************************************************************************************************************************************************************/
@@ -311,9 +255,8 @@ class ControllerAccueil extends DefaultController {
 
     public function saveForm(){//ajoute un tache dans la base de donnée
         // Vérifier si la méthode de requête est POST et les champs nécessaires sont présents
-        echo json_encode("saveForm");
-       // sleep(10);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
             $csrf = $_POST["csrf_token"];
             // Vérification du token
             if(!isset($csrf) || $csrf !== $_SESSION['csrf_token'] ){
@@ -323,6 +266,7 @@ class ControllerAccueil extends DefaultController {
                 isset($_POST['titre'], $_POST['description'], $_POST['date'], 
                     $_POST['statut'], $_POST['priorite'], $_POST['categorie'])
             ) {
+                
                 // Récupérer les données du formulaire
                 $titre =  $_POST['titre'];
                 $description = $_POST['description'];
@@ -436,8 +380,7 @@ class ControllerAccueil extends DefaultController {
         // Vérifier si l'ID de la tâche à supprimer est fourni
         if ($idTask) {
             $id =$idTask; 
-           // var_dump($id);
-            // Supprimer la tâche
+    
             $tacheDao = new TacheDao();
             try {
                 $tacheDao->deleteTask($id);
@@ -467,11 +410,7 @@ class ControllerAccueil extends DefaultController {
             if(!$this->controlUser){
                 $this->controlUser=new ControllerUser();
             }
-           /* var_dump($libelle);
-            var_dump($statut);
-            var_dump($priorite);
-            var_dump($assigne);
-            var_dump($categorie);*/
+
             if( $_SESSION["type"]=="Administrateur"){
                 $assigne= $this->controlUser->getUserByAssigne($assigne);
             }else{
@@ -482,7 +421,6 @@ class ControllerAccueil extends DefaultController {
             $tacheDao = new TacheDao();
             
             $listeTaches = $tacheDao->getTasksByFilters($libelle, $statut, $priorite, $utilisateurId,$categorie);
-            //var_dump($listeTaches);
             $listeTache=$this->formatedListTask($listeTaches);
             // Créer la réponse en format JSON
                $response = [

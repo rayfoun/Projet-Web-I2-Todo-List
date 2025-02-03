@@ -6,19 +6,12 @@
 
     session_start();  // Assurez-vous que la session est démarrée
 
-    // Générer un token si c'est nécessaire pour le login, le formulaire d'ajout et de modification
-    // if(!isset($_SESSION["csrf_token_login"])){
-    //     $_SESSION["csrf_token_login"] = bin2hex(random_bytes(32));
-    // }
-    // if(!isset($_SESSION["csrf_token"])){
-    //     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
-    // }
-
     // Instanciation des controleurs
      $controllerAccueil = new ControllerAccueil();
      $controllerConnexion = new ControllerConnexion();
      $controllerProfil = new ControllerProfil();
    
+    //page de connexion
     if(!isset($_GET["action"])){
         $controllerConnexion->affichePageConnexion();
         exit(); 
@@ -27,17 +20,14 @@
 
         // Authentification
         if ($_GET["action"]=="traiterAuthentification"){
-            //require_once '../controlleur/ControllerConnexion.php';
-            //$controllerAccueil = new ControllerConnexion();
             $controllerConnexion->login();
-            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
+            exit(); 
         }
 
+        //deconnexion
         if ($_GET["action"]=="logout"){
-            //require_once '../controlleur/ControllerConnexion.php';
-            //$controllerAccueil = new ControllerConnexion();
             $controllerConnexion->logout();
-            exit(); // inutile ici puisque le login redirige, mais plus tranquilisant à la relecture de ce fichier seul
+            exit(); 
         }
 
         //Affichage de l'accueil
@@ -45,34 +35,43 @@
             //si c'est un utilisateur
             if($_SESSION["type"] =="Utilisateur"){
                 $controllerAccueil->afficheAccueil("Utilisateur");
+            //si c'est un administrateur
             }if($_SESSION["type"] =="Administrateur"){
                 $controllerAccueil->afficheAccueil("Administrateur");
             }
-           
-            //si c'est un admin
             exit();
         }
 
-         // save , delete update une tache
-        if ( $_GET["action"] === "saveTache") {
-            $controllerAccueil->saveForm();
-        }if ( $_GET["action"] === "updateTache") {
-            $controllerAccueil->updateTaskForm($_GET["id"]);
-        }if ( $_GET["action"] === "deleteTache") {
-            $controllerAccueil->deleteTaskForm($_GET["id"]);
-        }
-        //Recherche, et affichage
-        if ( $_GET["action"] === "updateLoader") {
-            $controllerAccueil->updateLoader();
-        }if ( $_GET["action"] === "search") {
-            $controllerAccueil->searchForm();
-           exit();
-        }
         //page profil
         if ( $_GET["action"] === "profil") {
             $controllerProfil->afficheProfil();
             exit();
         }
+
+         // save , delete update une tache
+         //save
+        if ( $_GET["action"] === "saveTache") {
+            $controllerAccueil->saveForm();
+        //update
+        }if ( $_GET["action"] === "updateTache") {
+            $controllerAccueil->updateTaskForm($_GET["id"]);
+        //delete
+        }if ( $_GET["action"] === "deleteTache") {
+            $controllerAccueil->deleteTaskForm($_GET["id"]);
+        }
+
+        //Recherche d'une tache, et affichage du loader
+        //loader
+        if ( $_GET["action"] === "updateLoader") {
+            $controllerAccueil->updateLoader();
+        //recherche
+        }if ( $_GET["action"] === "search") {
+            $controllerAccueil->searchForm();
+           exit();
+        }
+
+        //AJAX
+        
         // Mettre à jour les boutons du formulaire
         if ( $_GET["action"] === "updateButtonForm") {
             // Vérifiez que le paramètre 'mode' est passé dans la requête GET
@@ -88,9 +87,9 @@
             }  
         //update la liste de taches apres un add, modif ou supprim
         }if ( $_GET["action"] === "updateListTask") {
-            $controllerAccueil->updateListTask($_GET["mode"], $_SESSION["id_user"]);
+            $controllerAccueil->updateListTask( $_SESSION["id_user"]);
 
-        //update le form avec des donne si on clique sur une tache
+        //update le form avec des donnees si on clique sur une tache
         }if ( $_GET["action"] === "updateFromTask") {
             if (isset($_GET["id"])) {
                 $controllerAccueil->updateFormTask($_GET["id"]);
@@ -98,46 +97,17 @@
                 // Si 'id' n'est pas défini dans la requête GET, renvoyer une erreur JSON
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Le paramètre mode est manquant.'
+                    'message' => 'Le paramètre idtache est manquant pour mettre à jour le formulaire.'
                 ]);
                 exit;
             }  
-        }
+        }//FIN AJAX
+
         // Si 'action' n'est pas définie dans la requête GET, renvoyer une erreur JSON
         echo json_encode([
             'status' => 'error',
             'message' => 'Action non définie.'
         ]);
         exit;
-
     }
-
-   /*
-
-    // Vérifiez si l'utilisateur est connecté et s'il existe un rôle dans la session
-    if (isset($_SESSION['user'])) {
-        // Récupérer le rôle de l'utilisateur depuis la session
-        $role = $_SESSION['user']['role'];  // Exemple : 'admin' ou 'utilisateur'
-
-        // Rediriger en fonction du rôle
-        if ($role === 'admin') {
-            // Rediriger vers la page spécifique pour l'admin
-            header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
-            exit;  // Terminer le script pour éviter toute exécution après la redirection
-        } elseif ($role === 'utilisateur') {
-            // Rediriger vers la page spécifique pour un utilisateur normal
-            header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
-            exit;  // Terminer le script pour éviter toute exécution après la redirection
-        } else {
-            // Si le rôle n'est ni admin ni utilisateur, rediriger vers une page d'erreur ou une page de connexion
-            header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
-            exit;
-        }
-    } else {
-        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-        header('Location: /../Projet-Web-I2-Todo-List/Routeur/routeur.php');
-        exit;
-    }*/
-
-
 ?>

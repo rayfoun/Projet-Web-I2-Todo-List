@@ -10,35 +10,18 @@ class ControllerProfil extends DefaultController{
     public function __construct() {
         $this->utilisateurDAO = new UtilisateurDAO();
     }
-    
-    function afficheAccueil(){
-        // Préparer les composants à inclure
-        $navbar = $this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
-        $filtreTache = $this->renderComponent(__DIR__."/../Vue/composant/filtreTache.php");
-        $listeTache = $this->renderComponent(__DIR__."/../Vue/composant/listeTache.php");
-
-        //gerer le theme
-        $themeCSS = $this->renderComponent(__DIR__."/../Vue/css/themeProjet.css");
-
-        $this->renderView(
-            __DIR__."/../Vue/template/accueil.php",
-            [
-               'navbar' => $navbar,
-                'filtreTache' => $filtreTache,
-                'listeTache' => $listeTache,
-                'themeCSS' => $themeCSS,
-            ]
-        );
-    }
-
     public function afficheProfil(){
-        // Rendu de la vue
-        $this->renderView(
-           __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
-           null
-           );
-   }
-
+        //navbar
+        $navbar=$this->renderComponent(__DIR__."/../Vue/composant/navbar.php");
+    
+         // Rendu de la vue
+         $this->renderView(
+            __DIR__ . '/../Vue/page/Profil.php', // Correction du chemin
+            [
+                'navbar'=>$navbar
+                ]
+            );
+    }
 
     function supprimerCompteUtilisateur($id){
         //$this->utilisateurDAO->supprimerUtilisateur($id);
